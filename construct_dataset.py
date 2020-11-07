@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 @author: Robert Renzo Rudio
-Fri Nov  6 16:44:38 2020
+@date: Fri Nov  6 16:44:38 2020
 """
 
 # Imports
