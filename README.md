@@ -23,26 +23,26 @@ Note: Subject to change as project is implemented
 - Python Speech Library (Speech Recognition)
 - Python with OpenCV
 
-###Object Detection
+### Object Detection
 - Accelerometer, gyroscope (6DOF) for IMU orientation and general movement
 - IMU measures motion and ports data to central processing, which compares with robust gesture classifiers to a certain tolerance.
 
-###Image Processing
+### Image Processing
 - Use opencv for gathering video data then send to the host.
 - Implementation Note: image processing is done in the host machine.
 
-###Graphics/Display
+### Graphics/Display
 - Streaming option (UDP)
 - Interactive menu with options
 - App interface (Mobile)
 
-###Commands/Feedback
+### Commands/Feedback
 - Text or Voice based commands to the laptop (TCP)
 - Recording option
 - Alerts option
 - Classification of targets
 
-##Tasks
+## Tasks
 **Task1:  Sound Processing**
 - [x] Filter target audio from background noise
 - [ ] Differentiate adult from baby cry
@@ -55,8 +55,3 @@ Note: Subject to change as project is implemented
 - [ ] Send information (alerts), Receive commands
 - [ ] Record video
 - [ ] Transmit/Receive Audio files
-
-
-
-
-
