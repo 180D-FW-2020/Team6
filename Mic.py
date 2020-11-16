@@ -1,4 +1,5 @@
-
+# Author = Leondi Soetojo
+# Submit Time = 12.31 AM, 16 November 2020
 
 import pyaudio
 import wave
