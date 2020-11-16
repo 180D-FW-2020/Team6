@@ -4,21 +4,19 @@
 import pyaudio
 import wave
 
-CHUNK = 1024
 FORMAT = pyaudio.paInt16
-CHANNELS = 2
-RATE = 44100
-
+FILENAME = "Recording_Sound.wav"
 
 
 # Refrence: https://stackoverflow.com/questions/35344649/reading-input-sound-signal-using-python
 #def recording_Mic():
 class MicRecording:
     # record_second is how long we want to record the sound
-    # filename is the recording .wav file name
-    def __init__(self, record_second, filename):
+    def __init__(self, chunk, channel, record_second, rate):
+        self.chunk = chunk
+        self.channel = channel
         self.record_second = record_second
-        self.filename = filename
+        self.rate = rate
 
 
     def record(self):
@@ -26,17 +24,17 @@ class MicRecording:
         p = pyaudio.PyAudio()
 
         stream = p.open(format=FORMAT,
-                        channels=CHANNELS,
-                        rate=RATE,
+                        channels=self.channel,
+                        rate=self.rate,
                         input=True,
-                        frames_per_buffer=CHUNK)
+                        frames_per_buffer=self.chunk)
 
         print("* recording")
 
         frames = []
 
-        for i in range(0, int(RATE / CHUNK * self.record_second)):
-            data = stream.read(CHUNK)
+        for i in range(0, int(self.rate / self.chunk * self.record_second)):
+            data = stream.read(self.chunk)
             frames.append(data)
 
         print("* done recording")
@@ -45,12 +43,12 @@ class MicRecording:
         stream.close()
         p.terminate()
 
-        wf = wave.open(self.filename, 'wb')
-        wf.setnchannels(CHANNELS)
+        wf = wave.open(FILENAME, 'wb')
+        wf.setnchannels(self.channel)
         wf.setsampwidth(p.get_sample_size(FORMAT))
-        wf.setframerate(RATE)
+        wf.setframerate(self.rate)
         wf.writeframes(b''.join(frames))
         wf.close()
 
-p1 = MicRecording(5, "Recording_Sound.wav")
+p1 = MicRecording(1024, 2, 5, 44100)
 p1.record()
