@@ -8,14 +8,14 @@ CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 2
 RATE = 44100
-RECORD_SECONDS = 5
-WAVE_OUTPUT_FILENAME = "Recording_Sound.wav"
+
 
 
 # Refrence: https://stackoverflow.com/questions/35344649/reading-input-sound-signal-using-python
 #def recording_Mic():
 class MicRecording:
-    
+    # record_second is how long we want to record the sound
+    # filename is the recording .wav file name
     def __init__(self, record_second, filename):
         self.record_second = record_second
         self.filename = filename
