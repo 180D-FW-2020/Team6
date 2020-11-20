@@ -16,12 +16,14 @@ try:
     #cmdline = ['vlc', '--demux', 'h264', '-']
     #cmdline = ["C:/", "Program Files(x86)", "VideoLAN", "VLC", "vlc.exe"]
     #cmdline = ['mplayer', '-fps', '25', '-cache', '1024', '-']
-    player = subprocess.Popen("C:\Program Files(x86)\VideoLAN\VLC\vlc.exe", stdin=subprocess.PIPE)
+    player = subprocess.Popen("C:/Program Files/VideoLAN/VLC/vlc.exe", stdin=subprocess.PIPE)
     while True:
         # Repeatedly read 1k of data from the connection and write it to
         # the media player's stdin
         data = connection.read(1024)
+        print("data_read")
         if not data:
+            print("no data")
             break
         player.stdin.write(data)
 finally:
