@@ -113,7 +113,7 @@ class Dataset:
         dataset = []
         for path in tqdm(paths):
             # Data label is the directory name.
-            label = os.path.dirname(path).split("/")[-1]
+            label = os.path.dirname(path).split("/")[-2]
 
             # Extract the data
             if self.args:

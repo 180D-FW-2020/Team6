@@ -11,18 +11,18 @@ rms calculation: https://stackoverflow.com/questions/18406570/python-record-audi
 """
 
 # Libraries
-#import AudioClassifier
+import AudioClassifier
 import numpy as np
+import preprocess
 import pyaudio
 import struct
 import threading
-import time
 import wave
 from datetime import datetime
 
 # Load in neural network
-NN_PATH = "nn.h5"
-#ac = AudioClassifier.AudioClassifier(NN_PATH)
+NN_PATH = "../data/nnmv2.1.h5"
+ac = AudioClassifier.AudioClassifier(NN_PATH)
 
 # Pyaudio constants
 FORMAT = pyaudio.paInt16
@@ -33,7 +33,7 @@ SAVE_PATH = "../../recordings/audio/"
 
 class Microphone:
     # record_second is how long we want to record the sound
-    def __init__(self, chunk=1024, channels=1, record_second=7, rate=16000, rms_thresh=100):
+    def __init__(self, chunk=1024, channels=1, record_second=7, rate=16000, rms_thresh=20):
         self.chunk = chunk
         self.channels = channels
         self.record_second = record_second
@@ -77,51 +77,66 @@ class Microphone:
         thread.start()
 
     def _listen(self):
+        self.LISTEN = True
         while self.LISTEN:
-            data = self.stream.read(self.chunk)
+            try:
+                data = self.stream.read(self.chunk)
+            except:
+                continue
             rms = self.rms(data)
             if rms > self.rms_thresh:
-                nnwav_path = SAVE_PATH + "nn.wav"
-                self.record(nnwav_path, True)
-
-                # TODO: Preprocess audio saved at nnwav_path before prediction
-
-                # Perform classification
-                pred = "environment" #ac.predict(nnwav_path)
-                if pred == "baby":#ac.le_mappings[0]:
-                    now = datetime.now()
-                    now_str = now.strftime("%d-%m-%Y-%H:%M:%S.wav")
-                    self.record(SAVE_PATH + now_str, False)
-        
-    def record(self, fname, for_nn):
+                self.record()
+                
+    def record(self):
         print("Recording audio ...")
 
+        sec = self.rate / self.chunk
+        l = int(sec * self.record_second)
+        m = int(sec * MAX_REC_SECONDS)
+
         frames = []
-        
-        if for_nn: # Audio to be used for classification.
-            for _ in range(0, int(self.rate / self.chunk * self.record_second)):
+        for _ in range(0, l):
+            try:
                 data = self.stream.read(self.chunk)
-                frames.append(data)
-        else: # Audio to be recorded won postive classification.
-            sec = self.rate / self.chunk
-            l = int(sec * self.record_second)
-            m = int(sec * MAX_REC_SECONDS)
-            i = 0
-            while i < l:
+            except:
+                continue
+            frames.append(data)
+
+        # Do classification on the first self.record_seconds:
+        self.save_wav(frames, SAVE_PATH + "nn.wav")
+        mfcc = preprocess.audio_mfcc(SAVE_PATH + "nn.wav", 128)
+        pred = ac.predict(mfcc)
+        print(pred)
+
+        # Continue recording if noise is still deteced   
+        i = sec * 2   
+        while i < l:
+            try:
                 data = self.stream.read(self.chunk)
-                frames.append(data)
-                rms = self.rms(data)
+            except:
+                continue
+            
+            frames.append(data)
+            rms = self.rms(data)
+            if rms > self.rms_thresh:
+                l += sec
+            
+            if i > m:
+                break
 
-                if rms > self.rms_thresh: 
-                    # Add a second if audio is still > rms_thresh
-                    l += sec
-                if i > m:
-                    break
-                
-                i += 1
+            i += 1
 
+
+            
         print("... Done recording")
 
+        now = datetime.now()
+        now_str = now.strftime("%d-%m-%Y-%H:%M:%S.wav")
+        self.save_wav(frames, SAVE_PATH + now_str)
+
+        return pred
+
+    def save_wav(self, frames, fname):
         wf = wave.open(fname, 'wb')
         wf.setnchannels(self.channels)
         wf.setsampwidth(self.p.get_sample_size(FORMAT))
