@@ -4,8 +4,13 @@
 """
 
 # Libraries
-from tensorflow import keras
 import numpy as np
+import sys
+import threading
+from tensorflow import keras
+
+sys.path.append("../") 
+import notification  # pylint: disable=import-error
 
 class AudioClassifier:
     """
@@ -42,7 +47,7 @@ class AudioClassifier:
         self.model = keras.models.load_model(model_path)
         self.in_dim = self.model.input_shape
         self.r, self.c, self.ch = self.in_dim[1:]
-        self.le_mappings = {0: "baby", 1: "enviroment"}
+        self.le_mappings = {0: "", 1: "enviroment"}
         
     def fit(self, X, y):
         pass
@@ -52,7 +57,12 @@ class AudioClassifier:
         """
         self.model.summary()
     
+    
     def predict(self, X):
+        thread = threading.Thread(target=self._predict, args=(X,))
+        thread.start()
+
+    def _predict(self, X):
         """Predict X's label using the neural network
 
         Parameters
@@ -68,8 +78,15 @@ class AudioClassifier:
         print("Predicting ...")
         X = np.array([np.float32(X)])
         X = X.reshape(X.shape[0], self.r, self.c, self.ch) # pylint: disable=unsubscriptable-object, too-many-function-args 
-        #label = (self.model.predict(X) > 0.5).astype("int32")
-        label = np.argmax(self.model.predict(X), axis=-1)
-        print(label)
-        return "baby"
-        return label[0][0]
+
+        label = self.model.predict(X)
+        clas = np.argmax(label, axis=-1)
+        prob = np.amax(label / np.sum(label) * 100, axis=-1)[0]
+
+        msg = f"Noise came from {clas} with %{prob:.2f}"
+        self.push_notification(msg)
+    
+    def push_notification(self, msg):
+        subject = "Noise Detected"
+        notification.notify(subject, msg, "robertrenzo97@gmail.com")
+

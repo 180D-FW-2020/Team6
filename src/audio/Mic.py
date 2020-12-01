@@ -16,9 +16,13 @@ import numpy as np
 import preprocess
 import pyaudio
 import struct
+import sys
 import threading
 import wave
 from datetime import datetime
+
+sys.path.append("../")
+from comms import AudioServer # pylint: disable=import-error
 
 # Load in neural network
 NN_PATH = "../data/nnmv2.1.h5"
@@ -30,6 +34,9 @@ SHORT_NORMALIZE = (1.0/32768.0)
 swidth = 2
 MAX_REC_SECONDS = 60
 SAVE_PATH = "../../recordings/audio/"
+
+audio_s = AudioServer.AudioServer()
+audio_s.start()
 
 class Microphone:
     # record_second is how long we want to record the sound
@@ -100,13 +107,14 @@ class Microphone:
                 data = self.stream.read(self.chunk)
             except:
                 continue
+
+            audio_s.send(data)
             frames.append(data)
 
         # Do classification on the first self.record_seconds:
-        self.save_wav(frames, SAVE_PATH + "nn.wav")
-        mfcc = preprocess.audio_mfcc(SAVE_PATH + "nn.wav", 128)
-        pred = ac.predict(mfcc)
-        print(pred)
+        self.save_wav(frames, SAVE_PATH + "analyze.wav")
+        mfcc = preprocess.audio_mfcc(SAVE_PATH + "analyze.wav", 128)
+        ac.predict(mfcc)
 
         # Continue recording if noise is still deteced   
         i = sec * 2   
@@ -115,8 +123,9 @@ class Microphone:
                 data = self.stream.read(self.chunk)
             except:
                 continue
-            
-            frames.append(data)
+
+            audio_s.send(data)
+
             rms = self.rms(data)
             if rms > self.rms_thresh:
                 l += sec
@@ -125,18 +134,12 @@ class Microphone:
                 break
 
             i += 1
-
-
-            
+    
+        audio_s.send(b"done")
         print("... Done recording")
 
-        now = datetime.now()
-        now_str = now.strftime("%d-%m-%Y-%H:%M:%S.wav")
-        self.save_wav(frames, SAVE_PATH + now_str)
-
-        return pred
-
     def save_wav(self, frames, fname):
+        print("Saving")
         wf = wave.open(fname, 'wb')
         wf.setnchannels(self.channels)
         wf.setsampwidth(self.p.get_sample_size(FORMAT))
