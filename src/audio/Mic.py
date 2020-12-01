@@ -114,8 +114,7 @@ class Microphone:
         # Do classification on the first self.record_seconds:
         self.save_wav(frames, SAVE_PATH + "analyze.wav")
         mfcc = preprocess.audio_mfcc(SAVE_PATH + "analyze.wav", 128)
-        pred = ac.predict(mfcc)
-        print(pred)
+        ac.predict(mfcc)
 
         # Continue recording if noise is still deteced   
         i = sec * 2   
@@ -137,7 +136,6 @@ class Microphone:
             i += 1
     
         audio_s.send(b"done")
-        print("here")
         print("... Done recording")
 
     def save_wav(self, frames, fname):
