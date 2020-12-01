@@ -45,13 +45,24 @@ Note: Subject to change as project is implemented
 ## Tasks
 **Task1:  Sound Processing**
 - [x] Filter target audio from background noise
-- [ ] Differentiate adult from baby cry
+- [x] Server/Client audio saving
+- [ ] Real time audio play with server and client
 
 **Task 2: Video** 
-- [ ] Detect movement outside of a boundary
+- [x] Detect movement outside of a boundary
+- [x] Implement server client code for streaming video
+- [ ] Motion processing for video stream
 - [ ] Detect pose of the baby relative to crib (sleeping/active)
 
 **Task 3: Communications**
 - [ ] Send information (alerts), Receive commands
 - [ ] Record video
 - [ ] Transmit/Receive Audio files
+
+**Task 4: Central Processing**
+-[ ] Create webserver and ping clients
+
+**Task 5: GUI**
+-[ ] Create interface with buttons
+-[ ] Embed video stream functionality
+-[ ] Send and receive user commands
