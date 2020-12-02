@@ -12,8 +12,8 @@ import cv2
 import numpy as np
 
 server_socket = socket.socket()
-server_socket.bind(('192.168.1.239', 8000))  # ADD IP HERE
-#server_socket.bind(('172.91.89.246',8000))
+#server_socket.bind(('192.168.1.239', 8000))  #Local IP
+server_socket.bind(('192.168.1.10',80))	  #Public IP
 server_socket.listen(0)
 
 # Accept a single connection and make a file-like object out of it

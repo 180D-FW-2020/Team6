@@ -51,7 +51,9 @@ Note: Subject to change as project is implemented
 **Task 2: Video** 
 - [x] Detect movement outside of a boundary
 - [x] Implement server client code for streaming video
-- [ ] Motion processing for video stream
+- [x] Motion processing for video stream on server
+- [ ] Classifier processing on client (offload to Rpi) [IN PROGRESS]
+- [ ] Crib Detection
 - [ ] Detect pose of the baby relative to crib (sleeping/active)
 
 **Task 3: Communications**
@@ -60,9 +62,12 @@ Note: Subject to change as project is implemented
 - [ ] Transmit/Receive Audio files
 
 **Task 4: Central Processing**
--[ ] Create webserver and ping clients
+- [ ] Create webserver and ping clients [IN PROGRESS]
+- [ ] Implement Port forwarding for laptop server
+- [ ] Implement threading for multiple servers
 
 **Task 5: GUI**
--[ ] Create interface with buttons
--[ ] Embed video stream functionality
--[ ] Send and receive user commands
+- [x] Create interface with buttons
+- [x] Add image display
+- [ ] Embed video stream functionality [IN PROGRESS]
+- [ ] Send and receive user commands
