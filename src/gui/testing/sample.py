@@ -2,19 +2,42 @@
 
 import tkinter as tk
 from PIL import Image, ImageTk
+from imutils.video import VideoStream
+import io
+import cv2
 
 window = tk.Tk()
+
+#Title of GUI
 greeting = tk.Label(text="Night Light Baby Monitor")
 greeting.pack(fill=tk.BOTH)
-pilfile = Image.open("image.jpg")
-image_vid = ImageTk.PhotoImage(pilfile)
-video_feed = tk.Label(image=image_vid)
-video_feed.pack()
+
+#Displaying an image
+#pilfile = Image.open("image.jpg")
+#image_vid = ImageTk.PhotoImage(pilfile)
+#video_feed = tk.Label(image=image_vid)
+#video_feed.pack()
+
+#Displaying Video Stream from own camera
+app = tk.Frame(window, bg = "white")
+app.pack()
+lmain = tk.Label(app)
+lmain.pack()
+cap = cv2.VideoCapture(0)
+def video_stream():
+	_,frame = cap.read()
+	cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+	img = Image.fromarray(cv2image)
+	imgtk = ImageTk.PhotoImage(image=img)
+	lmain.imgtk = imgtk
+	lmain.configure(image=imgtk)
+	lmain.after(1, video_stream)
+video_stream()
+
+#creating buttons and event handlers
 button_a = tk.Button(text = "Play lullaby", height = 5, bg = "blue", fg = "yellow")
 button_b = tk.Button(text = "send audio", height = 5, bg = "blue", fg = "yellow")
 button_a.pack(side = tk.LEFT)
-
-
 #event handler
 def handle_click_lullaby(event):
 	print("button send lullaby was clicked")
@@ -25,14 +48,6 @@ button_b.bind("<Button-1>",handle_click_send_audio)
 button_b.pack(side=tk.LEFT)
 
 
-# frame_a = tk.Frame()
-# frame_a.pack()
-# frame_b = tk.Frame()
-# frame_b.pack()
-# label_a = tk.Label(master=frame_a, text="Frame A")
-# label_a.pack()
-# label_b = tk.Label(master = frame_b, text = "Frame B")
-# label_b.pack()
-# label = tk.Label( text = "Hello",fg = "white",bg = "black",width = 10, height = 10)
-# label.pack(fill=tk.X) #responsive to window resize
+
+
 window.mainloop() #runs application
