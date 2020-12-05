@@ -3,13 +3,17 @@ import socket
 import struct
 import time
 import picamera
+import argparse
+import datetime
+import imutils
+import time
+import cv2
+import numpy as np
 
 client_socket = socket.socket()
 
-
-client_socket.connect(('192.168.1.239', 8000))  # ADD IP HERE
-#client_socket.connect(('172.91.89.246',8000))
-
+#client_socket.connect(('192.168.1.10', 80))  # ADD IP HERE
+client_socket.connect(('172.91.89.246',80))
 # Make a file-like object out of the connection
 connection = client_socket.makefile('wb')
 try:
@@ -26,6 +30,21 @@ try:
     # our protocol simple)
     start = time.time()
     stream = io.BytesIO()
+    with picamera.PiCamera() as camera:
+        camera.start_preview()
+        time.sleep(2)
+        camera.capture(stream, format='jpeg')
+    # Construct a numpy array from the stream
+    data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+    # "Decode" the image from the array, preserving colour
+    image = cv2.imdecode(data, 1)
+    # OpenCV returns an array with data in BGR order. If you want RGB instead
+    # use the following...
+    image = image[:, :, ::-1]
+
+
+
+    
     for foo in camera.capture_continuous(stream, 'jpeg'):
         # Write the length of the capture to the stream and flush to
         # ensure it actually gets sent
