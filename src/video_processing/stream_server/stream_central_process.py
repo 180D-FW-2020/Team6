@@ -10,13 +10,21 @@ import imutils
 import time
 import cv2
 import numpy as np
+import pickle
+import zlib
 
-server_socket = socket.socket()
-server_socket.bind(('192.168.1.239', 8000))  #Local IP
-server_socket.listen(0)
+server_socket_rpi = socket.socket()
+server_socket_laptop = socket.socket()
+#server_socket.bind(('192.168.1.239', 8000))  #Local IP
+server_socket_rpi.bind(('0.0.0.0',8000)) #public IP port from RPI client
+server_socket_laptop.bind(('0.0.0.0',8001)) #public IP port to Laptop client
+server_socket_rpi.listen(0)
+server_socket_laptop.listen(0)
 
 # Accept a single connection and make a file-like object out of it
-connection = server_socket.accept()[0].makefile('rb')
+connection_rpi = server_socket_rpi.accept()[0].makefile('rb')
+connection_laptop = server_socket_laptop.accept()[0].makefile('wb')
+
 try:
     img = None
     firstFrame = None
@@ -28,15 +36,16 @@ try:
     #go into motion detection sequence 
 
     while True:
+    	print("Running")
         # Read the length of the image as a 32-bit unsigned int. If the
         # length is zero, quit the loop
-        image_len = struct.unpack('<L', connection.read(struct.calcsize('<L')))[0]
+        image_len = struct.unpack('<L', connection_rpi.read(struct.calcsize('<L')))[0]
         if not image_len:
             break
         # Construct a stream to hold the image data and read the image
         # data from the connection
         image_stream = io.BytesIO()
-        image_stream.write(connection.read(image_len))
+        image_stream.write(connection_rpi.read(image_len))
         # Rewind the stream, open it as an image with PIL and do some
         # processing on it
         image_stream.seek(0)
@@ -95,16 +104,21 @@ try:
         cv2.putText(raw_frame, "Motion Status: {}".format(text), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
         cv2.putText(raw_frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"), (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
         
-        # show the frame and record if the user presses a key
-        cv2.imshow("Camera feed", raw_frame)
-        cv2.imshow("Thresh", thresh)
+        #cv2.imshow("Camera feed", raw_frame)
+        #cv2.imshow("Thresh", thresh)
         #cv2.imshow("Frame Delta", frameDelta)
-        cv2.imshow('target area', target_area)
-        key = cv2.waitKey(1) & 0xFF
+        #cv2.imshow('target area', target_area)
+
+        #send the finished feed to laptop client, raw_frame
+        data = pickle.dumps(raw_frame,0)
+        size = len(data)
+        server_socket_laptop.sendall(struct.pack(">L",size)+data) #not sure what >L means
         
-        # if the `q` key is pressed, break from the lop
-        if key == ord("q"):
-            break
+        key = cv2.waitKey(1) & 0xFF
+
 finally:
-    connection.close()
-    server_socket.close()
+	print("Closing")
+    connection_rpi.close()
+    connection_laptop.close()
+    server_socket_rpi.close()
+    server_socket_laptop.close()
