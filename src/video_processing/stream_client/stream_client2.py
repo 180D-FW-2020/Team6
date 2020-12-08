@@ -7,9 +7,8 @@ import picamera
 client_socket = socket.socket()
 
 
-client_socket.connect(('192.168.1.239', 8000))  # ADD IP HERE
-#client_socket.connect(('172.91.89.246',8000))
-
+#client_socket.connect(('192.168.1.239', 8000))  # ADD IP HERE
+client_socket.connect(('3.15.16.101', 8000))
 # Make a file-like object out of the connection
 connection = client_socket.makefile('wb')
 try:
@@ -18,7 +17,7 @@ try:
     camera.resolution = (1080, 720) #does lag increase if resolution goes up???
     # Start a preview and let the camera warm up for 2 seconds
     camera.start_preview()
-    time.sleep(1)
+    time.sleep(0)
 
     # Note the start time and construct a stream to hold image data
     # temporarily (we could write it directly to connection but in this

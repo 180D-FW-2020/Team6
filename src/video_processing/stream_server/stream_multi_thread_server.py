@@ -2,7 +2,8 @@
 import io
 from PIL import Image
 import matplotlib.pyplot as pl
-from thread import *
+#import thread as thread
+from _thread import *
 import socket
 import sys
 
@@ -10,8 +11,8 @@ def clientthread(conn):
     buffer=""
     while True:
         data = conn.recv(8192)
-        buffer+=data
-        print buffer
+        #buf = data.decode('ASCII')
+        print(data)
     #conn.sendall(reply)
     conn.close()
 
@@ -27,12 +28,12 @@ def main():
             s.bind((host, port+i))
             s.listen(10)
             list_sock.append(s)
-            print "[*] Server listening on %s %d" %(host, (port+i))
+            print("[*] Server listening on port")
 
         while 1:
             for j in range(len(list_sock)):
                 conn, addr = list_sock[j].accept()
-                print '[*] Connected with ' + addr[0] + ':' + str(addr[1])
+                print('[*] Connected with ' + addr[0] + ':' + str(addr[1]))
                 start_new_thread(clientthread ,(conn,))
         s.close()
 
