@@ -19,11 +19,12 @@ Note: Subject to change as project is implemented
 - Laptop/Screen
 - Phone for external command interface
 - Speaker and Microphone (separate)
+- IMU on RPi
 **Software**
 - Python Speech Library (Speech Recognition)
 - Python with OpenCV
 
-### Object Detection
+### Flip Detection
 - Accelerometer, gyroscope (6DOF) for IMU orientation and general movement
 - IMU measures motion and ports data to central processing, which compares with robust gesture classifiers to a certain tolerance.
 
@@ -44,30 +45,43 @@ Note: Subject to change as project is implemented
 
 ## Tasks
 **Task1:  Sound Processing**
-- [x] Filter target audio from background noise
-- [x] Server/Client audio saving
-- [ ] Real time audio play with server and client
+- [x] Filter target audio from background noise (Denny)
+- [x] Server/Client audio saving (Denny)
+- [ ] Semi- Real time audio play with server and client [IN PROGRESS] 
+- [ ] Implement sound database with sound play on command 
+- [x] Send notifications on classified sounds (Robert)
+- [x] Create reliable sound classifier (Robert)
 
 **Task 2: Video** 
-- [x] Detect movement outside of a boundary
-- [x] Implement server client code for streaming video
-- [x] Motion processing for video stream on server
+- [x] Detect movement outside of a boundary (Henry)
+- [x] Implement server client code for streaming video (Henry)
+- [x] Motion processing for video stream on server (Henry)
 - [ ] Classifier processing on client (offload to Rpi) [IN PROGRESS]
 - [ ] Crib Detection
 - [ ] Detect pose of the baby relative to crib (sleeping/active)
 
 **Task 3: Communications**
-- [ ] Send information (alerts), Receive commands
+- [ ] Send information (alerts), Receive commands [IN PROGRESS]
 - [ ] Record video
-- [ ] Transmit/Receive Audio files
+- [x] Transmit/Receive Audio files (Robert)
+- [ ] Send play lullaby command
 
 **Task 4: Central Processing**
-- [ ] Create webserver and ping clients [IN PROGRESS]
-- [ ] Implement Port forwarding for laptop server
-- [ ] Implement threading for multiple servers
+- [x] Create webserver and ping clients (Robert, Denny, and Henry)
+- [x] Implement threading for multiple servers with TCP (Denny and Henry)
+- [ ] Transmit video from RPI client to GUI laptop via server [IN PROGRESS]
+- [ ] Create main process to run threads [IN PROGRESS]
 
 **Task 5: GUI**
-- [x] Create interface with buttons
-- [x] Add image display
+- [x] Create interface with buttons (Leondi)
+- [x] Add image display (Leondi)
 - [ ] Embed video stream functionality [IN PROGRESS]
-- [ ] Send and receive user commands
+- [ ] Send and receive user commands with MQTT in event handlers [IN PROGRESS]
+
+**Task 6: IMU**
+- [x] Create classifiers for key baby actions (Denny)
+- [ ] Implement trigger on central processing to start gui and monitoring [IN PROGRESS]
+
+**Task 7: Voice Command 
+- [x] Setup classifiers for voice commands (Leondi)
+- [ ] Implement event handlers as actions 
