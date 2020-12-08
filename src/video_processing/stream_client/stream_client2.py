@@ -7,7 +7,8 @@ import picamera
 client_socket = socket.socket()
 
 
-client_socket.connect(('192.168.1.239', 8000))  # ADD IP HERE
+#client_socket.connect(('192.168.1.239', 8000))  # ADD IP HERE
+client_socket.connect(('3.15.16.101', 8000))
 # Make a file-like object out of the connection
 connection = client_socket.makefile('wb')
 try:
