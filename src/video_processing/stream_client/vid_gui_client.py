@@ -4,20 +4,38 @@ import struct
 from PIL import Image
 import matplotlib.pyplot as pl
 
-server_socket = socket.socket()
-server_socket.bind(('3.15.16.101', 8001))  # ADD IP HERE
-
-server_socket.listen(0)
+gui_client_socket = socket.socket()
+gui_client_socket.connect(('3.15.16.101', 6667))  # ADD IP HERE
 
 # Accept a single connection and make a file-like object out of it
-connection = server_socket.accept()[0].makefile('rb')
+#connection = gui_client_socket.makefile('rb')
+try:
+    message = "message from gui_laptop"
+    while True:
+        print("sending: " + message)
+        gui_client_socket.sendall(message)
+        
+
+finally:
+    print("closing socket")
+    gui_client_socket.close()
+
+
+
 try:
     img = None
     while True:
+        print("running")
         # Read the length of the image as a 32-bit unsigned int. If the
         # length is zero, quit the loop
-        image_len = struct.unpack('<L', connection.read(struct.calcsize('<L')))[0]
+
+        connection.read(struct.calcsize('<L'))
+        print("reading")
+
+        image_len = struct.unpack('<L', connection.read(struct.calcsize('<L')))[0] #stuck here
+        print("unpacked")
         if not image_len:
+            print("not image len")
             break
         # Construct a stream to hold the image data and read the image
         # data from the connection
@@ -29,8 +47,11 @@ try:
         image = Image.open(image_stream)
         
         if img is None:
+            print("Image is none")
             img = pl.imshow(image)
+            
         else:
+            print("image is set")
             img.set_data(image)
 
         pl.pause(0.0001)
@@ -41,4 +62,4 @@ try:
         #print('Image is verified')
 finally:
     connection.close()
-    server_socket.close()
+    gui_client_socket.close()
