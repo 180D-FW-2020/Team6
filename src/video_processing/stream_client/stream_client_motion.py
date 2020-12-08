@@ -3,6 +3,7 @@ import socket
 import struct
 import time
 import picamera
+import picamera.array
 import argparse
 import datetime
 import imutils
@@ -12,35 +13,19 @@ import numpy as np
 
 client_socket = socket.socket()
 
-#client_socket.connect(('192.168.1.10', 80))  # ADD IP HERE
-client_socket.connect(('172.91.89.246',80))
+client_socket.connect(('192.168.1.10', 80))  # ADD IP HERE
+#client_socket.connect(('172.91.89.246',80))
 # Make a file-like object out of the connection
 connection = client_socket.makefile('wb')
-try:
-    camera = picamera.PiCamera()
-    #camera.vflip = True
-    camera.resolution = (1080, 720) #does lag increase if resolution goes up???
-    # Start a preview and let the camera warm up for 2 seconds
-    camera.start_preview()
-    time.sleep(1)
 
-    # Note the start time and construct a stream to hold image data
-    # temporarily (we could write it directly to connection but in this
-    # case we want to find out the size of each capture first to keep
-    # our protocol simple)
-    start = time.time()
-    stream = io.BytesIO()
-    with picamera.PiCamera() as camera:
-        camera.start_preview()
-        time.sleep(2)
-        camera.capture(stream, format='jpeg')
-    # Construct a numpy array from the stream
-    data = np.fromstring(stream.getvalue(), dtype=np.uint8)
-    # "Decode" the image from the array, preserving colour
-    image = cv2.imdecode(data, 1)
-    # OpenCV returns an array with data in BGR order. If you want RGB instead
-    # use the following...
-    image = image[:, :, ::-1]
+try:
+	with picamera.PiCamera() as camera:
+    camera.start_preview()
+    time.sleep(2)
+    with picamera.array.PiRGBArray(camera) as stream:
+        camera.capture(stream, format='bgr')
+        # At this point the image is available as stream.array
+        image = stream.array
 
 
 
