@@ -12,7 +12,7 @@ sample_size = pyaudio.get_sample_size(FORMAT)
 SAVE_PATH = "../../recordings/audio/"
 
 class AudioClient:
-    def __init__(self, ip="127.0.0.1", port=3004):
+    def __init__(self, ip="127.0.0.1", port=3006):
         self.ip = ip 
         self.port = port
         self.client_conn= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -39,6 +39,8 @@ class AudioClient:
         frames = []
         while True:
             data = self.client_conn.recv(BUFFERSIZE)
+            self.stream.write(data)
+        
             if len(data) != 1024:
                 if len(data) != 0:
                     self.save_wav(frames)

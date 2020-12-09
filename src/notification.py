@@ -5,7 +5,7 @@ _email = "" # sender email addr
 _pass =  "" # sender email password
 
 def notify(subject, content, to):
-    print("Pusing notification")
+    print("Pushing notification")
     msg = EmailMessage()
     msg.set_content(content)
     msg["subject"] = subject
