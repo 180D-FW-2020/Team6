@@ -12,8 +12,6 @@ def run():
     mic = Mic.Microphone()
     mic.start()
     mic.listen()
-    time.sleep(1000)
-    mic.stop_listen()
 
 if __name__ == "__main__":
     run()

@@ -4,7 +4,7 @@ import socket
 BUFFERSIZE = 1024
 
 class AudioServer:
-    def __init__(self, ip="127.0.0.1", port=3004):
+    def __init__(self, ip="127.0.0.1", port=3006):
         self.ip = ip 
         self.port = port
         self.server_conn = None
