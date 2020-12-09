@@ -23,21 +23,18 @@ def main():
         for j in range(len(list_sock)):
 
             if j == 0: #rpi connection
-                conn, addr = list_sock[j].accept()[0].makefile('rb')
+                conn = list_sock[j].accept()[0].makefile('rb')
             if j == 1: #gui connection
-                conn, addr = list_sock[j].accept()[0].makefile('wb')
+                conn = list_sock[j].accept()[0].makefile('wb')
 
-            print('[*] Connected with ' + addr[0] + ':' + str(addr[1]))
+            #print('[*] Connected with ' + addr[0] + ':' + str(addr[1]))
             list_conn.append(conn)
             if j == 0:
                 print("RPI connected")
                     
             elif j == 1:
-                print("GUI connected")
-            #print(list_conn[0])
-            #print(list_conn[1])
+                print("GUI connected")    
         
-
         #both sockets are now connected
         rpi_client_conn = list_conn[0]
         gui_client_conn = list_conn[1]
@@ -53,7 +50,10 @@ def main():
             image = Image.open(image_stream)
 
 
-
+            #gui_client_conn.write(struct.pack('<L',image.tell()))
+            gui_client_conn.send(image)
+            print("sent to gui")
+            image.seek(0)
 
         for j in range(len(list_sock)): #changed
             list_sock[j].close()
