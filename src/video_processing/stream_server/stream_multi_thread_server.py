@@ -34,7 +34,18 @@ def main():
             for j in range(len(list_sock)):
                 conn, addr = list_sock[j].accept()
                 print('[*] Connected with ' + addr[0] + ':' + str(addr[1]))
-                start_new_thread(clientthread ,(conn,))
+
+                if j == 0:
+                    print("RPI connected")
+                elif j == 1:
+                    print("GUI connected")
+            #both sockets are now connected
+            rpi_cient_socket = list_sock[0]
+            gui_client_socket = list_sock[1]
+
+            data = rpi_cient_socket.recv(8192)
+            gui_client_socket.sendall(data)
+                
         s.close()
 
     except KeyboardInterrupt as msg:

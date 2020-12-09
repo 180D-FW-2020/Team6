@@ -10,11 +10,10 @@ gui_client_socket.connect(('3.15.16.101', 6667))  # ADD IP HERE
 # Accept a single connection and make a file-like object out of it
 #connection = gui_client_socket.makefile('rb')
 try:
-    message = "message from gui_laptop"
-    byte_m = message.encode('ASCII')
     while True:
-        print("sending message")
-        gui_client_socket.sendall(byte_m)
+
+        data = gui_client_socket.recv(8192)
+        print(data)
         
 
 finally:
