@@ -43,7 +43,7 @@ def main():
             gui_conn.flush() #flush content to a file...
             image_stream.seek(0) #change stream position to start of stream, 0
             gui_conn.write(image_stream.read())
-            image_stream.seek(0)
+            #image_stream.seek(0)
             image_stream.truncate()
         gui_conn.write(struct.pack('<L',0))
         
