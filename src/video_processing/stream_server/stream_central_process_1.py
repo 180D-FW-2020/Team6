@@ -20,7 +20,7 @@ def main():
         print("Rpi connected")
 
         gui_sock = socket.socket()
-        gui_sock.connect(('192.168.1.239',6667))#connects to gui laptop IP
+        gui_sock.connect(('172.91.89.246',6667))#connects to gui laptop IP
         print("[*] Client listening on port")
         gui_conn = gui_sock.makefile('wb')
         print("Gui connected")
@@ -28,7 +28,8 @@ def main():
         while True:    
             print("running")
             image_len = struct.unpack('<L', rpi_client_conn.read(struct.calcsize('<L')))[0] #unpacks from buffer of bytes
-            image_len is a bytes like object to be written in to the image stream 
+            print(image_len)
+            #image_len is a bytes like object to be written in to the image stream 
             if not image_len:
                 print("no image stream was unpacked")
                 break
@@ -42,7 +43,7 @@ def main():
             gui_conn.flush() #flush content to a file...
             image_stream.seek(0) #change stream position to start of stream, 0
             gui_conn.write(image_stream.read())
-            image_stream.seek(0)
+            #image_stream.seek(0)
             image_stream.truncate()
         gui_conn.write(struct.pack('<L',0))
         
@@ -51,9 +52,7 @@ def main():
         gui_sock.close()
         rpi_client_conn.close()
         rpi_sock.close()
-    except KeyboardInterrupt as msg:
-        sys.exit(0)
-
+    
 
 if __name__ == "__main__":
     main()
