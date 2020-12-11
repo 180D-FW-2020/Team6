@@ -142,7 +142,7 @@ try:
 				text = "Detected!"
 				if notif_flag is False:
 				#for some reason this sends twice
-					#notify("Motion Detected from NightLight","Some movement was caught on the NightLight, check things out to make sure everything's okay :) - Your Nightlight","8312334058@txt.att.net")
+					notify("Motion Detected from NightLight","Some movement was caught on the NightLight, check things out to make sure everything's okay :) - Your Nightlight","8312334058@txt.att.net")
 					notif_flag = True
 
 			# draw the text and timestamp on the frame
