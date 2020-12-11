@@ -16,8 +16,8 @@ from email.message import EmailMessage
 #gui_client_socket = socket.socket()
 #gui_client_socket.connect(('0.0.0.0', 6667))  # ADD IP HERE
 
-_email = "nightlight.notifier@gmail.com" # sender email addr
-_pass =  "qjhlwonnufdgvdss" # sender email password
+_email = "" # sender email addr
+_pass =  "" # sender email password
 
 def notify(subject, content, to):
     print("Pushing notification")
