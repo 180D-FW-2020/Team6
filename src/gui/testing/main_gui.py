@@ -17,38 +17,43 @@ class GUI:
 	def __init__(self):
 
 		self.window = tk.Tk()
+		self.window.geometry("470x550")
+		self.window.configure(bg = "#4DA8DA")
 		
 		# Title of GUI
-		self.greeting = tk.Label(text="Night Light Baby Monitor")
+		self.greeting = tk.Label(text="Night Light Baby Monitor", font = "Helvetica 20 bold", bg = "#4DA8DA", fg = "#EEFBFB")
 		self.greeting.pack(fill=tk.BOTH)
-		self.app = tk.Frame(self.window, bg = "black")
+		self.app = tk.Frame(self.window)
 		self.app.pack()
 		
 		# Showing the action in the display
-		self.lmain = tk.Label(self.app, bg = "white")
+		self.lmain = tk.Label(self.app)
 		self.lmain.pack()
 		
 		# Setting the main display
-		self.lmain.configure(text = "How can I help you?", justify = "center", font = "Helvetica 20 bold", bg = "white")
+		self.lmain.configure(text = "How can I help you?", justify = "center", font = "Helvetica 20 bold", bg = "#4DA8DA", fg = "#EEFBFB")
 		
 		# Showing the button in the display
 		self.button_frame = tk.Frame(self.window)
+		self.button_frame.configure(bg = "#4DA8DA")
 		self.button_frame.pack()
 
 		# Inserting a rounded button for MIC
-		self.loadimage = tk.PhotoImage(file = "mic2.png")
+		# self.loadimage = tk.PhotoImage(file = "mic2.png")
+		
 		# Creating buttons
-		self.button_a = tk.Button(self.button_frame, text = "Watch the baby", height = 5, bg = "blue", fg = "yellow", command = self.video_stream)
-		self.button_b = tk.Button(self.button_frame, text = "Play lullaby", height = 5, bg = "blue", fg = "yellow", command = self.handle_click_lullaby)
-		self.button_c = tk.Button(self.button_frame, text = "Hearing the baby", height = 5, bg = "blue", fg = "yellow", command = self.handle_click_send_audio)
-		self.button_d = tk.Button(self.button_frame, text = "Send Voice Message", image = self.loadimage, bg = "white", borderwidth = "0", compound = "bottom")
-		self.button_e = tk.Button(self.button_frame, text = "Quit", height = 5, bg = "blue", fg = "yellow", command = self.quit_the_program)
+		self.button_a = tk.Button(self.button_frame, text = "Watch the baby", font = "Helvetica 11 bold", width = 14, height = 5, bg = "#203647", fg = "#EEFBFB", command = self.video_stream)
+		self.button_b = tk.Button(self.button_frame, text = "Play lullaby", font = "Helvetica 11 bold", width = 14, height = 5, bg = "#203647", fg = "#EEFBFB", command = self.handle_click_lullaby)
+		self.button_c = tk.Button(self.button_frame, text = "Hearing the baby", font = "Helvetica 11 bold", width = 14, height = 5, bg = "#203647", fg = "#EEFBFB", command = self.handle_click_send_audio)
+		# self.button_d = tk.Button(self.button_frame, text = "Send Voice Message", image = self.loadimage, bg = "#203647",fg = "#EEFBFB", borderwidth = "0", compound = "bottom")
+		self.button_d = tk.Button(self.button_frame, text = "Quit", font = "Helvetica 11 bold", width = 14, height = 5, bg = "#203647", fg = "#EEFBFB", command = self.quit_the_program)
+		
 		
 		self.button_a.pack(side = tk.LEFT)
 		self.button_b.pack(side = tk.LEFT)
 		self.button_c.pack(side = tk.LEFT)
-		self.button_d.pack(side = tk.RIGHT)
-		self.button_e.pack(side = tk.LEFT)
+		# self.button_d.pack(side = tk.RIGHT)
+		self.button_d.pack(side = tk.LEFT)
 
 		# Video Streaming
 		# self.cap = cv2.VideoCapture(0)
@@ -75,6 +80,7 @@ class GUI:
 		# self.lmain.after(1, self.video_stream)
 	
 	def handle_click_lullaby(self):
+		self.new_window = tk.Toplevel(self.window)
 		self.lmain.configure(text = "Button send lullaby was clicked", justify = "center", font = "Helvetica 20 bold")
 		pub_cmd.publish(client, "lullaby1.mp3")
 	
