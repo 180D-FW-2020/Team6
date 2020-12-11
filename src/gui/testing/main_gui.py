@@ -67,6 +67,20 @@ class GUI:
 
 	# Event handlers
 	
+	def inserting_option(self):
+		# Later on will be change with the comforting baby action
+		self.option.insert(tk.END,"Option 1")
+		self.option.insert(tk.END,"Option 2")
+		self.option.insert(tk.END,"Option 3")
+		self.option.insert(tk.END,"Option 4")
+		self.option.insert(tk.END,"Option 5")
+	
+	# Send the command to our main processing
+	def get_scrollbar_command(self):
+		scrollbar_command = self.option.get('active')
+		print(scrollbar_command)
+
+
 	#Displaying Video Stream from own camera
 	def video_stream(self):
 		os.chdir("../../video_processing/stream_client")
@@ -81,6 +95,17 @@ class GUI:
 	
 	def handle_click_lullaby(self):
 		self.new_window = tk.Toplevel(self.window)
+		self.new_window.configure(bg = "#4DA8DA")
+		# Making a scroll bar display
+		self.scroll_bar = tk.Scrollbar(self.new_window)
+		self.option = tk.Listbox(self.new_window, bd = 0, bg = "#007CC7", fg = "#EEFBFB", font = "Helvetica 11 bold", yscrollcommand = self.scroll_bar.set)
+		self.inserting_option()
+		self.option.pack(side = tk.LEFT, fill = tk.BOTH)
+		self.scroll_bar.config(command = self.option.yview)
+		
+		self.select = tk.Button(self.new_window, text = "Select",bd = 0, bg = "#4DA8DA" , fg = "#EEFBFB", font = "Helvetica 11 bold" , command = self.get_scrollbar_command )
+		self.select.pack(fill = tk.BOTH)
+
 		self.lmain.configure(text = "Button send lullaby was clicked", justify = "center", font = "Helvetica 20 bold")
 		pub_cmd.publish(client, "lullaby1.mp3")
 	
