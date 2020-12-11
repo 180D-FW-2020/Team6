@@ -9,8 +9,33 @@ import imutils
 import time
 import cv2
 import numpy as np
+
+#notification
+import smtplib
+from email.message import EmailMessage
 #gui_client_socket = socket.socket()
 #gui_client_socket.connect(('0.0.0.0', 6667))  # ADD IP HERE
+
+_email = "nightlight.notifier@gmail.com" # sender email addr
+_pass =  "qjhlwonnufdgvdss" # sender email password
+
+def notify(subject, content, to):
+    print("Pushing notification")
+    msg = EmailMessage()
+    msg.set_content(content)
+    msg["subject"] = subject
+    msg["from"] = _email
+    msg["to"] = to 
+    
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.starttls()
+    server.login(_email, _pass)
+    server.send_message(msg)
+    server.quit()
+
+motion_reset_time = 5.0 #seconds
+minArea = 1000 #area of detection for motion detection trigger
+
 gui_sock = socket.socket()
 gui_sock.bind(('0.0.0.0',6667))
 gui_sock.listen(0)
@@ -30,9 +55,12 @@ connection = gui_sock.accept()[0].makefile('rb')
 try:
 	img = None
 	firstFrame = None
-	minArea = 1000
+	firstFrame_start = time.time()
+	
 	while True:
 		#print("running")
+
+
 		image_len = struct.unpack('<L',connection.read(struct.calcsize('<L')))[0]
 		if not image_len:
 			print("not image len")
@@ -71,6 +99,13 @@ try:
 		gray = cv2.GaussianBlur(gray, (21, 21), 0)
 
 		# if the first frame is None, initialize it
+		#grab firstFrame time
+		
+		firstFrame_end = time.time()
+		if firstFrame_end - firstFrame_start > motion_reset_time:
+			firstFrame_start = firstFrame_end
+			#print("resetting image")
+			firstFrame  = None
 		if firstFrame is None:
 			firstFrame = gray
 			continue
@@ -88,7 +123,9 @@ try:
 		cnts = imutils.grab_contours(cnts)
 
 		# loop over the contours
+		notif_flag = False
 		for c in cnts:
+
 			# if the contour is too small, ignore it
 			if cv2.contourArea(c) < minArea:
 				continue
@@ -97,6 +134,10 @@ try:
 			(x, y, w, h) = cv2.boundingRect(c)
 			cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 			text = "Detected!"
+			if notif_flag == False
+				#for some reason this sends twice
+				notify("Motion Detected from NightLight","Some movement was caught on the NightLight, check things out to make sure everything's okay :) - Your Nightlight","kouhenry@yahoo.com")
+				notif_flag = True
 
 		# draw the text and timestamp on the frame
 		cv2.putText(raw_frame, "Motion Status: {}".format(text), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)

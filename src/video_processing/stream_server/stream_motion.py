@@ -20,7 +20,7 @@ connection = server_socket.accept()[0].makefile('rb')
 try:
     img = None
     firstFrame = None
-    minArea = 1000
+    minArea = 10000
 
     #crib detection would go here
     #grab the first frame, convert into opencv type
