@@ -76,12 +76,23 @@ Note: Subject to change as project is implemented
 - [x] Create interface with buttons (Leondi)
 - [x] Add image display (Leondi)
 - [ ] Embed video stream functionality [IN PROGRESS]
-- [ ] Send and receive user commands with MQTT in event handlers [IN PROGRESS]
+- [x] Send and receive user commands with MQTT in event handlers (Leondi and Robert)
 
 **Task 6: IMU**
 - [x] Create classifiers for key baby actions (Denny)
-- [ ] Implement trigger on central processing to start gui and monitoring [IN PROGRESS]
+- [x] Implement notification in IMU (Denny)
 
 **Task 7: Voice Command** 
 - [x] Setup classifiers for voice commands (Leondi)
-- [ ] Implement event handlers as actions 
+- [ ] Implement event handlers as actions (Henry and Leondi)
+
+**Demo Setup and Run**
+Video:
+
+Play Lullaby:
+
+GUI:
+
+IMU:
+
+Voice Command:
