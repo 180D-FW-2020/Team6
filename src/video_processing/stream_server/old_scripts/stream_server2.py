@@ -5,8 +5,8 @@ from PIL import Image
 import matplotlib.pyplot as pl
 
 server_socket = socket.socket()
-#server_socket.bind(('192.168.1.239', 8000))  # ADD IP HERE
-server_socket.bind(('172.91.89.246',8000))
+server_socket.bind(('192.168.1.10', 8000))  # ADD IP HERE
+#server_socket.bind(('172.91.89.246',8000))
 server_socket.listen(0)
 
 # Accept a single connection and make a file-like object out of it
@@ -19,9 +19,11 @@ try:
         image_len = struct.unpack('<L', connection.read(struct.calcsize('<L')))[0]
         if not image_len:
             break
+        print(image_len)
         # Construct a stream to hold the image data and read the image
         # data from the connection
         image_stream = io.BytesIO()
+        #print(connection.read(image_len))
         image_stream.write(connection.read(image_len))
         # Rewind the stream, open it as an image with PIL and do some
         # processing on it

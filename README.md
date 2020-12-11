@@ -19,11 +19,12 @@ Note: Subject to change as project is implemented
 - Laptop/Screen
 - Phone for external command interface
 - Speaker and Microphone (separate)
+- IMU on RPi
 **Software**
 - Python Speech Library (Speech Recognition)
 - Python with OpenCV
 
-### Object Detection
+### Flip Detection
 - Accelerometer, gyroscope (6DOF) for IMU orientation and general movement
 - IMU measures motion and ports data to central processing, which compares with robust gesture classifiers to a certain tolerance.
 
@@ -44,14 +45,54 @@ Note: Subject to change as project is implemented
 
 ## Tasks
 **Task1:  Sound Processing**
-- [x] Filter target audio from background noise
-- [ ] Differentiate adult from baby cry
+- [x] Filter target audio from background noise (Denny)
+- [x] Server/Client audio saving (Denny)
+- [x] Semi- Real time audio play with server and client (Robert)
+- [x] Implement sound database with sound play on command (Robert)
+- [x] Send notifications on classified sounds (Robert)
+- [x] Create reliable sound classifier (Robert)
 
 **Task 2: Video** 
-- [ ] Detect movement outside of a boundary
+- [x] Detect movement outside of a boundary (Henry)
+- [x] Implement server client code for streaming video (Henry)
+- [x] Motion processing for video stream on server (Henry)
+- [ ] Classifier processing on client (offload to Rpi)
+- [ ] Crib Detection
 - [ ] Detect pose of the baby relative to crib (sleeping/active)
+- [x] End to end video stream connection from rpi to gui (Henry and Denny)
 
 **Task 3: Communications**
-- [ ] Send information (alerts), Receive commands
-- [ ] Record video
-- [ ] Transmit/Receive Audio files
+- [x] Send information (alerts), Receive commands (Leondi)
+- [x] Transmit/Receive Audio files (Robert)
+- [x] Send play lullaby command (Robert)
+
+**Task 4: Central Processing**
+- [x] Create webserver and ping clients (Robert, Denny, and Henry)
+- [x] Implement threading for multiple servers with TCP (Denny and Henry)
+- [x] Transmit video from RPI client to GUI laptop via server (Henry)
+- [ ] Create main process to run threads [IN PROGRESS]
+
+**Task 5: GUI**
+- [x] Create interface with buttons (Leondi)
+- [x] Add image display (Leondi)
+- [ ] Embed video stream functionality [IN PROGRESS]
+- [x] Send and receive user commands with MQTT in event handlers (Leondi and Robert)
+
+**Task 6: IMU**
+- [x] Create classifiers for key baby actions (Denny)
+- [x] Implement notification in IMU (Denny)
+
+**Task 7: Voice Command** 
+- [x] Setup classifiers for voice commands (Leondi)
+- [ ] Implement event handlers as actions (Henry and Leondi)
+
+**Demo Setup and Run**
+Video:
+
+Play Lullaby:
+
+GUI:
+
+IMU:
+
+Voice Command:
