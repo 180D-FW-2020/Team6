@@ -75,7 +75,7 @@ class Voice_Commmand:
 
     def start_action(self):
         if(self.clarify == False):
-            print('How can I help you? ')
+            print('How can I help you? ***Say play song***')
             self.convert_audio_to_txt()
             self.command = self.text
             self.clarify = True
