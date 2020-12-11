@@ -1,8 +1,8 @@
 import io
 import socket
 import struct
-from PIL import Image
-import matplotlib.pyplot as pl
+#from PIL import Image
+#import matplotlib.pyplot as pl
 import argparse
 import datetime
 import imutils
