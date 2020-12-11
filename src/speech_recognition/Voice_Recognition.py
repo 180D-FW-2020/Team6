@@ -30,6 +30,9 @@ class Voice_Commmand:
             self.do_action(1)
         elif (self.find_substring('not',cmnd) and self.find_substring('listen',cmnd)):
             self.do_action(2)
+
+        elif (self.find_substring('stop sound',cmnd)):
+            self.do_action(4)
         else:
             print('There is no such command here.')
             self.processing()
@@ -41,6 +44,8 @@ class Voice_Commmand:
             print ('Action 2')
         elif (type_num == 3):
             print ('Action 3')
+        elif (type_num == 4):
+            print ('Action 4')
 
 
     def convert_audio_to_txt(self):
