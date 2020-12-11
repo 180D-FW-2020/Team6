@@ -3,8 +3,9 @@
 
 import sys
 import speech_recognition as sr
+import pub_cmd
 
-
+client = pub_cmd.connect_mqtt()
 
 class Voice_Commmand:
     def __init__(self,filename):
@@ -30,6 +31,9 @@ class Voice_Commmand:
             self.do_action(1)
         elif (self.find_substring('not',cmnd) and self.find_substring('listen',cmnd)):
             self.do_action(2)
+
+        elif (self.find_substring('play second song',cmnd)):
+            self.do_action(4)
         else:
             print('There is no such command here.')
             self.processing()
@@ -41,6 +45,9 @@ class Voice_Commmand:
             print ('Action 2')
         elif (type_num == 3):
             print ('Action 3')
+        elif (type_num == 4):
+            print ('Action 4')
+            pub_cmd.publish(client,"lullaby2.mp3")
 
 
     def convert_audio_to_txt(self):
@@ -68,7 +75,7 @@ class Voice_Commmand:
 
     def start_action(self):
         if(self.clarify == False):
-            print('How can I help you? ')
+            print('How can I help you? ***Say play song***')
             self.convert_audio_to_txt()
             self.command = self.text
             self.clarify = True
