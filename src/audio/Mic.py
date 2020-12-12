@@ -79,11 +79,12 @@ class Microphone:
         rms = (sum_squares / count) ** 0.5
         return rms * 1000
 
+    """
     def listen(self):
         thread = threading.Thread(target=self._listen)
         thread.start()
-
-    def _listen(self):
+    """
+    def listen(self):
         self.LISTEN = True
         while self.LISTEN:
             try:
@@ -139,7 +140,6 @@ class Microphone:
         print("... Done recording")
 
     def save_wav(self, frames, fname):
-        print("Saving")
         wf = wave.open(fname, 'wb')
         wf.setnchannels(self.channels)
         wf.setsampwidth(self.p.get_sample_size(FORMAT))

@@ -12,8 +12,7 @@ import cv2
 import numpy as np
 
 server_socket = socket.socket()
-#server_socket.bind(('192.168.1.239', 8000))  #Local IP
-server_socket.bind(('192.168.1.10',80))	  #Public IP
+server_socket.bind(('192.168.1.239', 8000))  #Local IP
 server_socket.listen(0)
 
 # Accept a single connection and make a file-like object out of it
@@ -21,7 +20,13 @@ connection = server_socket.accept()[0].makefile('rb')
 try:
     img = None
     firstFrame = None
-    minArea = 1000
+    minArea = 10000
+
+    #crib detection would go here
+    #grab the first frame, convert into opencv type
+    #look for rectangular outline of a particular size. if found, mark outline on camera
+    #go into motion detection sequence 
+
     while True:
         # Read the length of the image as a 32-bit unsigned int. If the
         # length is zero, quit the loop
@@ -42,6 +47,10 @@ try:
         if raw_frame is None:
                 break
         text = "None Detected"
+        
+
+
+        #drawing crib...
         height, width = raw_frame.shape[0], raw_frame.shape[1]
         target_upper_left = (((width//2)-200),((height//2)-200)) #setting up coords for target area
         target_lower_right = (((width//2)+200),((height//2)+200))
