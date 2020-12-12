@@ -34,6 +34,8 @@ class Voice_Commmand:
 
         elif (self.find_substring('play second song',cmnd)):
             self.do_action(4)
+        elif (self.find_substring('play first song',cmnd)):
+            self.do_action(5)
         else:
             print('There is no such command here.')
             self.processing()
@@ -48,6 +50,9 @@ class Voice_Commmand:
         elif (type_num == 4):
             print ('Action 4')
             pub_cmd.publish(client,"lullaby2.mp3")
+        elif (type_num == 5):
+            print ('Action 5')
+            pub_cmd.publish(client,"lullaby1.mp3")
 
 
     def convert_audio_to_txt(self):
@@ -75,7 +80,7 @@ class Voice_Commmand:
 
     def start_action(self):
         if(self.clarify == False):
-            print('How can I help you? ***Say play song***')
+            print('How can I help you? ***Say: "play second song" OR Say: "play first song"***')
             self.convert_audio_to_txt()
             self.command = self.text
             self.clarify = True
