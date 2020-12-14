@@ -107,7 +107,12 @@ class GUI:
 		self.lmain.imgtk = imgtk
 		self.lmain.configure(image=imgtk)
 		self.lmain.after(1, self.video_stream)
+<<<<<<< HEAD
 
+=======
+		
+	
+>>>>>>> 11b230c6de189976a082b8a8cf47383bc7315072
 	def handle_click_lullaby(self):
 		self.new_window = tk.Toplevel(self.window)
 		self.new_window.configure(bg="#4DA8DA")

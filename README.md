@@ -56,7 +56,7 @@ Note: Subject to change as project is implemented
 - [x] Detect movement outside of a boundary (Henry)
 - [x] Implement server client code for streaming video (Henry)
 - [x] Motion processing for video stream on server (Henry)
-- [ ] Classifier processing on client (offload to Rpi)
+- [x] Classifier processing on client (offload to Rpi) (Henry)
 - [ ] Crib Detection
 - [ ] Detect pose of the baby relative to crib (sleeping/active)
 - [x] End to end video stream connection from rpi to gui (Henry and Denny)
@@ -84,7 +84,7 @@ Note: Subject to change as project is implemented
 
 **Task 7: Voice Command** 
 - [x] Setup classifiers for voice commands (Leondi)
-- [ ] Implement event handlers as actions (Henry and Leondi)
+- [x] Implement event handlers as actions (Henry and Leondi)
 
 **Demo Setup and Run**
 Video:
