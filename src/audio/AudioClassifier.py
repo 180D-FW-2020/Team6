@@ -11,7 +11,7 @@ from tensorflow import keras
 
 sys.path.append("../") 
 import notification  # pylint: disable=import-error
-user_email = ""
+user_email = "robertrenzorudio@gmail.com"
 
 class AudioClassifier:
     """
@@ -48,7 +48,7 @@ class AudioClassifier:
         self.model = keras.models.load_model(model_path)
         self.in_dim = self.model.input_shape
         self.r, self.c, self.ch = self.in_dim[1:]
-        self.le_mappings = {0: "", 1: "enviroment"}
+        self.le_mappings = {0: 'animals', 1: 'baby', 2: 'exterior', 3: 'interior', 4: 'nature'}
         
     def fit(self, X, y):
         pass
@@ -82,9 +82,10 @@ class AudioClassifier:
 
         label = self.model.predict(X)
         clas = np.argmax(label, axis=-1)
+        clas = self.le_mappings[clas[0]]
         prob = np.amax(label / np.sum(label) * 100, axis=-1)[0]
 
-        msg = f"Noise came from {clas} with %{prob:.2f}"
+        msg = f"Noise came from {clas} with %{prob:.2f} probability"
         self.push_notification(msg)
     
     def push_notification(self, msg):

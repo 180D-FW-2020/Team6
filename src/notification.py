@@ -1,8 +1,8 @@
 import smtplib
 from email.message import EmailMessage
 
-_email = "" # sender email addr
-_pass =  "" # sender email password
+_email = "nightlight.notifier@gmail.com"
+_pass =  "qjhlwonnufdgvdss"
 
 def notify(subject, content, to):
     print("Pushing notification")
