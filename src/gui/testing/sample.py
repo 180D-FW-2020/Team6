@@ -77,13 +77,13 @@ class GUI:
 
 	#Displaying Video Stream from own camera
 	def video_stream(self):
-		# _,frame = self.cap.read()
-		# cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
-		# img = Image.fromarray(cv2image)
-		# imgtk = ImageTk.PhotoImage(image=img)
-		# self.lmain.imgtk = imgtk
-		# self.lmain.configure(image=imgtk)
-		# self.lmain.after(1, self.video_stream)
+		_,frame = self.cap.read()
+		cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+		img = Image.fromarray(cv2image)
+		imgtk = ImageTk.PhotoImage(image=img)
+		self.lmain.imgtk = imgtk
+		self.lmain.configure(image=imgtk)
+		self.lmain.after(1, self.video_stream)
 		
 	
 	def handle_click_lullaby(self):
