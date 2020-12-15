@@ -72,9 +72,9 @@ class GUI:
         self.audio_conn = AudioClient.AudioClient()
         self.audio_conn.start()
         self.listen = True
-	self.audio_stat = "On"
-	thread = threading.Thread(target=self.audio_conn.recv)
-	thread.start()
+        self.audio_stat = "On"
+        thread = threading.Thread(target=self.audio_conn.recv)
+        thread.start()
 
         self.window.mainloop()  # runs application
 
@@ -172,13 +172,12 @@ class GUI:
                              justify="center", font="Helvetica 20 bold")
 
     def handle_click_listen(self):
-	self.audio_stat = "On" if self.audio_stat == "Off" else "Off"
-        self.lmain.configure(text="Listening " + self.audio_stat,
-                             justify="center", font="Helvetica 20 bold")
-        
+        self.audio_stat = "On" if self.audio_stat == "Off" else "Off"
+        self.lmain.configure(text="Listening " + self.audio_stat, justify="center", font="Helvetica 20 bold")
+
         self.listen = not self.listen
-      	print(self.listen)
-	self.audio_conn.write = self.listen
+        print(self.listen)
+        self.audio_conn.write = self.listen
 
     def quit_the_program(self):
         os.remove("notification.txt")
