@@ -10,6 +10,7 @@ import io
 import cv2
 import sys
 import threading
+import os
 import sub_cmd
 import pub_cmd
 
@@ -38,12 +39,7 @@ class GUI:
         self.lmain.pack()
 
         # Setting the main display
-        if sub_cmd.get_mes() == None:
-            txt = "How can I help you?"
-        else:
-            txt = sub_cmd.get_mes()
-        self.lmain.configure(text=txt, justify="center",
-                             font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB")
+		self.main_display()
 
         # Showing the button in the display
         self.button_frame = tk.Frame(self.window)
@@ -86,8 +82,18 @@ class GUI:
         #video_feed.pack()
 
     # Event handlers
-
-    def inserting_option(self):
+	def main_display(self):
+		# Setting the main display
+		try:
+			self.txt = open("notification.txt", "r")
+			self.txt = self.txt.readline()
+		except:
+			self.txt = "How can I help you?"
+		self.lmain.configure(text=self.txt, justify="center",
+		                     font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB")
+		self.lmain.after(1000, self.main_display)
+    
+	def inserting_option(self):
         self.option.insert(tk.END, "First Lullaby")
         self.option.insert(tk.END, "Second Lullaby")
         self.option.insert(tk.END, "Third Lullaby")
@@ -171,9 +177,11 @@ class GUI:
             thread.start()
 
     def quit_the_program(self):
+		os.remove("notification.txt")
         sys.exit()
 
 
 client = pub_cmd.connect_mqtt()
 sub_client = sub_cmd.connect_mqtt()
 g = GUI()
+os.remove("notification.txt")
