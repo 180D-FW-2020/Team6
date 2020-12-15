@@ -2,7 +2,7 @@ import pyaudio
 import socket
 
 class MicClient:
-    def __init__(self, ip="3.15.16.101", port=2000):
+    def __init__(self, ip="3.15.16.101", port=3000):
         self.ip = ip 
         self.port = port
         self.client_conn= socket.socket(socket.AF_INET, socket.SOCK_STREAM)   

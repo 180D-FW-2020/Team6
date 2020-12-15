@@ -71,8 +71,8 @@ class GUI:
         # Audio Streaming
         self.audio_conn = AudioClient.AudioClient()
         self.audio_conn.start()
-        self.listen = True
-        self.audio_stat = "On"
+        self.listen = False
+        self.audio_stat = "Off"
         thread = threading.Thread(target=self.audio_conn.recv)
         thread.start()
 
