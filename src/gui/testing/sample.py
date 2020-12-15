@@ -83,10 +83,10 @@ class GUI:
 
 	def main_display(self):
 		# Setting the main display
-		self.txt = open("notification.txt", "r")
-		self.txt = self.txt.readline()
-		filesize = os.path.getsize("notification.txt")
-		if filesize == 0 :
+		try:	
+			self.txt = open("notification.txt", "r")
+			self.txt = self.txt.readline()
+		except:
 			self.txt = "How can I help you?"
 		self.lmain.configure(text=self.txt, justify="center",
 		                     font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB")
@@ -178,11 +178,11 @@ class GUI:
 		# 	thread.start()
 
 	def quit_the_program(self):
-		# os.remove("notification.txt")
+		os.remove("notification.txt")
 		sys.exit()
 
 
 client = pub_cmd.connect_mqtt()
 sub_client = sub_cmd.connect_mqtt()
 g = GUI()
-# os.remove("notification.txt")
+os.remove("notification.txt")
