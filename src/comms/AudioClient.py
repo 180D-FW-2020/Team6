@@ -3,11 +3,11 @@ import socket
 import wave
 from datetime import datetime
 
-BUFFERSIZE = 2048
 FORMAT = pyaudio.paInt16
 CHANNELS = 1 
 RATE = 16000
 CHUNK = 1024
+BUFFERSIZE = CHUNK
 sample_size = pyaudio.get_sample_size(FORMAT)
 SAVE_PATH = "../../recordings/audio/"
 
