@@ -13,8 +13,10 @@ import threading
 import sub_cmd
 import pub_cmd
 
-# sys.path.append("../../comms")
-# import AudioClient	# pylint: disable=import-error
+sys.path.append("../../comms")
+import AudioClient	# pylint: disable=import-error
+
+#img_speaker =  tk.PhotoImage()
 
 class GUI:
 	def __init__(self):
@@ -60,7 +62,7 @@ class GUI:
 		                          width=14, height=5, bg="NAVY BLUE", fg="#EEFBFB", command=self.handle_click_listen)
 		# self.button_d = tk.Button(self.button_frame, text = "Send Voice Message", image = self.loadimage, bg = "#203647",fg = "#EEFBFB", borderwidth = "0", compound = "bottom")
 		self.button_d = tk.Button(self.button_frame, text="Quit", font="Helvetica 11 bold",
-		                          width=14, height=5, bg="BLUE NAVY", fg="#EEFBFB", command=self.quit_the_program)
+		                          width=14, height=5, bg="NAVY BLUE", fg="#EEFBFB", command=self.quit_the_program)
 
 		self.button_a.pack(side=tk.LEFT, fill=tk.BOTH)
 		self.button_b.pack(side=tk.LEFT, fill=tk.BOTH)
@@ -71,9 +73,9 @@ class GUI:
 		self.cap = cv2.VideoCapture(0)
 
 		# Audio Streaming
-		# self.audio_conn = AudioClient.AudioClient()
-		# self.audio_conn.start()
-		# self.listen = False
+		self.audio_conn = AudioClient.AudioClient()
+		self.audio_conn.start()
+		self.listen = False
 
 		self.window.mainloop()  # runs application
 
@@ -111,9 +113,9 @@ class GUI:
 	def stop_sound(self):	
 		pub_cmd.publish(client, "stop")
 
-	# def listen_cmd(self):
-	# 	while self.listen:
-	# 		self.audio_conn.recv()
+	def listen_cmd(self):
+		while self.listen:
+			self.audio_conn.recv()
 	
 	#Displaying Video Stream from own camera
 	def video_stream(self):
@@ -163,10 +165,10 @@ class GUI:
 		self.lmain.configure(text="Button listen was clicked",
 		                     justify="center", font="Helvetica 20 bold")
 		
-		# self.listen = not self.listen
-		# if self.listen:
-		# 	thread = threading.Thread(target=self.listen_cmd)
-		# 	thread.start()
+		self.listen = not self.listen
+		if self.listen:
+			thread = threading.Thread(target=self.listen_cmd)
+			thread.start()
 
 	def quit_the_program(self):
 		sys.exit()

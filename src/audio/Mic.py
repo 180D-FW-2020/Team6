@@ -17,12 +17,13 @@ import preprocess
 import pyaudio
 import struct
 import sys
+import time
 import threading
 import wave
 from datetime import datetime
 
 sys.path.append("../")
-from comms import AudioServer # pylint: disable=import-error
+from comms import MicClient # pylint: disable=import-error
 
 # Load in neural network
 NN_PATH = "../data/nnmv2.1.h5"
@@ -35,12 +36,12 @@ swidth = 2
 MAX_REC_SECONDS = 60
 SAVE_PATH = "../../recordings/audio/"
 
-audio_s = AudioServer.AudioServer()
+audio_s = MicClient.MicClient()
 audio_s.start()
 
 class Microphone:
     # record_second is how long we want to record the sound
-    def __init__(self, chunk=1024, channels=1, record_second=7, rate=16000, rms_thresh=20):
+    def __init__(self, chunk=1024, channels=1, record_second=7, rate=16000, rms_thresh=20, sl=True):
         self.chunk = chunk
         self.channels = channels
         self.record_second = record_second
@@ -49,6 +50,7 @@ class Microphone:
         self.stream = None
         self.rms_thresh = rms_thresh
         self.LISTEN = True
+        self.sl = sl
 
     def start(self):
         self.p = pyaudio.PyAudio()
@@ -91,19 +93,25 @@ class Microphone:
                 data = self.stream.read(self.chunk)
             except:
                 continue
+
+            audio_s.send(data)
             rms = self.rms(data)
-            if rms > self.rms_thresh:
+
+            if rms > self.rms_thresh and self.sl:
+                #audio_s.send(b"RECORD")
+                #thread = threading.Thread(target=self.timer)
+                #thread.start()
                 self.record()
-                
+    
     def record(self):
         print("Recording audio ...")
 
         sec = self.rate / self.chunk
-        l = int(sec * self.record_second)
-        m = int(sec * MAX_REC_SECONDS)
+        sample_len = int(sec * self.record_second)
+        max_len = int(sec * MAX_REC_SECONDS)
 
         frames = []
-        for _ in range(0, l):
+        for _ in range(sample_len):
             try:
                 data = self.stream.read(self.chunk)
             except:
@@ -117,32 +125,34 @@ class Microphone:
         mfcc = preprocess.audio_mfcc(SAVE_PATH + "analyze.wav", 128)
         ac.predict(mfcc)
 
-        # Continue recording if noise is still deteced   
-        i = sec * 2   
-        while i < l:
+        for _ in range(max_len):
             try:
                 data = self.stream.read(self.chunk)
             except:
                 continue
 
             audio_s.send(data)
-
-            rms = self.rms(data)
-            if rms > self.rms_thresh:
-                l += sec
-            
-            if i > m:
-                break
-
-            i += 1
+            frames.append(data)
     
-        audio_s.send(b"done")
         print("... Done recording")
 
+        now = datetime.now()
+        now_str = now.strftime("%d-%m-%Y-%H:%M:%S.wav")
+        self.save_wav(frames, SAVE_PATH + now_str)
+    
+    """
+    def timer(self):
+        self.sl = False
+        time.sleep(MAX_REC_SECONDS)
+        self.sl = True
+    """
+
     def save_wav(self, frames, fname):
+        print("Saving...")
         wf = wave.open(fname, 'wb')
         wf.setnchannels(self.channels)
         wf.setsampwidth(self.p.get_sample_size(FORMAT))
         wf.setframerate(self.rate)
         wf.writeframes(b''.join(frames))
         wf.close()
+        print("...Saved")
