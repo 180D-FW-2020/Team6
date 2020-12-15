@@ -10,11 +10,12 @@ import io
 import cv2
 import sys
 import threading
+import os
 import sub_cmd
 import pub_cmd
 
-sys.path.append("../../comms")
-import AudioClient	# pylint: disable=import-error
+# sys.path.append("../../comms")
+# import AudioClient	# pylint: disable=import-error
 
 #img_speaker =  tk.PhotoImage()
 
@@ -38,13 +39,7 @@ class GUI:
 		self.lmain.pack()
 
 		# Setting the main display
-		if sub_cmd.get_mes() == None:
-			txt = "How can I help you?"
-		else:
-			txt = sub_cmd.get_mes()
-		self.lmain.configure(text=txt, justify="center",
-		                     font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB")
-
+		self.main_display()
 		# Showing the button in the display
 		self.button_frame = tk.Frame(self.window)
 		self.button_frame.configure(bg="#4DA8DA")
@@ -55,9 +50,9 @@ class GUI:
 
 		# Creating buttons
 		self.button_a = tk.Button(self.button_frame, text="Watch the baby", font="Helvetica 11 bold",
-		                          width=14, height=5, bg="NAVY BLUE", fg="#EEFBFB", command=self.video_stream)
+		                          width=14, height=5, bg="BLUE", fg="#EEFBFB", command=self.video_stream)
 		self.button_b = tk.Button(self.button_frame, text="Play lullaby", font="Helvetica 11 bold",
-		                          width=14, height=5, bg="NAVY BLUE", fg="#EEFBFB", command=self.handle_click_lullaby)
+		                          width=14, height=5, bg="BLUE", fg="#EEFBFB", command=self.handle_click_lullaby)
 		self.button_c = tk.Button(self.button_frame, text="Listen", font="Helvetica 11 bold",
 		                          width=14, height=5, bg="NAVY BLUE", fg="#EEFBFB", command=self.handle_click_listen)
 		# self.button_d = tk.Button(self.button_frame, text = "Send Voice Message", image = self.loadimage, bg = "#203647",fg = "#EEFBFB", borderwidth = "0", compound = "bottom")
@@ -73,9 +68,9 @@ class GUI:
 		self.cap = cv2.VideoCapture(0)
 
 		# Audio Streaming
-		self.audio_conn = AudioClient.AudioClient()
-		self.audio_conn.start()
-		self.listen = False
+		# self.audio_conn = AudioClient.AudioClient()
+		# self.audio_conn.start()
+		# self.listen = False
 
 		self.window.mainloop()  # runs application
 
@@ -84,6 +79,18 @@ class GUI:
 		#image_vid = ImageTk.PhotoImage(pilfile)
 		#video_feed = tk.Label(image=image_vid)
 		#video_feed.pack()
+
+
+	def main_display(self):
+		# Setting the main display
+		self.txt = open("notification.txt", "r")
+		self.txt = self.txt.readline()
+		filesize = os.path.getsize("notification.txt")
+		if filesize == 0 :
+			self.txt = "How can I help you?"
+		self.lmain.configure(text=self.txt, justify="center",
+		                     font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB")
+		self.lmain.after(1000, self.main_display)
 
 	# Event handlers
 
@@ -113,9 +120,9 @@ class GUI:
 	def stop_sound(self):	
 		pub_cmd.publish(client, "stop")
 
-	def listen_cmd(self):
-		while self.listen:
-			self.audio_conn.recv()
+	# def listen_cmd(self):
+	# 	while self.listen:
+	# 		self.audio_conn.recv()
 	
 	#Displaying Video Stream from own camera
 	def video_stream(self):
@@ -165,15 +172,17 @@ class GUI:
 		self.lmain.configure(text="Button listen was clicked",
 		                     justify="center", font="Helvetica 20 bold")
 		
-		self.listen = not self.listen
-		if self.listen:
-			thread = threading.Thread(target=self.listen_cmd)
-			thread.start()
+		# self.listen = not self.listen
+		# if self.listen:
+		# 	thread = threading.Thread(target=self.listen_cmd)
+		# 	thread.start()
 
 	def quit_the_program(self):
+		# os.remove("notification.txt")
 		sys.exit()
 
 
 client = pub_cmd.connect_mqtt()
 sub_client = sub_cmd.connect_mqtt()
 g = GUI()
+# os.remove("notification.txt")

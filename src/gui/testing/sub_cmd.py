@@ -14,6 +14,7 @@ text = None
 
 
 def connect_mqtt() -> mqtt:
+    global text
     def on_connect(client, userdata, flags, rc):
         print(f"Connection return code: {rc}")
         subscribe(client)
@@ -21,12 +22,15 @@ def connect_mqtt() -> mqtt:
     def on_disconnect(client, userdata, rc):
         print(f"Disconnected with return code: {rc}") 
     
-    def on_message(client, userdata, message):
-        global text
-        text = message.payload.decode()
+    def on_message(client, userdata, message, text=text):
+        f = open("notification.txt", "w+")
+        new_message = message.payload.decode()
+        if(text != new_message and new_message != None):
+            text = new_message
         print(f"Received message: {text} on topic {message.topic} with QoS {message.qos})")
-        print ("here:")
-        print (get_mes())
+        f.write(text)
+
+
 
     client = mqtt.Client()
     client.on_connect = on_connect
@@ -39,18 +43,12 @@ def connect_mqtt() -> mqtt:
 def subscribe(client: mqtt):
     client.subscribe(topic)
 
-def get_mes():
-    global text
-    return text
-
-
-# def run():
-#     client = connect_mqtt()
-#     subscribe(client)
-#     client.loop_forever()
+def run():
+    client = connect_mqtt()
+    client.loop_forever()
 
 
 
-# if __name__ == '__main__':
-#     run()
+if __name__ == '__main__':
+    run()
 
