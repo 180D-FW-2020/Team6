@@ -456,12 +456,12 @@ while True:
     #Note Gyro Has drift
 
     if ACCz > threshold_accel_z:
-        if upwards_cycle_count <= 8:
+        if upwards_cycle_count <= 20:
             upwards_cycle_count = upwards_cycle_count + 1
             va1 = val1 + ACCz/1000
         else:
             upwards_cycle_count = 0
-            publisher.publish(client, "Sudden Flip Detected!! Inspect values: " +str(val1/8))
+            publisher.publish(client, "Sudden Flip Detected!!")
             #print("Upwards Lift Detected: " +str(ACCz/1000))
     else:
         upwards_cycle_count = 0
@@ -476,11 +476,11 @@ while True:
   #  else:
     #    forwards_cycle_count = 0
     if CFangleX < 80  and  CFangleX > 0:
-        if standsup_cycle_count <= 6:
+        if standsup_cycle_count <= 20:
             standsup_cycle_count = standsup_cycle_count + 1
             val = val + CFangleX
         else:
             standsup_cycle_count = 0
-            publisher.publish(client, "Baby stand up!!!! Inspect values:" +str(val/6))
+            publisher.publish(client, "Baby stand up!!!!")
     
 
