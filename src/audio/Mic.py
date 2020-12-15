@@ -135,10 +135,10 @@ class Microphone:
             frames.append(data)
     
         print("... Done recording")
-        
+
         now = datetime.now()
         now_str = now.strftime("%d-%m-%Y-%H:%M:%S.wav")
-        self.save_wav(frames, now_str)
+        self.save_wav(frames, SAVE_PATH + now_str)
     
     """
     def timer(self):

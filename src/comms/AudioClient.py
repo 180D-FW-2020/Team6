@@ -38,21 +38,20 @@ class AudioClient:
     def recv(self):
         #frames = []
         temp = None
-        while True:
-            data = self.client_conn.recv(BUFFERSIZE)
+        data = self.client_conn.recv(BUFFERSIZE)
 
-            while len(data) < BUFFERSIZE:
-                temp = self.client_conn.recv(BUFFERSIZE - len(data))
-                data += temp
-            
-            """
-            if len(data) <= 4 and len(data) != 0:
-                self.save_wav(frames)
-                return
-            """
-            self.stream.write(data)
+        while len(data) < BUFFERSIZE:
+            temp = self.client_conn.recv(BUFFERSIZE - len(data))
+            data += temp
+        
+        """
+        if len(data) <= 4 and len(data) != 0:
+            self.save_wav(frames)
+            return
+        """
+        self.stream.write(data)
 
-            #frames.append(data)
+        #frames.append(data)
 
     def save_wav(self, frames):
         print("Saving")
@@ -66,7 +65,7 @@ class AudioClient:
         wf.writeframes(b''.join(frames))
         wf.close()
 
-
+"""
 def main():
     AC = AudioClient()
     AC.start()
@@ -74,3 +73,4 @@ def main():
         AC.recv()
 if __name__ == "__main__":
     main()
+"""

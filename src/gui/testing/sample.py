@@ -16,6 +16,8 @@ import pub_cmd
 sys.path.append("../../comms")
 import AudioClient	# pylint: disable=import-error
 
+#img_speaker =  tk.PhotoImage()
+
 class GUI:
 	def __init__(self):
 
