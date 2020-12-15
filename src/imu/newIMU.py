@@ -109,6 +109,7 @@ KFangleY = 0.0
 upwards_cycle_count = 0
 threshold_accel_z = 8360 #mm/(ss)
 upwards_cycle_cap = 9 #cycles
+initial_cycle_count = 0
 
 #forwards push
 standsup_cycle_count = 0
@@ -475,12 +476,20 @@ while True:
             #print("Forward Push Detected: " +str(ACCx/1000))
   #  else:
     #    forwards_cycle_count = 0
-    if CFangleX < 80  and  CFangleX > 0:
+    if CFangleX < 90  and  CFangleX > 55:
         if standsup_cycle_count <= 20:
             standsup_cycle_count = standsup_cycle_count + 1
             val = val + CFangleX
         else:
             standsup_cycle_count = 0
             publisher.publish(client, "Baby stand up!!!!")
+            
+    if kalmanX >170 and kalmanX <180:
+        if initial_cycle_count <= 10:
+            initial_cycle_count = initial_cycle_count +1
+        else:
+            initial_cycle_count = 0
+            publisher.publish(client, "Baby initial state. GOOD!")
+    
     
 
