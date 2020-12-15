@@ -456,7 +456,7 @@ while True:
     #Note Gyro Has drift
 
     if ACCz > threshold_accel_z:
-        if upwards_cycle_count <= 20:
+        if upwards_cycle_count <= 5:
             upwards_cycle_count = upwards_cycle_count + 1
             va1 = val1 + ACCz/1000
         else:
