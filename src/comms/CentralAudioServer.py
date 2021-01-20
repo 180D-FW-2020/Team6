@@ -29,8 +29,11 @@ def redirect():
     
     while True:
         closed = []
+
+        # Read from RPi (AUDIO)
         data = AUDIO.recv(BUFFERSIZE)
     
+        # Redirect data from AUDIO to CLIENTS
         mutex.acquire()
         for client in CLIENTS:
             try:
@@ -38,10 +41,7 @@ def redirect():
             except:
                 closed.append(client)
 
-
-        print(closed)
-        print(CLIENTS)
-        # Drop closed connections       
+        # Dropping closed connections       
         for drop in closed:
             CLIENTS.remove(drop)
 
