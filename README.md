@@ -46,11 +46,12 @@ Note: Subject to change as project is implemented
 ## Tasks
 **Task1:  Sound Processing**
 - [x] Filter target audio from background noise (Denny)
-- [x] Server/Client audio saving (Denny)
-- [x] Semi- Real time audio play with server and client (Robert)
-- [x] Implement sound database with sound play on command (Robert)
-- [x] Send notifications on classified sounds (Robert)
+- [x] Noise detection (Robert)
+- [x] Server/Client audio saving (Robert)
+- [x] Semi - Real time audio play with server and client (Robert)
 - [x] Create reliable sound classifier (Robert)
+- [x] Send notifications on classified sounds (Robert)
+- [x] Implement sound database with sound play on command (Robert)
 
 **Task 2: Video** 
 - [x] Detect movement outside of a boundary (Henry)
