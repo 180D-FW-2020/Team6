@@ -6,7 +6,6 @@ import preprocess
 import pyaudio
 import signal
 import struct
-import sys
 import wave
 from datetime import datetime
 
@@ -20,7 +19,7 @@ stream = None
 
 # Recording constants.
 SEC = RATE / CHUNK
-MAX_REC_SECONDS = 7
+MAX_REC_SECONDS = 60
 
 # RMS constants.
 SWIDTH = 2
@@ -42,7 +41,7 @@ if os.name == 'nt':
     SAVEPATH = "AudioDb\\"
 else:
     SAVEPATH = "AudioDb/"
-RECORD = False
+RECORD = True
 
 def save_wav(frames, fname):
     global p
@@ -90,7 +89,7 @@ def record():
 
     # Record for neural net.
     num_chunk = int(SEC * 7)
-    for i in range(num_chunk):
+    for _ in range(num_chunk):
         try:
             data = stream.read(CHUNK)
             conn.send(data)
@@ -116,7 +115,7 @@ def record():
     if RECORD:
         now = datetime.now()
         now_str = now.strftime("%d-%m-%Y-%H:%M:%S.wav")
-        save_wav(frames, now_str)
+        save_wav(frames, SAVEPATH + now_str)
 
     print("... Done recording")
 
