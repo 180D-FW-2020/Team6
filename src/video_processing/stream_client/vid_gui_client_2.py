@@ -37,7 +37,7 @@ minArea = 1000 #area of detection for motion detection trigger
 motion_detect = False
 
 gui_sock = socket.socket()
-gui_sock.bind(('0.0.0.0',6667))
+gui_sock.bind(('0.0.0.0',6668))
 gui_sock.listen(0)
 connection = gui_sock.accept()[0].makefile('rb')
 
@@ -62,11 +62,12 @@ try:
 
 
 		image_len = struct.unpack('<L',connection.read(struct.calcsize('<L')))[0]
+		print(image_len)
 		if not image_len:
 			print("not image len")
 			break
 			#continue
-		print(image_len)
+		#print(image_len)
 		# Construct a stream to hold the image data and read the image
 		# data from the connection
 		image_stream = io.BytesIO()
