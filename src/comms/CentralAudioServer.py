@@ -1,91 +1,85 @@
+#!/usr/bin/env python
+
 import io
 import socket
 import threading
 import wave
 from datetime import datetime
 
-BUFFERSIZE = 2048
 SIGLEN = 6
 RATE = 16000
 CHUNK = 1024
+BUFFERSIZE = CHUNK
 CHANNELS = 1
 SAMPLESIZE = 2
 SEC = RATE/CHUNK
 MAX_REC_SEC = 60
 SAVEPATH = "recordings/audio/"
 
-def record(audio_conn, gui_conn):
-    print("Recording Audio ...")
+mutex = threading.Lock()
 
-    max_iter = int(SEC * MAX_REC_SEC)
-    frames = []
-    temp = None
-    for i in range(max_iter):
-        data = audio_conn.recv(BUFFERSIZE)
-        datalen = len(data)
+AUDIO = None
+CLIENTS = []
 
-        while datalen != 2048:
-            temp = audio_conn.recv(BUFFERSIZE-datalen) 
-            data += temp
+def redirect():
+    global AUDIO, CLIENTS
 
-        gui_conn.send(data)
-        frames.append(data)
+    while not AUDIO:
+        pass
+    
+    while True:
+        closed = []
 
-    print("...Done Recording")
+        # Read from RPi (AUDIO)
+        data = AUDIO.recv(BUFFERSIZE)
+    
+        # Redirect data from AUDIO to CLIENTS
+        mutex.acquire()
+        for client in CLIENTS:
+            try:
+                client.send(data)
+            except:
+                closed.append(client)
 
-    th = threading.Thread(target=save_wav, args=(frames,))
-    th.start()
+        # Dropping closed connections       
+        for drop in closed:
+            CLIENTS.remove(drop)
 
-def save_wav(frames):
-    print("Saving...")
-    now = datetime.now()
-    now_str = now.strftime("%d-%m-%Y-%H:%M:%S.wav")
+        mutex.release()
 
-    wf = wave.open(SAVEPATH + now_str, 'wb')
-    wf.setnchannels(CHANNELS)
-    wf.setsampwidth(SAMPLESIZE)
-    wf.setframerate(RATE)
-    wf.writeframes(b''.join(frames))
-    wf.close()
-
-    print("...Saved")
-
-def main():
-    audio_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    audio_client.bind(('0.0.0.0', 2000))  # socket for RPI Microphone
-    audio_client.listen(0)
-    audio_conn, addr = audio_client.accept()
-    print("Accepted connection from Microphone")
-
-    gui_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    gui_client.bind(('0.0.0.0', 2001))  # socket for RPI Microphone
-    gui_client.listen(0)
-    gui_conn, addr = gui_client.accept()
-    print("Accepted connection from GUI")
+def client_connection():
+    global CLIENTS
+    listen_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    listen_sock.bind(('0.0.0.0', 4000))  # socket for listening
+    listen_sock.listen(5)
 
     while True:
-        data = audio_conn.recv(BUFFERSIZE)        
-        
-        temp = None
-        while len(data) != BUFFERSIZE:
-            temp = audio_conn.recv(BUFFERSIZE - len(data))
-            data += temp
-            
-        gui_conn.send(data)
-        
-        """
-        if len(data) <= SIGLEN and len(data) != 0:
-            print("HERE")
-            record(audio_conn, gui_conn)
-            continue
-        if len(data) <= 4 and len(data) != 0:
-            gui_conn.send(data)
-            continue
+        cli, _ = listen_sock.accept()
+        mutex.acquire()
+        CLIENTS.append(cli)
+        mutex.release()
 
-        while len(data) < BUFFERSIZE:
-            temp = audio_conn.recv(BUFFERSIZE)
-            data += temp
-        """
+        print("Accepted connection from client")
 
-if __name__=="__main__":
+def audio_connection():
+    global AUDIO 
+    
+    audio_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    audio_client.bind(('0.0.0.0', 4001))  # socket for RPI Microphone
+    audio_client.listen(0)
+    AUDIO, _ = audio_client.accept()
+    print("Accepted connection fro RPI Microphone")
+
+def main():
+    client_listner_thread = threading.Thread(target=client_connection)
+    client_listner_thread.start()
+
+    audio_listner_thread = threading.Thread(target=audio_connection)
+    audio_listner_thread.start()
+
+    redirect_thread = threading.Thread(target=redirect)
+    redirect_thread.start()
+        
+if __name__== "__main__":
+    print("Audio Server Is Running")
     main()

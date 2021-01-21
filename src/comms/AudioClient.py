@@ -12,7 +12,7 @@ sample_size = pyaudio.get_sample_size(FORMAT)
 SAVE_PATH = "../../recordings/audio/"
 
 class AudioClient:
-    def __init__(self, ip="3.15.16.101", port=3001, write=False):
+    def __init__(self, ip="3.140.200.49", port=4000, write=False):
         self.ip = ip 
         self.port = port
         self.client_conn= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
