@@ -42,6 +42,7 @@ def main():
                 print("no image stream was unpacked")
                 break
             image_stream = io.BytesIO() #stream of bytes
+
             image_stream.write(rpi_client_conn.read(image_len))  #writes the byte like object from rpi to the raw stream
             
             #image = Image.open(image_stream) #open the PIL image
@@ -50,16 +51,10 @@ def main():
             #Send to client 1
             gui_conn.write(struct.pack('<L',image_stream.tell())) #reports the size of the entire stream at current point.. end of stream?
             gui_conn.flush() #flush content to a file...
-            image_stream.seek(0) #change stream position to start of stream, 0
-            gui_conn.write(image_stream.read())
-            #image_stream.seek(0)
-            image_stream.truncate()
-
-            #send to client 2
-
             gui_conn2.write(struct.pack('<L',image_stream.tell())) #reports the size of the entire stream at current point.. end of stream?
             gui_conn2.flush() #flush content to a file...
             image_stream.seek(0) #change stream position to start of stream, 0
+            gui_conn.write(image_stream.read())
             gui_conn2.write(image_stream.read())
             #image_stream.seek(0)
             image_stream.truncate()
