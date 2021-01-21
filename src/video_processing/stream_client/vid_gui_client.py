@@ -66,7 +66,7 @@ try:
 			print("not image len")
 			break
 			#continue
-		#print(image_len)
+		print(image_len)
 		# Construct a stream to hold the image data and read the image
 		# data from the connection
 		image_stream = io.BytesIO()

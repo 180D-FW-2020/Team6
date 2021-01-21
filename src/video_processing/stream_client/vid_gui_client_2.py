@@ -62,6 +62,7 @@ try:
 
 
 		image_len = struct.unpack('<L',connection.read(struct.calcsize('<L')))[0]
+		print(image_len)
 		if not image_len:
 			print("not image len")
 			break
