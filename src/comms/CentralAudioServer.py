@@ -43,6 +43,7 @@ def redirect():
 
         # Dropping closed connections       
         for drop in closed:
+            print ("Droping client")
             CLIENTS.remove(drop)
 
         mutex.release()
@@ -50,7 +51,7 @@ def redirect():
 def client_connection():
     global CLIENTS
     listen_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    listen_sock.bind(('0.0.0.0', 4000))  # socket for listening
+    listen_sock.bind(('0.0.0.0', 5000))  # socket for listening
     listen_sock.listen(5)
 
     while True:
@@ -65,7 +66,7 @@ def audio_connection():
     global AUDIO 
     
     audio_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    audio_client.bind(('0.0.0.0', 4001))  # socket for RPI Microphone
+    audio_client.bind(('0.0.0.0', 5001))  # socket for RPI Microphone
     audio_client.listen(0)
     AUDIO, _ = audio_client.accept()
     print("Accepted connection fro RPI Microphone")

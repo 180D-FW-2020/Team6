@@ -3,6 +3,7 @@
 # http://openbookproject.net/courses/python4fun/tkphone1.html
 # https://www.geeksforgeeks.org/gui-chat-application-using-tkinter-in-python/
 
+import AudioClient
 import tkinter as tk
 from PIL import Image, ImageTk
 from imutils.video import VideoStream
@@ -13,9 +14,6 @@ import threading
 import os
 import sub_cmd
 import pub_cmd
-
-sys.path.append("../../comms")
-import AudioClient    # pylint: disable=import-error
 
 #img_speaker =  tk.PhotoImage()
 
@@ -69,10 +67,10 @@ class GUI:
         self.cap = cv2.VideoCapture(0)
 
         # Audio Streaming
-        self.audio_conn = AudioClient.AudioClient()
+        self.audio_conn = AudioClient.AudioClient(write=True)
         self.audio_conn.start()
-        self.listen = False
-        self.audio_stat = "Off"
+        self.listen = True
+        self.audio_stat = "On"
         thread = threading.Thread(target=self.audio_conn.recv)
         thread.start()
 
@@ -121,11 +119,9 @@ class GUI:
     def stop_sound(self):
         pub_cmd.publish(client, "stop")
 
-    """
     def listen_cmd(self):
         while self.listen:
             self.audio_conn.recv()
-    """
     
     #Displaying Video Stream from own camera
     def video_stream(self):
