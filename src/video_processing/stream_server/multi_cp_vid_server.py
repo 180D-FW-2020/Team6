@@ -22,14 +22,14 @@ def main():
         #User 1
         gui_sock = socket.socket()
         gui_sock.connect(('172.91.89.246',6667))#connects to gui laptop IP of User 1
-        print("[*] Client_user 1 listening on port")
+        print("[*] Client_user 1 listening on port") #Henry's Laptop
         gui_conn = gui_sock.makefile('wb')
         print("Gui 1 connected")
 
         #User 2
         gui_sock2 = socket.socket()
-        gui_sock2.connect(('172.91.89.246',6668)) #connects to gui laptop IP of User 2
-        #gui_sock2.connect(('210.66.66.166',6667))
+        #gui_sock2.connect(('172.91.89.246',6668)) #connects to gui laptop IP of User 2
+        gui_sock2.connect(('210.66.66.166',6667)) #Denny's Laptop
         print("[*] Client_user 2 listening on port")
         gui_conn2 = gui_sock2.makefile('wb')
         print("Gui 2 connected")
