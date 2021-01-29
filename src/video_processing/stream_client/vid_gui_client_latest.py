@@ -65,7 +65,6 @@ try:
 	while True:
 		#print("running")
 
-
 		image_len = struct.unpack('<L',connection.read(struct.calcsize('<L')))[0]
 		if not image_len:
 			print("not image len")
@@ -90,7 +89,13 @@ try:
 		if raw_frame is None:
 			break
 		cv2.imshow("Camera feed", raw_frame)
+		key = cv2.waitKey(1) & 0xFF
+
+		# if the `q` key is pressed, break from the lop
+		if key == ord("q"): #note imshow doesn't work without waitkey
+			break
 except:
+	print("Occurred Exception, closing socket")
 	connection.close()
 	gui_sock.close()
 
