@@ -30,10 +30,10 @@ def main():
 
         gui2_sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         gui2_sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
-        gui2_sock.bind((host, 6667))
+        gui2_sock.bind((host, 6662))
         gui2_sock.listen(10)
         print("[*] Server listening on port")
-        gui2_conn = gui2_sock.accept()[0].makefile('rb')
+        gui2_conn = gui2_sock.accept()[0].makefile('wrb')
         print("GUI 2 connected")
 
 
@@ -56,17 +56,25 @@ def main():
             gui1_conn.flush() #flush content to a file...
             image_stream.seek(0) #change stream position to start of stream, 0
 
-            gui2_conn.write()
+            gui2_conn.write(struct.pack('<L',image_stream2.tell())) #reports the size of the entire stream at current point.. end of stream?
+            gui2_conn.flush() #flush content to a file...
+            image_stream2.seek(0)
             
-
-            gui1_conn.write(image_stream.read())
+            gui1_conn.write(image_stream.read()) #write stream 1's data to the socket
             image_stream.truncate()
-        gui1_conn.write(struct.pack('<L',0))
+
+            gui2_conn.write(image_stream2.read()) #write stream2's data to socket
+            image_stream2.truncate()
+
+        gui1_conn.write(struct.pack('<L',0)) #write packet of 0 to socket signalling end of stream
+        gui2_conn.write(struct.pack('<L',0))
+    
     #except:
     #    rpi_client_conn.close()
     #    rpi_sock.close()
     #    gui1_conn.close()
     #    gui1_sock.close()
+    
     finally:
         gui1_conn.close()
         gui1_sock.close()
