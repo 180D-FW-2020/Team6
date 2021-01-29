@@ -28,19 +28,37 @@ def main():
         gui1_conn = gui1_sock.accept()[0].makefile('rb')
         print("GUI 1 connected")
 
+        gui2_sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        gui2_sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+        gui2_sock.bind((host, 6667))
+        gui2_sock.listen(10)
+        print("[*] Server listening on port")
+        gui2_conn = gui2_sock.accept()[0].makefile('rb')
+        print("GUI 2 connected")
+
+
+
         while True:    
-            print("running")
+            #print("running")
             image_len = struct.unpack('<L', rpi_client_conn.read(struct.calcsize('<L')))[0] #unpacks from buffer of bytes
             print(image_len)
             #image_len is a bytes like object to be written in to the image stream 
             if not image_len:
                 print("no image stream was unpacked")
                 break
-            image_stream = io.BytesIO()
-            image_stream.write(rpi_client_conn.read(image_len))
+            image_stream = io.BytesIO() #create stream objects
+            image_stream2 = io.BytesIO()
+
+            image_stream.write(rpi_client_conn.read(image_len)) #write from RPI data into stream 1
+            image_stream2.write(image_stream.getbuffer()) #copy stream1 into stream 2
+
             gui1_conn.write(struct.pack('<L',image_stream.tell())) #reports the size of the entire stream at current point.. end of stream?
             gui1_conn.flush() #flush content to a file...
             image_stream.seek(0) #change stream position to start of stream, 0
+
+            gui2_conn.write()
+            
+
             gui1_conn.write(image_stream.read())
             image_stream.truncate()
         gui1_conn.write(struct.pack('<L',0))
