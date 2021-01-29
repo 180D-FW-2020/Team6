@@ -25,7 +25,7 @@ def main():
         gui1_sock.bind((host, 6667))
         gui1_sock.listen(10)
         print("[*] Server listening on port")
-        gui1_conn = gui1_sock.accept()[0].makefile('rb')
+        gui1_conn = gui1_sock.accept()[0].makefile('wrb')
         print("GUI 1 connected")
 
         gui2_sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -62,11 +62,11 @@ def main():
             gui1_conn.write(image_stream.read())
             image_stream.truncate()
         gui1_conn.write(struct.pack('<L',0))
-    except:
-        rpi_client_conn.close()
-        rpi_sock.close()
-        gui1_conn.close()
-        gui1_sock.close()
+    #except:
+    #    rpi_client_conn.close()
+    #    rpi_sock.close()
+    #    gui1_conn.close()
+    #    gui1_sock.close()
     finally:
         gui1_conn.close()
         gui1_sock.close()
