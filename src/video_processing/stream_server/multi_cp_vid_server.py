@@ -22,13 +22,14 @@ def main():
         #User 1
         gui_sock = socket.socket()
         gui_sock.connect(('172.91.89.246',6667))#connects to gui laptop IP of User 1
-        print("[*] Client_user 1 listening on port")
+        print("[*] Client_user 1 listening on port") #Henry's Laptop
         gui_conn = gui_sock.makefile('wb')
         print("Gui 1 connected")
 
         #User 2
         gui_sock2 = socket.socket()
-        gui_sock2.connect(('172.91.89.246',6668)) #connects to gui laptop IP of User 2
+        #gui_sock2.connect(('172.91.89.246',6668)) #connects to gui laptop IP of User 2
+        gui_sock2.connect(('210.66.66.166',6667)) #Denny's Laptop
         print("[*] Client_user 2 listening on port")
         gui_conn2 = gui_sock2.makefile('wb')
         print("Gui 2 connected")
@@ -42,22 +43,29 @@ def main():
                 print("no image stream was unpacked")
                 break
             image_stream = io.BytesIO() #stream of bytes
-
+            image_stream2 = io.BytesIO()
             image_stream.write(rpi_client_conn.read(image_len))  #writes the byte like object from rpi to the raw stream
-            
+            image_stream2.write(image_stream.getbuffer())
+            #image_stream2.write(rpi_client_conn.read(image_len))
+            #image_stream2.write(image_stream.read())
+            #image_stream.truncate()
+            #image_stream.seek(0)
             #image = Image.open(image_stream) #open the PIL image
 
             #send to multi clients
             #Send to client 1
             gui_conn.write(struct.pack('<L',image_stream.tell())) #reports the size of the entire stream at current point.. end of stream?
             gui_conn.flush() #flush content to a file...
-            gui_conn2.write(struct.pack('<L',image_stream.tell())) #reports the size of the entire stream at current point.. end of stream?
+            image_stream.seek(0)
+            gui_conn2.write(struct.pack('<L',image_stream2.tell())) #reports the size of the entire stream at current point.. end of stream?
+            
             gui_conn2.flush() #flush content to a file...
-            image_stream.seek(0) #change stream position to start of stream, 0
+            image_stream2.seek(0)
             gui_conn.write(image_stream.read())
-            gui_conn2.write(image_stream.read())
-            #image_stream.seek(0)
             image_stream.truncate()
+            gui_conn2.write(image_stream2.read())
+            #image_stream.seek(0)
+            image_stream2.truncate()
 
         gui_conn.write(struct.pack('<L',0))
         gui_conn2.write(struct.pack('<L',0))

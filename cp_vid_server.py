@@ -1,4 +1,4 @@
-#!usr/bin/python
+#!/usr/bin/env python
 import io
 from PIL import Image
 import struct
@@ -20,7 +20,8 @@ def main():
         print("Rpi connected")
 
         gui_sock = socket.socket()
-        gui_sock.connect(('',6667))#connects to gui laptop IP
+        gui_sock.connect(('172.91.89.246',6667))#connects to gui laptop IP
+        #gui_sock.connect(('210.66.66.166',6667))#connect to Denny's Laptop IP
         print("[*] Client listening on port")
         gui_conn = gui_sock.makefile('wb')
         print("Gui connected")
