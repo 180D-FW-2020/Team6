@@ -6,6 +6,35 @@ import matplotlib.pyplot as pl
 import socket
 import sys
 import threading
+import numpy as np
+import cv2
+import time
+import datetime
+import imutils
+
+#notification
+import smtplib
+from email.message import EmailMessage
+
+_email = "nightlight.notifier@gmail.com" # sender email addr
+_pass =  "qjhlwonnufdgvdss" # sender email password
+
+def notify(subject, content, to):
+    print("Pushing notification")
+    msg = EmailMessage()
+    msg.set_content(content)
+    msg["subject"] = subject
+    msg["from"] = _email
+    msg["to"] = to 
+    
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.starttls()
+    server.login(_email, _pass)
+    server.send_message(msg)
+    server.quit()
+
+motion_reset_time = 1.0 #seconds
+minArea = 1000 #area of detection for motion detection trigger
 
 CLIENTS = []
 RPI_CLIENT_CONN = None
@@ -50,6 +79,10 @@ def send_data(): #thread function for send_data_thread
     while not RPI_CLIENT_CONN:
         pass
 
+    img = None
+    firstFrame = None
+    firstFrame_start = time.time()
+    
     while True:
         closed = []
         image_len = struct.unpack('<L', RPI_CLIENT_CONN.read(struct.calcsize('<L')))[0] #unpacks from buffer of bytes
@@ -65,6 +98,9 @@ def send_data(): #thread function for send_data_thread
 
         #motion detection
         if motion_detect is True:
+            img = None
+            firstFrame = None
+            firstFrame_start = time.time()
             file_bytes = np.asarray(bytearray(image_stream.read()),dtype=np.uint8) #not converting to bytes properly from bytesio
             image_stream.seek(0)
             image_stream.truncate()
