@@ -10,7 +10,7 @@ import threading
 CLIENTS = []
 RPI_CLIENT_CONN = None
 
-mutex = threadin.Lock()
+mutex = threading.Lock()
 
 def rpi_connect():
     global RPI_CLIENT_CONN
@@ -29,7 +29,7 @@ def client_connect():#thread function for client_listener_thread
     global CLIENTS
     gui_sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     gui_sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
-    gui_sock.bind((host, 6667))
+    gui_sock.bind(('0.0.0.0', 6667))
     gui_sock.listen(10)
     
     while True:
@@ -48,14 +48,14 @@ def send_data(): #thread function for send_data_thread
 
     while True:
         closed = []
-        image_len = struct.unpack('<L', rpi_client_conn.read(struct.calcsize('<L')))[0] #unpacks from buffer of bytes
+        image_len = struct.unpack('<L', RPI_CLIENT_CONN.read(struct.calcsize('<L')))[0] #unpacks from buffer of bytes
         print(image_len) #image_len is a bytes like object to be written in to the image stream 
         
         if not image_len:
             print("no image stream was unpacked")
             break
         image_stream = io.BytesIO() #create stream object
-        image_stream.write(rpi_client_conn.read(image_len))
+        image_stream.write(RPI_CLIENT_CONN.read(image_len))
 
         mutex.acquire()
         for client_conn in CLIENTS: #each client is a socket connection
@@ -71,8 +71,10 @@ def send_data(): #thread function for send_data_thread
                 image_stream_client.truncate()
 
             except:
+                #client_conn.close()
                 print("Exception occurred wih video client: " + str(client_conn))
-                closed.append(client)
+                closed.append(client_conn)
+                client_conn.close()
 
         for drop in closed:
             CLIENTS.remove(drop)
