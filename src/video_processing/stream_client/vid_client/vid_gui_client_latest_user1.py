@@ -93,6 +93,8 @@ try:
 
 		# if the `q` key is pressed, break from the lop
 		if key == ord("q"): #note imshow doesn't work without waitkey
+			connection.close()
+			gui_sock.close()
 			break
 except:
 	print("Occurred Exception, closing socket")
