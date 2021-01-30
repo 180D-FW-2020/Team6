@@ -2,15 +2,19 @@
 import io
 from PIL import Image
 import struct
-import matplotlib.pyplot as pl
 import socket
 import sys
 import threading
+
 
 CLIENTS = []
 RPI_CLIENT_CONN = None
 
 mutex = threading.Lock()
+motion_detect = True
+notif_flag = False
+
+processed_stream = io.BytesIO() #hold output after motion processing
 
 def rpi_connect():
     global RPI_CLIENT_CONN
@@ -46,6 +50,7 @@ def send_data(): #thread function for send_data_thread
     while not RPI_CLIENT_CONN:
         pass
 
+    
     while True:
         closed = []
         image_len = struct.unpack('<L', RPI_CLIENT_CONN.read(struct.calcsize('<L')))[0] #unpacks from buffer of bytes
@@ -56,7 +61,7 @@ def send_data(): #thread function for send_data_thread
             break
         image_stream = io.BytesIO() #create stream object
         image_stream.write(RPI_CLIENT_CONN.read(image_len))
-
+            
         mutex.acquire()
         for client_conn in CLIENTS: #each client is a socket connection
             try:
