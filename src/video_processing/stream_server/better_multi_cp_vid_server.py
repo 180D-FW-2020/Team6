@@ -27,7 +27,8 @@ def main():
         print("[*] Server listening on port")
         gui1_conn = gui1_sock.accept()[0].makefile('wrb')
         print("GUI 1 connected")
-
+        
+        #USER 2
         gui2_sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         gui2_sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
         gui2_sock.bind((host, 6662))
