@@ -60,7 +60,7 @@ Note: Subject to change as project is implemented
 - [x] Classifier processing on client (offload to Rpi) (Henry)
 - [x] End to end video stream connection from rpi to gui (Henry and Denny)
 - [x] Enable multiclient video stream
-- [ ] Re-login video stream after exiting ????
+- [x] Re-login video stream after exiting
 - [ ] Finish Notifications from RPI Motion classifier
 - [ ] MQTT email grabber for notifications on RPI
 - [ ] Embed video into GUI
@@ -81,7 +81,7 @@ Note: Subject to change as project is implemented
 - [x] Add image display (Leondi)
 - [ ] Embed video stream functionality [IN PROGRESS]
 - [x] Send and receive user commands with MQTT in event handlers (Leondi and Robert)
-- [ ] Chat Box between multi client
+- [x] Chat Box between multi client
 
 **Task 6: IMU**
 - [x] Create classifiers for key baby actions (Denny)
@@ -92,5 +92,5 @@ Note: Subject to change as project is implemented
 - [x] Implement event handlers as actions (Henry and Leondi)
 
 **Task 8: System**
-- [ ] Install Script (Robert)
+- [x] Install Script (Robert)
 - [ ] Running Script (Denny) 
