@@ -1,3 +1,6 @@
+#same as User 1 except for different Port
+#used only for Henry's laptop testing
+
 import io
 import socket
 import struct
@@ -41,7 +44,7 @@ motion_detect = False
 # gui_sock.listen(0)
 # connection = gui_sock.accept()[0].makefile('rb')
 gui_sock = socket.socket()
-gui_sock.connect(('3.140.200.49',6667)) # connect to AWS Server's public IP
+gui_sock.connect(('3.140.200.49',6662)) # connect to AWS Server's public IP
 print("Client User listening on port...")
 connection = gui_sock.makefile('rb')
 print("Client User 1 connected")
