@@ -29,7 +29,7 @@ def client_connect():#thread function for client_listener_thread
     global CLIENTS
     gui_sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     gui_sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
-    gui_sock.bind(('0.0.0.0', 6667))
+    gui_sock.bind(('0.0.0.0', 6662)) #potential issue with multiple clients?
     gui_sock.listen(10)
     
     while True:
@@ -71,14 +71,14 @@ def send_data(): #thread function for send_data_thread
                 image_stream_client.truncate()
 
             except:
-                #client_conn.close()
+                #client_conn.close() #ISSUE, need better exception handling to continue once client is cut
                 print("Exception occurred wih video client: " + str(client_conn))
                 closed.append(client_conn)
-                client_conn.close()
+                #client_conn.close()
 
         for drop in closed:
             CLIENTS.remove(drop)
-            drop.close()
+            #drop.close()
 
         mutex.release()
 
