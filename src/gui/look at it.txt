@@ -1,0 +1,10 @@
+login windows
+add it an email address in regis
+1 txt file and it is going to update the txt file
+check an error when accessing the GUI
+
+making clear the GUI, edit the GUI Application
+FIX the MQTT, dont use the txt file
+
+Combine the speech recognition with GUI application
+
