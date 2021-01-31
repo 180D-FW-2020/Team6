@@ -1,5 +1,4 @@
 recordings
-AudioDB
 __pycache__
 .DS_Store
 *.pkl
