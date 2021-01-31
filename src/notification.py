@@ -1,12 +1,15 @@
 import os
 import smtplib
 import sqlite3
+import sys
 from email.message import EmailMessage
 from datetime import datetime
 
 if os.name == 'nt':
+    sys.path.append("..\\") 
     DBPATH = "sql\\RPi.db"
 else:
+    sys.path.append("../") 
     DBPATH = "sql/RPi.db"
 
 # sqlite3

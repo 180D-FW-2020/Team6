@@ -11,7 +11,6 @@ from tensorflow import keras
 
 sys.path.append("../") 
 import notification  # pylint: disable=import-error
-user_email = "robertrenzorudio@gmail.com"
 
 class AudioClassifier:
     """
@@ -90,5 +89,4 @@ class AudioClassifier:
     
     def push_notification(self, msg):
         subject = "Noise Detected"
-        notification.notify(subject, msg, user_email)
-
+        notification.notify(subject, msg)
