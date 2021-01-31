@@ -5,12 +5,14 @@
 
 # Libraries
 import numpy as np
+import os
 import sys
 import threading
 from tensorflow import keras
+from pathlib import Path
 
-sys.path.append("../") 
-import notification  # pylint: disable=import-error
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import notification
 
 class AudioClassifier:
     """

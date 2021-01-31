@@ -53,8 +53,8 @@ send_button.pack()
 top.protocol("WM_DELETE_WINDOW", on_closing)
 
 #----Now comes the sockets part----
-HOST = "3.140.200.49"#input('Enter host: ')
-PORT = "33000"
+HOST = '3.140.200.49'#input('Enter host: ')
+PORT = 33000
 
 BUFSIZ = 1024
 ADDR = (HOST, PORT)

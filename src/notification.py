@@ -5,12 +5,8 @@ import sys
 from email.message import EmailMessage
 from datetime import datetime
 
-if os.name == 'nt':
-    sys.path.append("..\\") 
-    DBPATH = "sql\\RPi.db"
-else:
-    sys.path.append("../") 
-    DBPATH = "sql/RPi.db"
+CURPATH = os.path.dirname(os.path.abspath(__file__))
+DBPATH = os.path.join(CURPATH, "sql", "RPi.db")
 
 # sqlite3
 db = sqlite3.connect(DBPATH)

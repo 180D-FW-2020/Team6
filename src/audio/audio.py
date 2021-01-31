@@ -6,8 +6,10 @@ import preprocess
 import pyaudio
 import signal
 import struct
+import sys
 import wave
 from datetime import datetime
+from pathlib import Path
 
 # PyAudio constants.
 FORMAT = pyaudio.paInt16
@@ -26,10 +28,15 @@ SWIDTH = 2
 SHORT_NORMALIZE = (1.0/32768.0)
 RMS_THRESH=20
 
+#Current path
+CURPATH = os.path.dirname(os.path.abspath(__file__))
+SAVEPATH = os.path.join(CURPATH, "AudioDB")
+
 # Audio classifier.
 print("Loading Neural Network...")
-NN = "nnmv2.1.h5"
-AC = AudioClassifier.AudioClassifier(NN)
+NNPATH = os.path.join(CURPATH, "nnmv2.1.h5")
+print(NNPATH)
+AC = AudioClassifier.AudioClassifier(NNPATH)
 print("... Done")
 
 # TCP connection.
@@ -37,10 +44,6 @@ conn = MicClient.MicClient()
 conn.start()
 
 # Controls
-if os.name == 'nt':
-    SAVEPATH = "AudioDb\\"
-else:
-    SAVEPATH = "AudioDb/"
 RECORD = True
 
 def save_wav(frames, fname):
@@ -96,10 +99,10 @@ def record():
             frames.append(data)
         except:
             continue
-                
-    print(SAVEPATH + "nn.wav")
-    save_wav(frames, SAVEPATH + "nn.wav")
-    mfcc = preprocess.audio_mfcc(SAVEPATH + "nn.wav", 128)
+
+    savepath = os.path.join(SAVEPATH, "nn.wav")
+    save_wav(frames, savepath)
+    mfcc = preprocess.audio_mfcc(savepath, 128)
     AC.predict(mfcc)
             
     # Record for about MAX_REC_SECONDS.
@@ -115,7 +118,8 @@ def record():
     if RECORD:
         now = datetime.now()
         now_str = now.strftime("%d-%m-%Y-%H:%M:%S.wav")
-        save_wav(frames, SAVEPATH + now_str)
+        savepath = os.path.join(SAVEPATH, now_str)
+        save_wav(frames, savepath)
 
     print("... Done recording")
 
