@@ -1,15 +1,18 @@
-import smtplib
 import os
+import smtplib
+import sqlite3
 from email.message import EmailMessage
 from datetime import datetime
 
 if os.name == 'nt':
-    EMAILPATH = "commands\\email.txt"
+    DBPATH = "sql\\RPi.db"
 else:
-    EMAILPATH = "commands/email.txt"
+    DBPATH = "sql/RPi.db"
 
 _email = "nightlight.notifier@gmail.com"
 _pass =  "qjhlwonnufdgvdss"
+
+db = sqlite3.connect(DBPATH)
 
 def notify(subject, content):
     print("Pushing notification")
@@ -17,15 +20,7 @@ def notify(subject, content):
     msg.set_content(content)
     msg["subject"] = subject
     msg["from"] = _email
-
-    with open(EMAILPATH, "r") as f:
-        emails = f.readlines()
-
-    to = ""
-    for email in emails:
-        to = to + email.strip("\n")
-    
-    msg["to"] = to
+    msg["to"] = "robertrenzorudio@gmail.com"
 
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()
