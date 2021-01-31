@@ -14,8 +14,10 @@ ap = None
 
 # sqlite3
 if os.name == 'nt':
+    sys.path.append("..\\") 
     DBPATH = "..\\sql\\RPi.db"
 else:
+    sys.path.append("../") 
     DBPATH = "../sql/RPi.db"
 
 db = sqlite3.connect(DBPATH)
@@ -31,13 +33,17 @@ def connect_mqtt() -> mqtt:
     
     def on_message(client, userdata, message):
         str_msg = message.payload.decode()
+        print(str_msg)
         if "lullaby" in str_msg:
             print(f"Received command: {str_msg}")
             play_sound("soundDB/" + str_msg)
         
         if "insert" in str_msg:
             print(f"Received command: insert")
-            name, email = str_msg[7:].split(" ")
+            info = str_msg[7:].split(" ")
+            name = info[0]
+            email = info[1]
+            print(name, email)
             query = "INSERT INTO user(name, email) VALUES(?, ?)"
             try:
                 cursor.execute(query, (name, email))
