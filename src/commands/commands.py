@@ -31,7 +31,6 @@ def connect_mqtt() -> mqtt:
     
     def on_message(client, userdata, message):
         str_msg = message.payload.decode()
-        print(str_msg)
         if "lullaby" in str_msg:
             print(f"Received command: {str_msg}")
             play_sound("soundDB/" + str_msg)
@@ -46,6 +45,7 @@ def connect_mqtt() -> mqtt:
             try:
                 cursor.execute(query, (name, email))
             except:
+                print("Discarding query, duplicate found.")
                 pass # Query error or duplicate entry
 
             db.commit()

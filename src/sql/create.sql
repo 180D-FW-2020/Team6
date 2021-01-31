@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS user (
     name TEXT,
     email TEXT,
     alert BOOLEAN DEFAULT 1 NOT NULL,
-    UNIQUE(name, email)
+    UNIQUE(email)
 );
 
 /* notification history information table. */
