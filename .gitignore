@@ -8,3 +8,4 @@ __pycache__
 AudioDB/*
 *.txt
 *.log
+*.db
