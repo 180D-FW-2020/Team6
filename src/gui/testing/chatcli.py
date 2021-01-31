@@ -53,9 +53,9 @@ send_button.pack()
 top.protocol("WM_DELETE_WINDOW", on_closing)
 
 #----Now comes the sockets part----
-HOST = input('Enter host: ')
+HOST = "3.140.200.49"#input('Enter host: ')
 PORT = input('Enter port: ')
-if not PORT:
+PORT = "33000"
     PORT = 33000
 else:
     PORT = int(PORT)
