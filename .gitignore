@@ -5,3 +5,6 @@ __pycache__
 *.h5
 .vscode
 *.wav
+AudioDB/*
+*.txt
+*.log
