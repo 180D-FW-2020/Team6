@@ -13,12 +13,10 @@ topic = "/python/mqtt/team6/lullaby"
 ap = None
 
 # sqlite3
-if os.name == 'nt':
-    sys.path.append("..\\") 
-    DBPATH = "..\\sql\\RPi.db"
-else:
-    sys.path.append("../") 
-    DBPATH = "../sql/RPi.db"
+CURPATH = os.path.dirname(os.path.abspath(__file__))
+PARPATH = os.path.dirname(CURPATH)
+DBPATH = os.path.join(PARPATH, "sql", "RPi.db")
+print(DBPATH)
 
 db = sqlite3.connect(DBPATH)
 cursor = db.cursor()

@@ -40,10 +40,3 @@ def notify(subject, content):
         server.send_message(msg)
         
     server.quit()
-
-def main():
-    notify("Motion", "test")
-    notify("Noise", "try")
-
-if __name__ == "__main__":
-    main()
