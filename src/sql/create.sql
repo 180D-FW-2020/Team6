@@ -17,3 +17,9 @@ CREATE TABLE IF NOT EXISTS email_info (
     user TEXT,
     pass TEXT
 );
+
+/* Recording reference. */
+CREATE TABLE IF NOT EXISTS recording (
+    ctime DATETIME,
+    relpath TEXT
+)
