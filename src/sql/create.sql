@@ -1,5 +1,6 @@
 /* User information table. */
-CREATE TABLE IF NOT EXISTS user (
+DROP TABLE IF EXISTS user;
+CREATE TABLE user (
     name TEXT,
     email TEXT,
     alert BOOLEAN DEFAULT 1 NOT NULL,
@@ -7,7 +8,8 @@ CREATE TABLE IF NOT EXISTS user (
 );
 
 /* notification history information table. */
-CREATE TABLE IF NOT EXISTS notif (
+DROP TABLE IF EXISTS notif;
+CREATE TABLE notif (
     time DATETIME,
     subject TEXT
 );
@@ -19,7 +21,8 @@ CREATE TABLE IF NOT EXISTS email_info (
 );
 
 /* Recording reference. */
-CREATE TABLE IF NOT EXISTS recording (
+DROP TABLE IF EXISTS recording;
+CREATE TABLE recording (
     ctime DATETIME,
     relpath TEXT
 )
