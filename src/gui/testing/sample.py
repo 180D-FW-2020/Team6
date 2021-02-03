@@ -16,9 +16,6 @@ import os
 import sub_cmd
 import pub_cmd
 
-# sys.path.append("../../comms")
-# import AudioClient    # pylint: disable=import-error
-
 class GUI:
     def __init__(self, user):
 
