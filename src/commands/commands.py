@@ -1,14 +1,25 @@
+import os
 import paho.mqtt.client as mqtt
-import threading
 from playsound import playsound
-from audioplayer import AudioPlayer
+import sqlite3
 import sys
+import threading
+from audioplayer import AudioPlayer
 
 broker = 'broker.emqx.io'
 port = 1883
 topic = "/python/mqtt/team6/lullaby"
 
 ap = None
+
+# sqlite3
+CURPATH = os.path.dirname(os.path.abspath(__file__))
+PARPATH = os.path.dirname(CURPATH)
+DBPATH = os.path.join(PARPATH, "sql", "RPi.db")
+print(DBPATH)
+
+db = sqlite3.connect(DBPATH)
+cursor = db.cursor()
 
 def connect_mqtt() -> mqtt:
     def on_connect(client, userdata, flags, rc):
@@ -23,7 +34,22 @@ def connect_mqtt() -> mqtt:
         if "lullaby" in str_msg:
             print(f"Received command: {str_msg}")
             play_sound("soundDB/" + str_msg)
+        
+        if "insert" in str_msg:
+            print(f"Received command: insert")
+            info = str_msg[7:].split(" ")
+            name = info[0]
+            email = info[1]
+            print(name, email)
+            query = "INSERT INTO user(name, email) VALUES(?, ?)"
+            try:
+                cursor.execute(query, (name, email))
+            except:
+                print("Discarding query, duplicate found.")
+                pass # Query error or duplicate entry
 
+            db.commit()
+        
     client = mqtt.Client()
     client.on_connect = on_connect
     client.on_disconnect = on_disconnect
