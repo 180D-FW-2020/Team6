@@ -60,7 +60,12 @@ def register():
     password_entry.pack()
     Label(register_screen, text="" , bg = "white").pack()
     Button(register_screen, text="Register", width=10, height=1, bg = "cyan", command = register_user).pack()
- 
+
+    global info_regis
+    info_screen = Frame(register_screen)
+    info_screen.pack()
+    info_regis = Label(info_screen)
+    info_regis.pack()
  
 
 
@@ -94,6 +99,8 @@ def login():
     password_login_entry.pack()
     Label(login_screen, text="", bg = "white").pack()
     Button(login_screen, text="Login", bg = "cyan", width=10, height=1, command = login_verify).pack()
+
+
  
 # Implementing event on register button
  
@@ -106,47 +113,44 @@ def register_user():
     username_entry.delete(0, END)
     password_entry.delete(0, END)
     email_address_entry.delete(0, END)
-    
-    if(os.path.isfile("Login_info.txt")):
-        file1 = open("Login_info.txt", "r")
-        verify = file1.read().splitlines()
+    if(isBlank(username_info) or isBlank(password_info) or isBlank(email_info)):
+        empty_filler()
+        info_regis.configure(text="Registration Failed", justify = "center", bg = "white", fg="green", font=("calibri", 11))
     else:
-        verify = []
-    
-    
-    if (username_info in verify):
-        username_exist()
-        Label(register_screen, text="Registration Failed", bg = "white", fg="green", font=("calibri", 11)).pack()
-    else:        
-        file = open("Login_info.txt", "a")
-        file.write(username_info + "\n")
-        file.write(password_info + "\n")
-        file.write(email_info + "\n")
-        pub_cmd.publish(client, "insert " +  username_info +  " " + email_info)
-        file.close()
-        Label(register_screen, text="Registration Success", bg = "white", fg="green", font=("calibri", 11)).pack()
- 
+        if(os.path.isfile(username_info)):
+            username_exist()
+            info_regis.configure(text="Registration Failed", justify = "center", bg = "white", fg="green", font=("calibri", 11))
+        else:
+            file = open(username_info, "w")
+            file.write(username_info + "\n")
+            file.write(password_info + "\n")
+            file.write(email_info)
+            pub_cmd.publish(client, "insert " +  username_info +  " " + email_info)
+            file.close()
+            info_regis.configure(text="Registration Success", justify = "center", bg = "white", fg="green", font=("calibri", 11))
 
+           
 # Implementing event on login button 
  
 def login_verify():
-    
     
     username1 = username_verify.get()
     password1 = password_verify.get()
     username_login_entry.delete(0, END)
     password_login_entry.delete(0, END)
- 
-    file1 = open("Login_info.txt", "r")
-    verify = file1.read().splitlines()
-    if username1 in verify:   
+    
+    list_of_files = os.listdir()
+    if username1 in list_of_files:   
+        file1 = open(username1, "r")
+        verify = file1.read().splitlines()
         if password1 in verify:
             global check
+            global username2
             login_sucess()
             check = True
+            username2 = username1
         else:
             password_not_recognised()
- 
     else:
         user_not_found()
  
@@ -154,20 +158,20 @@ def login_verify():
 def verified():
     return check
 
+def get_username():
+    return username2
 
 # Designing popup for login success
  
 def login_sucess():
     delete_login_success()
 
-    
- 
 # Designing popup for login invalid password
  
 def password_not_recognised():
     global password_not_recog_screen
     password_not_recog_screen = Toplevel(login_screen)
-    password_not_recog_screen.title("Success")
+    password_not_recog_screen.title("Error Password")
     password_not_recog_screen.geometry("150x100")
     Label(password_not_recog_screen, text="Invalid Password ").pack()
     Button(password_not_recog_screen, text="OK", bg = "cyan", command=delete_password_not_recognised).pack()
@@ -177,7 +181,7 @@ def password_not_recognised():
 def user_not_found():
     global user_not_found_screen
     user_not_found_screen = Toplevel(login_screen)
-    user_not_found_screen.title("Success")
+    user_not_found_screen.title("Error Username")
     user_not_found_screen.geometry("150x100")
     Label(user_not_found_screen, text="User Not Found").pack()
     Button(user_not_found_screen, text="OK", bg = "cyan", command=delete_user_not_found_screen).pack()
@@ -186,10 +190,20 @@ def user_not_found():
 def username_exist():
     global username_exist_screen
     username_exist_screen = Toplevel(register_screen)
-    username_exist_screen.title("Success")
+    username_exist_screen.title("Error Username")
     username_exist_screen.geometry("150x100")
     Label(username_exist_screen, text="Username Has Been Used").pack()
     Button(username_exist_screen, text="OK", bg = "cyan", command=delete_username_exist_screen).pack()
+
+# Designing popup for the filler of registration are not filled
+def empty_filler():
+    global empty_filler_screen
+    empty_filler_screen = Toplevel(register_screen)
+    empty_filler_screen.title("Error Registration")
+    empty_filler_screen.geometry("200x100")
+    Label(empty_filler_screen, text="You have not filled the filler box").pack()
+    Button(empty_filler_screen, text="OK", bg = "cyan", command=delete_empty_filler_screen).pack()
+
 
 # Deleting popups
  
@@ -197,16 +211,22 @@ def delete_login_success():
     login_screen.destroy()
     main_screen.destroy()
 
- 
 def delete_password_not_recognised():
     password_not_recog_screen.destroy()
- 
- 
+  
 def delete_user_not_found_screen():
     user_not_found_screen.destroy()
  
 def delete_username_exist_screen():
     username_exist_screen.destroy()
 
+def delete_empty_filler_screen():
+    empty_filler_screen.destroy()
+
+def isBlank(my_string):
+    if my_string and my_string.strip():
+        return False
+    return True
+
 client = pub_cmd.connect_mqtt()
-main_account_screen()
+# main_account_screen()
