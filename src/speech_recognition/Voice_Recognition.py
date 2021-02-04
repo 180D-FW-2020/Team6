@@ -56,7 +56,7 @@ class Voice_Commmand:
             sys.exit()
 
     def start_action(self):
-        print('How can I help you? \n ***Say: "play second song" OR Say: "play first song"*** \n')
+        print('How can I help you? \n***Say: "play second song" OR Say: "play first song"***')
         print('If you want to end the program, please say "close the Nightlight": ')
         self.command = self.convert_audio_to_txt()
 
