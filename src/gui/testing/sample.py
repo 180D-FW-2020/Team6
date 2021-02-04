@@ -23,6 +23,10 @@ class GUI:
         # Intializing the username
         self.username_info = user
 
+        # Defining the current path
+        self.CURPATH = os.path.dirname(os.path.abspath(__file__))
+        
+
         # Making a GUI window
         self.window = tk.Tk()
         self.window.geometry("800x550")
@@ -33,7 +37,10 @@ class GUI:
         tk.Label(self.window, text="Night Light Baby Monitor",
                                  font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB").pack()
 
-        logo = PhotoImage(file = "night_light_logo.PNG")
+        # Accessing the file in this path
+        self.path = os.path.join(self.CURPATH, "Information", "night_light_logo.PNG")
+
+        logo = PhotoImage(file = self.path)
         
         tk.Label(self.window, image = logo).pack()
 
@@ -55,8 +62,15 @@ class GUI:
 
         self.mute = True
         # Inserting a rounded button for MIC
-        self.loadimage = tk.PhotoImage(file = "no_sound.png")
-        self.loadimage2 = tk.PhotoImage(file = "sound.png")
+        self.path = os.path.join(self.CURPATH, "Information", "no_sound.png")
+        self.loadimage = tk.PhotoImage(file = self.path)
+        self.path = os.path.join(self.CURPATH, "Information", "sound.png")
+        self.loadimage2 = tk.PhotoImage(file = self.path)
+
+        # Initializing the notification
+        self.getting_user_info()
+        self.notification = self.verify[3]
+
 
         # Creating buttons
         self.button_a = tk.Button(self.button_frame, text="Watch the baby", font="Helvetica 11 bold",
@@ -64,12 +78,14 @@ class GUI:
         self.button_b = tk.Button(self.button_frame, text="Play lullaby", font="Helvetica 11 bold",
                                   width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_lullaby)
         self.button_c = tk.Button(self.button_frame, text="Listen Your Baby", font="Helvetica 11 bold",
-                                    bg="aquamarine", fg="black", image=self.loadimage, compound="bottom", command = self.handle_click_listen)
+                                  bg="aquamarine", fg="black", image=self.loadimage, compound="bottom", command=self.handle_click_listen)
         self.button_d = tk.Button(self.button_frame, text="Changing Login Info", font="Helvetica 11 bold",
                                   width=18, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_changing_login_info)
         # self.button_e = tk.Button(self.button_frame, text="Open Chat Window", font="Helvetica 11 bold",
-                                #   width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_open_chat_window)
-        self.button_f = tk.Button(self.button_frame, text="Quit", font="Helvetica 11 bold",
+        #   width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_open_chat_window)
+        self.button_f = tk.Button(self.button_frame, text="Current Notification" + "\n\n" + self.notification, font="Helvetica 11 bold", 
+                                    width=17, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_notification)
+        self.button_g = tk.Button(self.button_frame, text="Quit", font="Helvetica 11 bold",
                                   width=14, height=5, bg="aquamarine", fg="BLACK", command=self.quit_the_program)
 
 
@@ -79,6 +95,8 @@ class GUI:
         self.button_d.pack(side=tk.LEFT, fill=tk.BOTH)
         # self.button_e.pack(side=tk.LEFT, fill=tk.BOTH)
         self.button_f.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.button_g.pack(side=tk.LEFT, fill=tk.BOTH)
+
 
         # Video Streaming
         self.cap = cv2.VideoCapture(0)
@@ -94,16 +112,8 @@ class GUI:
 
         self.window.mainloop()  # runs application
 
-        #Displaying an image
-        #pilfile = Image.open("image.jpg")
-        #image_vid = ImageTk.PhotoImage(pilfile)
-        #video_feed = tk.Label(image=image_vid)
-        #video_feed.pack()
-
     # Event handlers
     def main_display(self):
-        # # Showing the action in the main display
-        # self.lmain = tk.Label(self.app)
         # Setting the main display
         try:
             self.txt = open("notification.txt", "r")
@@ -112,8 +122,6 @@ class GUI:
             self.txt = "How can I help you?"
         self.lmain.configure(text=self.txt, justify="center",font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB")
         self.lmain.after(1000, self.main_display)
-        # tk.Label(self.window, text=self.txt, justify="center",font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB").pack()
-        # self.lmain.after(1000, self.main_display)
 		
 
     def listen_cmd(self):
@@ -189,6 +197,20 @@ class GUI:
 
     # def handle_click_open_chat_window(self):
 
+    def handle_click_notification(self):
+        self.username_info = self.verify[0]
+        self.password_info = self.verify[1]
+        self.email_info = self.verify[2]
+        if(self.notification == "On"):
+            self.notification = "Off"
+            self.button_f.config(text="Current Notification" + "\n\n" + self.notification)
+            self.write_user_info_to_file()
+        else:
+            self.notification = "On"
+            
+            self.button_f.config(text="Current Notification" + "\n\n" + self.notification)
+            self.write_user_info_to_file()
+
 
     def quit_the_program(self):
         os.remove("notification.txt")
@@ -225,6 +247,7 @@ class GUI:
         pub_cmd.publish(client, "stop")
 
     # Some functions for changing login info
+
     def changing_password(self):
         self.password = tk.StringVar()
         self.password_screen = tk.Toplevel(self.login_screen)
@@ -260,7 +283,6 @@ class GUI:
         self.info_regis.pack()
 
     def register_pass(self):
-
         self.password_info = self.password.get()
         self.password_entry.delete(0, END)
 
@@ -268,14 +290,8 @@ class GUI:
             self.empty_filler()
             self.info_regis.configure(text="Registration Failed", justify = "center", bg = "white", fg="green", font=("calibri", 11))
         else:
-            self.file = open(self.username_info, "r")
-            self.verify = self.file.read().splitlines()
             self.email_info = self.verify[2]
-            self.file.close()
-            self.file = open(self.username_info, "w")
-            self.file.write(self.username_info + "\n")
-            self.file.write(self.password_info + "\n")
-            self.file.write(self.email_info)
+            self.write_user_info_to_file()
     
     def register_email(self):
         self.email_info = self.email_address.get()
@@ -285,16 +301,23 @@ class GUI:
             self.empty_filler()
             self.info_regis.configure(text="Registration Failed", justify = "center", bg = "white", fg="green", font=("calibri", 11))
         else:
-            self.file = open(self.username_info, "r")
-            self.verify = self.file.read().splitlines()
             self.prev_email = self.verify[2]
             self.password_info = self.verify[1]
             pub_cmd.publish(client, "change " + self.prev_email + " " + self.email_info)
-            self.file.close()
-            self.file = open(self.username_info, "w")
-            self.file.write(self.username_info + "\n")
-            self.file.write(self.password_info + "\n")
-            self.file.write(self.email_info)
+            self.write_user_info_to_file()
+
+    def getting_user_info(self):
+        self.path = os.path.join(self.CURPATH, "Login_info", self.username_info)
+        self.file = open(self.path, "r")
+        self.verify = self.file.read().splitlines()
+        self.file.close()
+    
+    def write_user_info_to_file(self):
+        self.file = open(self.path, "w")
+        self.file.write(self.username_info + "\n")
+        self.file.write(self.password_info + "\n")
+        self.file.write(self.email_info + "\n")
+        self.file.write(self.notification + "")
 
     def empty_filler(self):
         self.empty_filler_screen = Toplevel()
@@ -311,13 +334,13 @@ class GUI:
             return False
         return True
 
-main_account_screen()
-username = get_username()
-if (verified() == True):
-    client = pub_cmd.connect_mqtt()
-    sub_client = sub_cmd.connect_mqtt()
-    g = GUI(username)
+# main_account_screen()
+# username = get_username()
+# if (verified() == True):
+#     client = pub_cmd.connect_mqtt()
+#     sub_client = sub_cmd.connect_mqtt()
+#     g = GUI(username)
 
-# client = pub_cmd.connect_mqtt()
-# sub_client = sub_cmd.connect_mqtt()
-# g = GUI()
+client = pub_cmd.connect_mqtt()
+sub_client = sub_cmd.connect_mqtt()
+g = GUI("Leondi")

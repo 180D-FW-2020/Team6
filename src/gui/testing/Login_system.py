@@ -4,9 +4,9 @@ from tkinter import *
 import pub_cmd
 import os
 
+CURPATH = os.path.dirname(os.path.abspath(__file__))
 
 # Designing Main(first) window
- 
 def main_account_screen():
     global main_screen
     main_screen = Tk()
@@ -15,7 +15,10 @@ def main_account_screen():
     main_screen.title("Account Login")
     Label(text="Select Your Choice", bg = "deep sky blue", fg = "black", width="300", height="2", font=("Calibri", 13)).pack()
     Label(text="", bg = "white").pack()
-    logo = PhotoImage(file = "night_light_logo.PNG")
+
+    path = os.path.join(CURPATH, "Information", "night_light_logo.PNG")
+    logo = PhotoImage(file = path)
+    
     Label(image = logo, bg = "white").pack()
     Label(text="", bg = "white").pack()
     Button(text="Login to Your Account", bg = "cyan", height="2", width="30", command = login).pack()
@@ -113,18 +116,22 @@ def register_user():
     username_entry.delete(0, END)
     password_entry.delete(0, END)
     email_address_entry.delete(0, END)
+
     if(isBlank(username_info) or isBlank(password_info) or isBlank(email_info)):
         empty_filler()
         info_regis.configure(text="Registration Failed", justify = "center", bg = "white", fg="green", font=("calibri", 11))
     else:
-        if(os.path.isfile(username_info)):
+        path = os.path.join(CURPATH, "Login_info", username_info)
+        if(os.path.isfile(path)):
             username_exist()
             info_regis.configure(text="Registration Failed", justify = "center", bg = "white", fg="green", font=("calibri", 11))
         else:
-            file = open(username_info, "w")
+            
+            file = open(path, "w")
             file.write(username_info + "\n")
             file.write(password_info + "\n")
-            file.write(email_info)
+            file.write(email_info + "\n")
+            file.write("On")
             pub_cmd.publish(client, "insert " +  username_info +  " " + email_info)
             file.close()
             info_regis.configure(text="Registration Success", justify = "center", bg = "white", fg="green", font=("calibri", 11))
@@ -139,9 +146,13 @@ def login_verify():
     username_login_entry.delete(0, END)
     password_login_entry.delete(0, END)
     
-    list_of_files = os.listdir()
+    # Defining the accessing and saving path file
+    path = os.path.join(CURPATH, "Login_info")
+    path1 = os.path.join(CURPATH, "Login_info", username1)
+
+    list_of_files = os.listdir(path)
     if username1 in list_of_files:   
-        file1 = open(username1, "r")
+        file1 = open(path1, "r")
         verify = file1.read().splitlines()
         if password1 in verify:
             global check
