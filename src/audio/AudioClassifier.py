@@ -12,7 +12,7 @@ from tensorflow import keras
 from pathlib import Path
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import notification
+import notification #pylint: disable=import-error
 
 class AudioClassifier:
     """

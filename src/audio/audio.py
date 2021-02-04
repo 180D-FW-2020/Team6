@@ -5,6 +5,7 @@ import os
 import preprocess
 import pyaudio
 import signal
+import sqlite3
 import struct
 import sys
 import wave
@@ -28,9 +29,13 @@ SWIDTH = 2
 SHORT_NORMALIZE = (1.0/32768.0)
 RMS_THRESH=20
 
-#Current path
+# Paths
 CURPATH = os.path.dirname(os.path.abspath(__file__))
+PARPATH = os.path.dirname(CURPATH)
+BASEPATH = os.path.dirname(PARPATH)
 SAVEPATH = os.path.join(CURPATH, "AudioDB")
+BASERELPATH = os.path.join(os.path.basename(BASEPATH), 
+                           os.path.relpath(SAVEPATH, BASEPATH))
 
 # Audio classifier.
 print("Loading Neural Network...")
@@ -45,6 +50,12 @@ conn.start()
 
 # Controls
 RECORD = True
+
+# sqlite3
+DBPATH = os.path.join(PARPATH, "sql", "RPi.db")
+db = sqlite3.connect(DBPATH)
+cursor = db.cursor()
+query = "INSERT INTO recording VALUES(?, ?)"
 
 def save_wav(frames, fname):
     global p
@@ -117,9 +128,14 @@ def record():
     
     if RECORD:
         now = datetime.now()
-        now_str = now.strftime("%d-%m-%Y-%H:%M:%S.wav")
-        savepath = os.path.join(SAVEPATH, now_str)
+        now_str = now.strftime("%Y-%m-%d %H:%M:%S")
+        fname = now_str + ".wav"
+        savepath = os.path.join(SAVEPATH, fname)
         save_wav(frames, savepath)
+
+        ref = os.path.join(BASERELPATH, now_str)
+        cursor.execute(query, (now_str, ref))
+        db.commit()
 
     print("... Done recording")
 
