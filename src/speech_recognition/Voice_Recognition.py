@@ -9,33 +9,34 @@ client = pub_cmd.connect_mqtt()
 
 
 class Voice_Commmand:
-    def __init__(self, filename):
-        self.filename = filename
+    def __init__(self):
         self.r = sr.Recognizer()
         self.text = None
         self.command = None
 
     def processing(self):
-        self.start_action()
-        self.action()
-        self.end_action()
+        while (True):
+            self.start_action()
+            self.action()
 
     def action(self):
         cmnd = self.command.lower()
-
         if ((self.find_substring('stop', cmnd) and self.find_substring('listen', cmnd)) or (self.find_substring('stop', cmnd) and self.find_substring('hear', cmnd))):
             self.do_action(1)
         elif (self.find_substring('listen', cmnd) or self.find_substring('hear', cmnd)):
             self.do_action(2)
-        elif (self.find_substring('stop', cmnd)):
+        elif (self.find_substring('stop', cmnd) and (self.find_substring('song', cmnd) or self.find_substring('music', cmnd))):
             self.do_action(3)
         elif (self.find_substring('second', cmnd)):
             self.do_action(4)
         elif (self.find_substring('first', cmnd)):
             self.do_action(5)
+        elif (self.find_substring('close', cmnd)):
+            self.do_action(6)
         else:
             print('There is no such command here. \n Please say your command again.')
-            self.processing()
+            self.command = self.convert_audio_to_txt()
+            self.action()
 
     def do_action(self, type_num):
         if(type_num == 1):
@@ -51,42 +52,25 @@ class Voice_Commmand:
         elif (type_num == 5):
             print('Action 5')
             pub_cmd.publish(client, "lullaby1.mp3")
-
-    def convert_wav_to_txt(self):
-        with sr.WavFile(self.filename) as source:
-            self.r.adjust_for_ambient_noise(source, duration=1)
-            rec = self.r.record(source)
-            try:
-                ls = self.r.recognize_google(rec, True)
-                print("Possible Transcript: ")
-                for prediction in ls:
-                    print(" " + prediction)
-            except:
-                print('I could not understand the audio file')
+        elif (type_num == 6):
+            sys.exit()
 
     def start_action(self):
-        print('How can I help you? ***Say: "play second song" OR Say: "play first song"***')
-        self.convert_audio_to_txt()
-        self.command = self.text
-        self.first_action = True
-
-    def end_action(self):
-        print('If you want to end the program, please say "close the application": ')
-        self.convert_audio_to_txt()
-        if(self.find_substring('close', self.text) == True):
-            sys.exit()
-        else:
-            self.processing()
+        print('How can I help you? \n ***Say: "play second song" OR Say: "play first song"*** \n')
+        print('If you want to end the program, please say "close the Nightlight": ')
+        self.command = self.convert_audio_to_txt()
 
     def convert_audio_to_txt(self):
         with sr.Microphone() as source:
-            self.r.adjust_for_ambient_noise(source)
-            audio = self.r.listen(source, phrase_time_limit=3)
+            # self.r.adjust_for_ambient_noise(source)
+            audio = self.r.listen(source)
             try:
                 self.text = self.r.recognize_google(audio)
+                return (self.text)
             except:
                 print('I did not get that. Please say again.')
-                self.convert_audio_to_txt()
+            self.convert_audio_to_txt()
+                
 
     def find_substring(self, substring, txt):
         if substring in txt:
@@ -95,5 +79,5 @@ class Voice_Commmand:
             return False
 
 
-vc = Voice_Commmand('test.wav')
+vc = Voice_Commmand()
 vc.processing()
