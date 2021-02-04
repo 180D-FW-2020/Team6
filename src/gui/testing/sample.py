@@ -17,6 +17,7 @@ import os
 import sub_cmd
 import pub_cmd
 
+
 class GUI:
     def __init__(self, user):
 
@@ -101,15 +102,6 @@ class GUI:
         # Video Streaming
         self.cap = cv2.VideoCapture(0)
 
-
-        # # Audio Streaming
-        # self.audio_conn = AudioClient.AudioClient()
-        # self.audio_conn.start()
-        # self.listen = False
-        # self.audio_stat = "Off"
-        # thread = threading.Thread(target=self.audio_conn.recv)
-        # thread.start()
-
         self.window.mainloop()  # runs application
 
     # Event handlers
@@ -124,9 +116,9 @@ class GUI:
         self.lmain.after(1000, self.main_display)
 		
 
-    def listen_cmd(self):
-        while self.listen:
-            self.audio_conn.recv()
+    # def listen_cmd(self):
+    #     while self.listen:
+    #         self.audio_conn.recv()
     
     #Displaying Video Stream from own camera
     def video_stream(self):
@@ -138,7 +130,7 @@ class GUI:
         # self.lmain.imgtk = imgtk
         # self.lmain.configure(image=imgtk)
         # self.lmain.after(1, self.video_stream)
-        self.path = os.path.join(self.CURPATH, "vid_gui_client.py")
+        self.path = os.path.join(self.CURPATH, "vid_gui_client_latest_user1.py")
         exec(open(self.path).read())
 
     def handle_click_lullaby(self):
@@ -172,13 +164,20 @@ class GUI:
     def handle_click_listen(self):
         if self.mute == True:
             self.button_c.config(image = self.loadimage2)
+            # Audio Streaming
+            self.audio_conn = AudioClient.AudioClient(write = False)    
+            self.audio_conn.write = True
+            self.audio_conn.start()
+            thread = threading.Thread(target=self.audio_conn.recv)
+            thread.start()
             self.mute = False 
+
         elif self.mute == False:
-            self.button_c.config(image = self.loadimage) 
+            self.button_c.config(image = self.loadimage)
+            self.audio_conn.stop()
+            self.audio_conn.write = False 
             self.mute = True
 
-        # self.audio_stat = "On" if self.audio_stat == "Off" else "Off"
-        # self.lmain.configure(text="Listening " + self.audio_stat, justify="center", font="Helvetica 20 bold")
 
         # self.listen = not self.listen
         # print(self.listen)
@@ -337,13 +336,13 @@ class GUI:
             return False
         return True
 
-# main_account_screen()
-# username = get_username()
-# if (verified() == True):
-#     client = pub_cmd.connect_mqtt()
-#     sub_client = sub_cmd.connect_mqtt()
-#     g = GUI(username)
+main_account_screen()
+username = get_username()
+if (verified() == True):
+    client = pub_cmd.connect_mqtt()
+    sub_client = sub_cmd.connect_mqtt()
+    g = GUI(username)
 
-client = pub_cmd.connect_mqtt()
-sub_client = sub_cmd.connect_mqtt()
-g = GUI("Leondi")
+# client = pub_cmd.connect_mqtt()
+# sub_client = sub_cmd.connect_mqtt()
+# g = GUI("Leondi")
