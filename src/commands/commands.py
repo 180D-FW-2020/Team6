@@ -58,12 +58,27 @@ def connect_mqtt() -> mqtt:
 
             try:
                 cursor.execute(query, (new, curr))
-                print(f"updated email from {curr} into {new}")
+                print(f"Updated email from {curr} into {new}")
             except:
-                print(f"Update failed")
+                print("Update failed")
 
             db.commit()
+        
+        if "alert" in str_msg:
+            print(f"Received command: alert")
+            info = str_msg[6:].split(" ")
+            email = info[0]
+            settings = info[1]
+            query = "UPDATE user SET alert=? WHERE email=?"
+            
+            try:
+                cursor.execute(query, (settings, email))
+                print(f"Updated notification setting for {email} to {settings}")
+            except:
+                print("Updated failed")
 
+            db.commit()
+            
     client = mqtt.Client()
     client.on_connect = on_connect
     client.on_disconnect = on_disconnect
