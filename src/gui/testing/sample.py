@@ -337,13 +337,13 @@ class GUI:
             return False
         return True
 
-# main_account_screen()
-# username = get_username()
-# if (verified() == True):
-#     client = pub_cmd.connect_mqtt()
-#     sub_client = sub_cmd.connect_mqtt()
-#     g = GUI(username)
+main_account_screen()
+username = get_username()
+if (verified() == True):
+    client = pub_cmd.connect_mqtt()
+    sub_client = sub_cmd.connect_mqtt()
+    g = GUI(username)
 
-client = pub_cmd.connect_mqtt()
-sub_client = sub_cmd.connect_mqtt()
-g = GUI("Leondi")
+# client = pub_cmd.connect_mqtt()
+# sub_client = sub_cmd.connect_mqtt()
+# g = GUI("Leondi")
