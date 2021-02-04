@@ -77,7 +77,7 @@ class GUI:
                                   width=14, height=5, bg="aquamarine", fg="BLACK", command=self.video_stream)
         self.button_b = tk.Button(self.button_frame, text="Play lullaby", font="Helvetica 11 bold",
                                   width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_lullaby)
-        self.button_c = tk.Button(self.button_frame, text="Listen Your Baby", font="Helvetica 11 bold",
+        self.button_c = tk.Button(self.button_frame, text="Listen To Audio", font="Helvetica 11 bold",
                                   bg="aquamarine", fg="black", image=self.loadimage, compound="bottom", command=self.handle_click_listen)
         self.button_d = tk.Button(self.button_frame, text="Changing Login Info", font="Helvetica 11 bold",
                                   width=18, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_changing_login_info)
@@ -102,13 +102,13 @@ class GUI:
         self.cap = cv2.VideoCapture(0)
 
 
-        # # Audio Streaming
-        # self.audio_conn = AudioClient.AudioClient()
-        # self.audio_conn.start()
-        # self.listen = False
-        # self.audio_stat = "Off"
-        # thread = threading.Thread(target=self.audio_conn.recv)
-        # thread.start()
+        # Audio Streaming
+        self.audio_conn = AudioClient.AudioClient()
+        self.audio_conn.start()
+        self.listen = False
+        self.audio_stat = "Off"
+        thread = threading.Thread(target=self.audio_conn.recv)
+        thread.start()
 
         self.window.mainloop()  # runs application
 
@@ -177,12 +177,12 @@ class GUI:
             self.button_c.config(image = self.loadimage) 
             self.mute = True
 
-        # self.audio_stat = "On" if self.audio_stat == "Off" else "Off"
-        # self.lmain.configure(text="Listening " + self.audio_stat, justify="center", font="Helvetica 20 bold")
+        self.audio_stat = "On" if self.audio_stat == "Off" else "Off"
+        self.lmain.configure(text="Listening " + self.audio_stat, justify="center", font="Helvetica 20 bold")
 
-        # self.listen = not self.listen
-        # print(self.listen)
-        # self.audio_conn.write = self.listen
+        self.listen = not self.listen
+        print(self.listen)
+        self.audio_conn.write = self.listen
 
     def handle_click_changing_login_info(self):
         print(self.username_info)

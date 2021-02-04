@@ -131,7 +131,7 @@ def record():
         now_str = now.strftime("%Y-%m-%d %H:%M:%S")
         fname = now_str + ".wav"
         savepath = os.path.join(SAVEPATH, fname)
-        save_wav(frames, savepath)
+        #save_wav(frames, savepath)
 
         ref = os.path.join(BASERELPATH, now_str)
         cursor.execute(query, (now_str, ref))
