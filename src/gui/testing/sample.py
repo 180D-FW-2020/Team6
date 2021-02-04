@@ -29,7 +29,7 @@ class GUI:
 
         # Making a GUI window
         self.window = tk.Tk()
-        self.window.geometry("800x550")
+        self.window.geometry("1000x550")
         self.window.configure(bg="#4DA8DA")
         
         # Title of GUI
@@ -81,8 +81,8 @@ class GUI:
                                   bg="aquamarine", fg="black", image=self.loadimage, compound="bottom", command=self.handle_click_listen)
         self.button_d = tk.Button(self.button_frame, text="Changing Login Info", font="Helvetica 11 bold",
                                   width=18, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_changing_login_info)
-        # self.button_e = tk.Button(self.button_frame, text="Open Chat Window", font="Helvetica 11 bold",
-        #   width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_open_chat_window)
+        self.button_e = tk.Button(self.button_frame, text="Open Chat Window", font="Helvetica 11 bold",
+                                  width=16, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_open_chat_window)
         self.button_f = tk.Button(self.button_frame, text="Current Notification" + "\n\n" + self.notification, font="Helvetica 11 bold", 
                                     width=17, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_notification)
         self.button_g = tk.Button(self.button_frame, text="Quit", font="Helvetica 11 bold",
@@ -93,7 +93,7 @@ class GUI:
         self.button_b.pack(side=tk.LEFT, fill=tk.BOTH)
         self.button_c.pack(side=tk.LEFT, fill=tk.BOTH)
         self.button_d.pack(side=tk.LEFT, fill=tk.BOTH)
-        # self.button_e.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.button_e.pack(side=tk.LEFT, fill=tk.BOTH)
         self.button_f.pack(side=tk.LEFT, fill=tk.BOTH)
         self.button_g.pack(side=tk.LEFT, fill=tk.BOTH)
 
@@ -138,7 +138,8 @@ class GUI:
         # self.lmain.imgtk = imgtk
         # self.lmain.configure(image=imgtk)
         # self.lmain.after(1, self.video_stream)
-        exec(open('vid_gui_client.py').read())
+        self.path = os.path.join(self.CURPATH, "vid_gui_client.py")
+        exec(open(self.path).read())
 
     def handle_click_lullaby(self):
         self.new_window = tk.Toplevel(self.window)
@@ -195,7 +196,9 @@ class GUI:
         tk.Button(self.login_screen, text = "Changing Email", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.changing_email).pack()
 
 
-    # def handle_click_open_chat_window(self):
+    def handle_click_open_chat_window(self):
+        self.path = os.path.join(self.CURPATH, "chatcli.py")
+        exec(open(self.path).read())
 
     def handle_click_notification(self):
         self.username_info = self.verify[0]
