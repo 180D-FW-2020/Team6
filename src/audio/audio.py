@@ -159,9 +159,12 @@ def listen():
             print("Back to listen")
 
 def main():
-    start_mic()
-    listen()
-    stop_mic()
+    try:
+        start_mic()
+        listen()
+        stop_mic()
+    finally:
+        conn.stop()
 
 if __name__ == "__main__":
     atexit.register(stop_mic)
