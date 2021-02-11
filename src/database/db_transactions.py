@@ -6,6 +6,10 @@ import socket
 # Socket buffer
 BUFFER = 2048
 
+# DB Error Message
+err = '{"status":false, "err":"Server error, please try again."}'
+err = err.encode()
+
 # Psql cred
 with open('psql_cred.json') as f:
     cred = json.load(f)
@@ -25,12 +29,62 @@ def psql_conn():
     return (conn, cursor)
 
 def register(cli_sock, data):
-    pass
+    conn, cursor =  psql_conn()
+
+    if conn:
+        print("Processing Register Request.")
+        user = data['user']
+        email = data['email']
+        pswd = data['pswd']
+        unique_user = "SELECT COUNT(*) FROM users where username=%s"
+        unique_email = "SELECT COUNT(*) FROM users where email=%s"
+       
+        reg_errs = ['{"status":false, "err":"Username and email is already taken."}',
+                    '{"status":false, "err":"Username is already taken."}',
+                    '{"status":false, "err":"Email is already taken."}']
+
+        err = None
+
+        try:
+            cursor.execute(unique_user, (user,))
+            user_row = cursor.fetchone()[0]
+            cursor.execute(unique_email, (email,))
+            email_row = cursor.fetchone()[0]
+
+            if user_row != 0 and email_row != 0:
+                err = reg_errs[0]
+            elif user_row != 0:
+                err = reg_errs[1]
+            elif email_row != 0:
+                err = reg_errs[2]
+
+            if err is not None:
+                err = err.encode()
+                cli_sock.send(err)
+            else:
+                query ="INSERT INTO users(username, email, password) VALUES (%s, %s, crypt(%s, gen_salt('bf')))"
+                cursor.execute(query, (user, email, pswd))
+                info = '{"status":true}'
+                info = info.encode()
+                cli_sock.send(info)
+
+                conn.commit()
+        
+        except Exception as error:
+            print(error)
+            cli_sock.send(err)
+
+        finally:
+            conn.close()
+            cursor.close()
+
+    else:
+        cli_sock.send(err)
+    
+    cli_sock.close()
 
 def login(cli_sock, data):
     conn, cursor = psql_conn()
-    err = '{"status":false, "err":"Server error, please try again."}'
-    err = err.encode()
     
     if conn:
         print("Processing Login Request")
@@ -60,10 +114,11 @@ def login(cli_sock, data):
         finally:
             conn.close()
             cursor.close()
-            cli_sock.close()
 
     else:
         cli_sock.send(err)
+
+    cli_sock.close()
 
 def process(cli_sock):
     cli_sock.settimeout(10)
@@ -71,13 +126,16 @@ def process(cli_sock):
     raw = raw.decode()
     data = json.loads(raw)
     func = None
-    if data["func"] == "login":
+
+    if data["func"] == "register":
+        func = register
+
+    elif data["func"] == "login":
         func = login
 
     if func:
         func_thread = threading.Thread(target=func, args=(cli_sock,data))
         func_thread.start()
-    
 
 def client_connection():
     addr = '0.0.0.0'
@@ -96,7 +154,6 @@ def client_connection():
         process_thread.start()
 
     listen_sock.close()
-
 
 def main():
     _thread = threading.Thread(target=client_connection)
