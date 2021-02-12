@@ -1,6 +1,5 @@
 import json
 import socket
-
 # Socket buffer
 BUFFER = 2048
 
@@ -47,6 +46,40 @@ class DBInterface():
     def login(self, user, pswd):
         # Login request
         req = f'{{"func":"login", "user":"{user}", "pswd":"{pswd}"}}'
+        raw = self._send(req)
+
+        return raw
+
+    def update_username(self, iD, old_user, new_user, pswd):
+        # Login request
+        req = f"""{{"func":"update", "attr":"username", "id":{iD}, "old":"{old_user}", 
+                  "new":"{new_user}", "pswd":"{pswd}"}}"""
+        raw = self._send(req)
+
+        return raw
+
+    def update_email(self, iD, old_email, new_email, pswd):
+        # Login request
+        req = f"""{{"func":"update", "attr":"email", "id":{iD}, "old":"{old_email}", 
+                  "new":"{new_email}", "pswd":"{pswd}"}}"""
+        raw = self._send(req)
+
+        return raw
+
+    def update_password(self, iD, old_pswd, new_pswd):
+        # Login request
+        req = f"""{{"func":"update", "attr":"password", "id":{iD}, "old":"{old_pswd}", 
+                  "new":"{new_pswd}", "pswd":"{old_pswd}"}}"""
+        raw = self._send(req)
+
+        return raw
+
+    def switch_notification(self, iD, notification):
+        # Login request
+        if notification:
+            req = f'{{"func":"switch_notification", "id":{iD}, "notification":true}}'
+        else:
+            req = f'{{"func":"switch_notification", "id":{iD}, "notification":false}}'
         raw = self._send(req)
 
         return raw

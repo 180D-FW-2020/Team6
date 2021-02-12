@@ -7,8 +7,8 @@ import socket
 BUFFER = 2048
 
 # DB Error Message
-err = '{"status":false, "err":"Server error, please try again."}'
-err = err.encode()
+serr = '{"status":false, "err":"Server error, please try again."}'
+serr = serr.encode()
 
 # Psql cred
 with open('psql_cred.json') as f:
@@ -72,14 +72,14 @@ def register(cli_sock, data):
         
         except Exception as error:
             print(error)
-            cli_sock.send(err)
+            cli_sock.send(serr)
 
         finally:
             conn.close()
             cursor.close()
 
     else:
-        cli_sock.send(err)
+        cli_sock.send(serr)
     
     cli_sock.close()
 
@@ -87,36 +87,120 @@ def login(cli_sock, data):
     conn, cursor = psql_conn()
     
     if conn:
-        print("Processing Login Request")
+        print("Processing Login Request.")
         user = data['user']
         pswd = data['pswd']
-        query = "SELECT notification FROM users WHERE username=%s AND password=crypt(%s, password)"
+        query = "SELECT id, email, notification FROM users WHERE username=%s AND password=crypt(%s, password)"
 
         try:
             cursor.execute(query, (user, pswd))
             if (cursor.rowcount):
-                alert = cursor.fetchone()[0]
-
+                iD, email, alert = cursor.fetchone()
                 if alert:
-                    info = '{"status":true, "notification":true}'
+                    info = f'{{"status":true, "id":{iD}, "email":"{email}", "notification":true}}'
                 else:
-                    info = '{"status":true, "notification":false}'
+                    info = f'{{"status":true, "id":{iD}, "email":"{email}", "notification":false}}'
+
                 info = info.encode()
                 cli_sock.send(info)
+
             else:
-                err = '{"status":false, "err":"Username and email do not match."}'
+                err = '{"status":false, "err":"Username and password do not match."}'
                 err = err.encode()
                 cli_sock.send(err)
 
         except Exception as error:
                 print(error)
-                cli_sock.send(err)
+                cli_sock.send(serr)
         finally:
             conn.close()
             cursor.close()
 
     else:
-        cli_sock.send(err)
+        cli_sock.send(serr)
+
+    cli_sock.close()
+
+def update(cli_sock, data):
+    conn, cursor = psql_conn()
+    
+    if conn:
+        attr = data['attr']
+        print(f"Processing Update Request: {attr}.")
+
+        iD = data['id']
+        old = data['old']
+        new = data['new']
+        pswd = data['pswd']
+       
+        try:
+            auth = "SELECT * FROM users WHERE id=%s AND password=crypt(%s, password)"
+            cursor.execute(auth, (iD, pswd))
+            if (cursor.rowcount):
+                if attr == "password":
+                    query = f"UPDATE users SET {attr}=crypt(%s, gen_salt('bf')) WHERE id=%s AND {attr}=crypt(%s, password)"
+                else:
+                    query = f"UPDATE users SET {attr}=%s WHERE id=%s AND {attr}=%s"
+                
+                cursor.execute(query, (new, iD, old))
+
+                if attr == "password":
+                    msg = '{"status":true}'
+                else:
+                    msg = f'{{"status":true, "{attr}":"{new}"}}'
+
+                msg = msg.encode()
+                cli_sock.send(msg)
+                conn.commit()
+            else:
+                err = '{"status":false, "err":"Incorrect password"}'
+                err = err.encode()
+                cli_sock.send(err)
+        
+        except Exception as error:
+            print(error)
+            cli_sock.send(serr)
+
+        finally:
+            conn.close()
+            cursor.close()
+
+    else:
+        cli_sock.send(serr)
+
+    cli_sock.close()
+
+def switch_notification(cli_sock, data):
+    conn, cursor = psql_conn()
+
+    if conn:
+        print(f"Processing Notification Switch Request.")
+        iD = data['id']
+        notification = data['notification']
+
+        try:
+            query = "UPDATE users SET notification=%s WHERE id=%s"
+            cursor.execute(query, (notification,iD))
+            conn.commit()
+ 
+            if notification:
+                msg = '{"status":true, "notificaion":true}'
+            else:
+                msg = '{"status":true, "notificaion":false}'
+
+            msg = msg.encode()
+            cli_sock.send(msg)
+
+        except Exception as error:
+            print(error)
+            cli_sock.send(serr)
+
+        finally:
+            conn.close()
+            cursor.close()
+
+    else:
+        cli_sock.send(serr)
 
     cli_sock.close()
 
@@ -125,17 +209,27 @@ def process(cli_sock):
     raw = cli_sock.recv(BUFFER)
     raw = raw.decode()
     data = json.loads(raw)
-    func = None
+    func_ptr = None
 
-    if data["func"] == "register":
-        func = register
+    func = data["func"]
 
-    elif data["func"] == "login":
-        func = login
+    if func == "register":
+        register(cli_sock, data)
 
+    elif func == "login":
+        login(cli_sock, data)
+ 
+    elif func == "update":
+        update(cli_sock, data)
+
+    elif func == "switch_notification":
+        switch_notification(cli_sock, data)
+
+    """
     if func:
-        func_thread = threading.Thread(target=func, args=(cli_sock,data))
+        func_thread = threading.Thread(target=func_ptr, args=(cli_sock,data))
         func_thread.start()
+    """
 
 def client_connection():
     addr = '0.0.0.0'
