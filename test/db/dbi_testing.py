@@ -10,7 +10,6 @@ ROOTDIR = os.path.dirname(os.path.dirname(CURDIR))
 DBPATH = os.path.join(ROOTDIR, "src", "database")
 sys.path.append(DBPATH)
 import DBInterface #pylint: disable=import-error
-#scp -i ~/temp/nightlight.pem ubuntu@3.19.57.159:~/database/db_transactions.py .
 
 def main():
     # Create DBInterface object
