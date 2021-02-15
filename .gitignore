@@ -8,3 +8,4 @@ AudioDB/*
 *.txt
 *.log
 *.db
+psql_cred.json

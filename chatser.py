@@ -59,5 +59,3 @@ if __name__ == "__main__":
     print("Waiting for connection...")
     ACCEPT_THREAD = Thread(target=accept_incoming_connections)
     ACCEPT_THREAD.start()
-    ACCEPT_THREAD.join()
-    SERVER.close()

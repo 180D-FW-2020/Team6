@@ -57,6 +57,7 @@ db = sqlite3.connect(DBPATH)
 cursor = db.cursor()
 query = "INSERT INTO recording VALUES(?, ?)"
 
+
 def save_wav(frames, fname):
     global p
     print("Saving...")
@@ -134,8 +135,12 @@ def record():
         #save_wav(frames, savepath)
 
         ref = os.path.join(BASERELPATH, now_str)
-        cursor.execute(query, (now_str, ref))
-        db.commit()
+
+        try:
+            cursor.execute(query, (now_str, ref))
+            db.commit()
+        except:
+            pass
 
     print("... Done recording")
 
@@ -151,11 +156,15 @@ def listen():
         
         if _rms > RMS_THRESH:
             record()
+            print("Back to listen")
 
 def main():
-    start_mic()
-    listen()
-    stop_mic()
+    try:
+        start_mic()
+        listen()
+        stop_mic()
+    finally:
+        conn.stop()
 
 if __name__ == "__main__":
     atexit.register(stop_mic)

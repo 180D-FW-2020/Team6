@@ -98,6 +98,7 @@ class GUI:
         self.button_f.pack(side=tk.LEFT, fill=tk.BOTH)
         self.button_g.pack(side=tk.LEFT, fill=tk.BOTH)
 
+        self.window.protocol("WM_DELETE_WINDOW", self.quit_the_program)
 
         # Video Streaming
         self.cap = cv2.VideoCapture(0)
@@ -210,8 +211,11 @@ class GUI:
 
 
     def quit_the_program(self):
-        os.remove("notification.txt")
+        if(self.mute == False):
+            self.audio_conn.stop()
+            self.audio_conn.write = False
         sys.exit()
+
 
     def inserting_option(self):
         self.option.insert(tk.END, "First Lullaby")
