@@ -78,7 +78,7 @@ class GUI:
                                   width=14, height=5, bg="aquamarine", fg="BLACK", command=self.video_stream)
         self.button_b = tk.Button(self.button_frame, text="Play lullaby", font="Helvetica 11 bold",
                                   width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_lullaby)
-        self.button_c = tk.Button(self.button_frame, text="Listen Your Baby", font="Helvetica 11 bold",
+        self.button_c = tk.Button(self.button_frame, text="Listen To Audio", font="Helvetica 11 bold",
                                   bg="aquamarine", fg="black", image=self.loadimage, compound="bottom", command=self.handle_click_listen)
         self.button_d = tk.Button(self.button_frame, text="Changing Login Info", font="Helvetica 11 bold",
                                   width=18, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_changing_login_info)
@@ -178,11 +178,6 @@ class GUI:
             self.audio_conn.stop()
             self.audio_conn.write = False 
             self.mute = True
-
-
-        # self.listen = not self.listen
-        # print(self.listen)
-        # self.audio_conn.write = self.listen
 
     def handle_click_changing_login_info(self):
         print(self.username_info)
