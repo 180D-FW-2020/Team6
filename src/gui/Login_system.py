@@ -3,6 +3,8 @@
 from tkinter import *
 import pub_cmd
 import os
+import json
+import DBInterface
 
 CURPATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -117,24 +119,20 @@ def register_user():
     password_entry.delete(0, END)
     email_address_entry.delete(0, END)
 
+    db = DBInterface.DBInterface()
+
     if(isBlank(username_info) or isBlank(password_info) or isBlank(email_info)):
         empty_filler()
         info_regis.configure(text="Registration Failed", justify = "center", bg = "white", fg="green", font=("calibri", 11))
     else:
-        path = os.path.join(CURPATH, "Login_info", username_info)
-        if(os.path.isfile(path)):
-            username_exist()
-            info_regis.configure(text="Registration Failed", justify = "center", bg = "white", fg="green", font=("calibri", 11))
-        else:
-            
-            file = open(path, "w")
-            file.write(username_info + "\n")
-            file.write(password_info + "\n")
-            file.write(email_info + "\n")
-            file.write("On")
-            pub_cmd.publish(client, "insert " +  username_info +  " " + email_info)
-            file.close()
+        reg = db.register(username_info, email_info, password_info)
+        data = json.loads(reg)
+        
+        if (data["status"] == True):
             info_regis.configure(text="Registration Success", justify = "center", bg = "white", fg="green", font=("calibri", 11))
+        else:
+            user_info_exist(data["err"])
+            info_regis.configure(text="Registration Failed", justify = "center", bg = "white", fg="green", font=("calibri", 11))
 
            
 # Implementing event on login button 
@@ -145,32 +143,26 @@ def login_verify():
     password1 = password_verify.get()
     username_login_entry.delete(0, END)
     password_login_entry.delete(0, END)
-    
-    # Defining the accessing and saving path file
-    path = os.path.join(CURPATH, "Login_info")
-    path1 = os.path.join(CURPATH, "Login_info", username1)
 
-    list_of_files = os.listdir(path)
-    if username1 in list_of_files:   
-        file1 = open(path1, "r")
-        verify = file1.read().splitlines()
-        if password1 in verify:
-            global check
-            global username2
-            login_sucess()
-            check = True
-            username2 = username1
-        else:
-            password_not_recognised()
+    global data2
+    db = DBInterface.DBInterface()
+    log = db.login(username1, password1)
+    data2 = json.loads(log)
+    
+    if(data2["status"] == True):
+        global check
+        data2["username"] = username1
+        login_sucess()
+        check = True
     else:
-        user_not_found()
- 
+        user_and_password_not_recognised()
+
 
 def verified():
     return check
 
-def get_username():
-    return username2
+def get_user_info():
+    return data2
 
 # Designing popup for login success
  
@@ -179,31 +171,22 @@ def login_sucess():
 
 # Designing popup for login invalid password
  
-def password_not_recognised():
+def user_and_password_not_recognised():
     global password_not_recog_screen
     password_not_recog_screen = Toplevel(login_screen)
     password_not_recog_screen.title("Error Password")
     password_not_recog_screen.geometry("150x100")
-    Label(password_not_recog_screen, text="Invalid Password ").pack()
+    Label(password_not_recog_screen, text="Username and Password do not match").pack()
     Button(password_not_recog_screen, text="OK", bg = "cyan", command=delete_password_not_recognised).pack()
  
-# Designing popup for user not found
- 
-def user_not_found():
-    global user_not_found_screen
-    user_not_found_screen = Toplevel(login_screen)
-    user_not_found_screen.title("Error Username")
-    user_not_found_screen.geometry("150x100")
-    Label(user_not_found_screen, text="User Not Found").pack()
-    Button(user_not_found_screen, text="OK", bg = "cyan", command=delete_user_not_found_screen).pack()
 
 # Designing popup for username has been used
-def username_exist():
+def user_info_exist(information):
     global username_exist_screen
     username_exist_screen = Toplevel(register_screen)
-    username_exist_screen.title("Error Username")
-    username_exist_screen.geometry("150x100")
-    Label(username_exist_screen, text="Username Has Been Used").pack()
+    username_exist_screen.title("Error Registaration")
+    username_exist_screen.geometry("200x100")
+    Label(username_exist_screen, text= information).pack()
     Button(username_exist_screen, text="OK", bg = "cyan", command=delete_username_exist_screen).pack()
 
 # Designing popup for the filler of registration are not filled
@@ -225,8 +208,8 @@ def delete_login_success():
 def delete_password_not_recognised():
     password_not_recog_screen.destroy()
   
-def delete_user_not_found_screen():
-    user_not_found_screen.destroy()
+# def delete_user_not_found_screen():
+#     user_not_found_screen.destroy()
  
 def delete_username_exist_screen():
     username_exist_screen.destroy()
@@ -239,5 +222,6 @@ def isBlank(my_string):
         return False
     return True
 
-client = pub_cmd.connect_mqtt()
+
+# client = pub_cmd.connect_mqtt()
 # main_account_screen()

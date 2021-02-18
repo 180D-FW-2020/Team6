@@ -21,11 +21,13 @@ class Voice_Commmand:
 
     def action(self):
         cmnd = self.command.lower()
-        if ((self.find_substring('stop', cmnd) and self.find_substring('listen', cmnd)) or (self.find_substring('stop', cmnd) and self.find_substring('hear', cmnd))):
+        if ((self.find_substring('stop', cmnd) and self.find_substring('listen', cmnd)) or 
+                    (self.find_substring('stop', cmnd) and self.find_substring('hear', cmnd))):
             self.do_action(1)
         elif (self.find_substring('listen', cmnd) or self.find_substring('hear', cmnd)):
             self.do_action(2)
-        elif (self.find_substring('stop', cmnd) and (self.find_substring('song', cmnd) or self.find_substring('music', cmnd))):
+        elif (self.find_substring('stop', cmnd) and (self.find_substring('song', cmnd) or 
+                    self.find_substring('music', cmnd))):
             self.do_action(3)
         elif (self.find_substring('second', cmnd)):
             self.do_action(4)
@@ -56,7 +58,8 @@ class Voice_Commmand:
             sys.exit()
 
     def start_action(self):
-        print('How can I help you? \n***Say: "play second song" OR Say: "play first song"***')
+        print(
+            'How can I help you? \n***Say: "play second song" OR Say: "play first song"***')
         print('If you want to end the program, please say "close the Nightlight": ')
         self.command = self.convert_audio_to_txt()
 
@@ -70,7 +73,6 @@ class Voice_Commmand:
             except:
                 print('I did not get that. Please say again.')
             self.convert_audio_to_txt()
-                
 
     def find_substring(self, substring, txt):
         if substring in txt:
@@ -78,6 +80,6 @@ class Voice_Commmand:
         else:
             return False
 
-
 vc = Voice_Commmand()
-vc.processing()
+text = vc.convert_audio_to_txt()
+print(text)
