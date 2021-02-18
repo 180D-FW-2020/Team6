@@ -2,5 +2,9 @@ recordings
 __pycache__
 .DS_Store
 *.pkl
-*.h5
 .vscode
+*.wav
+AudioDB/*
+*.txt
+*.log
+*.db

@@ -58,10 +58,13 @@ Note: Subject to change as project is implemented
 - [x] Implement server client code for streaming video (Henry)
 - [x] Motion processing for video stream on server (Henry)
 - [x] Classifier processing on client (offload to Rpi) (Henry)
-- [ ] Crib Detection
-- [ ] Detect pose of the baby relative to crib (sleeping/active)
 - [x] End to end video stream connection from rpi to gui (Henry and Denny)
-
+- [x] Enable multiclient video stream
+- [x] Re-login video stream after exiting
+- [ ] Finish Notifications from RPI Motion classifier
+- [ ] MQTT email grabber for notifications on RPI
+- [ ] Embed video into GUI
+ 
 **Task 3: Communications**
 - [x] Send information (alerts), Receive commands (Leondi)
 - [x] Transmit/Receive Audio files (Robert)
@@ -78,6 +81,7 @@ Note: Subject to change as project is implemented
 - [x] Add image display (Leondi)
 - [ ] Embed video stream functionality [IN PROGRESS]
 - [x] Send and receive user commands with MQTT in event handlers (Leondi and Robert)
+- [x] Chat Box between multi client
 
 **Task 6: IMU**
 - [x] Create classifiers for key baby actions (Denny)
@@ -87,13 +91,6 @@ Note: Subject to change as project is implemented
 - [x] Setup classifiers for voice commands (Leondi)
 - [x] Implement event handlers as actions (Henry and Leondi)
 
-**Demo Setup and Run**
-Video:
-
-Play Lullaby:
-
-GUI:
-
-IMU:
-
-Voice Command:
+**Task 8: System**
+- [x] Install Script (Robert)
+- [ ] Running Script (Denny) 

@@ -5,7 +5,7 @@ from PIL import Image
 import matplotlib.pyplot as pl
 
 server_socket = socket.socket()
-server_socket.bind(('192.168.1.10', 9000))  # ADD IP HERE
+server_socket.bind(('192.168.1.10', 6667))  # ADD IP HERE
 #server_socket.bind(('172.91.89.246',8000))
 server_socket.listen(0)
 
