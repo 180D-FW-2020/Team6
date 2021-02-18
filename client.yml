@@ -1,0 +1,14 @@
+name: nightlight
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python>=3.7.6
+  - pyaudio=0.2.11
+  - portaudio=19.6.0
+  - numpy>=1.15.4
+  - opencv>=3.4.1
+  - pip:
+    - Pillow==8.0  
+    - imutils==0.5.4
+    - paho-mqtt==1.5.1

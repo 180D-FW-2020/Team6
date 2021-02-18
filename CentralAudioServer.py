@@ -31,7 +31,12 @@ def redirect():
         closed = []
 
         # Read from RPi (AUDIO)
-        data = AUDIO.recv(BUFFERSIZE)
+        try:
+            data = AUDIO.recv(BUFFERSIZE)
+        except:
+            AUDIO.close()
+            AUDIO = None
+            continue
     
         # Redirect data from AUDIO to CLIENTS
         mutex.acquire()
@@ -39,6 +44,7 @@ def redirect():
             try:
                 client.send(data)
             except:
+                client.close()
                 closed.append(client)
 
         # Dropping closed connections       
@@ -51,7 +57,8 @@ def redirect():
 def client_connection():
     global CLIENTS
     listen_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    listen_sock.bind(('0.0.0.0', 4444))  # socket for listening
+    listen_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    listen_sock.bind(('0.0.0.0', 5559))  # socket for listening
     listen_sock.listen(5)
 
     while True:
@@ -66,7 +73,8 @@ def audio_connection():
     global AUDIO 
     
     audio_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    audio_client.bind(('0.0.0.0', 3333))  # socket for RPI Microphone
+    audio_client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    audio_client.bind(('0.0.0.0', 3356))  # socket for RPI Microphone
     audio_client.listen(0)
     AUDIO, _ = audio_client.accept()
     print("Accepted connection fro RPI Microphone")
