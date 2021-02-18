@@ -9,3 +9,4 @@ AudioDB/*
 *.log
 *.db
 psql_cred.json
+Login_info/*
