@@ -16,13 +16,14 @@ import threading
 import os
 import sub_cmd
 import pub_cmd
+import DBInterface
 
 
 class GUI:
-    def __init__(self, user):
+    def __init__(self, information):
 
-        # Intializing the username
-        self.username_info = user
+        # Intializing the user info
+        self.user_info = information
 
         # Defining the current path
         self.CURPATH = os.path.dirname(os.path.abspath(__file__))
@@ -70,12 +71,15 @@ class GUI:
 
         # Initializing the notification
         self.getting_user_info()
-        self.notification = self.verify[3]
+        if(self.notification_info2 == True):
+            self.notification = "On"
+        else:
+            self.notification = "Off"
 
 
         # Creating buttons
         self.button_a = tk.Button(self.button_frame, text="Watch the baby", font="Helvetica 11 bold",
-                                  width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_clicked_video_stream)
+                                  width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_video_stream)
         self.button_b = tk.Button(self.button_frame, text="Play lullaby", font="Helvetica 11 bold",
                                   width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_lullaby)
         self.button_c = tk.Button(self.button_frame, text="Listen To Audio", font="Helvetica 11 bold",
@@ -115,13 +119,24 @@ class GUI:
             self.txt = "How can I help you?"
         self.lmain.configure(text=self.txt, justify="center",font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB")
         self.lmain.after(1000, self.main_display)
-		
+	
+    def enable_button(self):
+        self.button_a.configure(state = tk.NORMAL)
+        self.button_b.configure(state = tk.NORMAL)
+        self.button_d.configure(state = tk.NORMAL)
+        self.button_e.configure(state = tk.NORMAL)
     
     def handle_click_video_stream(self):
+        self.enable_button()
+        self.button_a.configure(state = tk.DISABLED)
+        
         self.path = os.path.join(self.CURPATH, "vid_gui_client_latest_user1.py")
         exec(open(self.path).read())
 
     def handle_click_lullaby(self):
+        self.enable_button()
+        self.button_b.configure(state = tk.DISABLED)
+        
         self.new_window = tk.Toplevel(self.window)
         self.new_window.configure(bg="#4DA8DA")
 
@@ -150,6 +165,7 @@ class GUI:
         self.stop.pack(fill=tk.BOTH)
 
     def handle_click_listen(self):
+        
         if self.mute == True:
             self.button_c.config(image = self.loadimage2)
             # Audio Streaming
@@ -167,6 +183,9 @@ class GUI:
             self.mute = True
 
     def handle_click_changing_login_info(self):
+        self.enable_button()
+        self.button_d.configure(state = tk.DISABLED)
+        
         self.login_screen = tk.Toplevel(self.window)
         self.login_screen.geometry("300x300")
         self.login_screen.configure(bg="#4DA8DA")
@@ -178,6 +197,9 @@ class GUI:
 
 
     def handle_click_open_chat_window(self):
+        self.enable_button()
+        self.button_e.configure(state = tk.DISABLED)
+        
         self.chat_window = tk.Toplevel(self.window)
         self.chat_window.title("Chatter")
 
@@ -217,19 +239,16 @@ class GUI:
         receive_thread.start()
 
     def handle_click_notification(self):
-        self.username_info = self.verify[0]
-        self.password_info = self.verify[1]
-        self.email_info = self.verify[2]
+        
+        db = DBInterface.DBInterface()
         if(self.notification == "On"):
             self.notification = "Off"
             self.button_f.config(text="Current Notification" + "\n\n" + self.notification)
-            pub_cmd.publish(client, "alert " + self.email_info + " 0")
-            self.write_user_info_to_file()
+            db.switch_notification(self.ID_info2, False)
         elif (self.notification == "Off"):
             self.notification = "On"
             self.button_f.config(text="Current Notification" + "\n\n" + self.notification)
-            pub_cmd.publish(client, "alert " + self.email_info + " 1")
-            self.write_user_info_to_file()
+            db.switch_notification(self.ID_info2, True)
 
 
     def quit_the_program(self):
@@ -299,13 +318,19 @@ class GUI:
     # Some functions for changing login info
     def changing_password(self):
         self.password = tk.StringVar()
+        self.password2 = tk.StringVar()
         self.password_screen = tk.Toplevel(self.login_screen)
         self.password_screen.geometry("300x300")
         self.password_screen.configure(bg = "white")
-        self.password_lable = Label(self.password_screen, text="Password * ", bg = "white")
+        self.password_lable = Label(self.password_screen, text="Current Password * ", bg = "white")
         self.password_lable.pack()
         self.password_entry = Entry(self.password_screen, textvariable=self.password, show='*')
         self.password_entry.pack()
+        tk.Label(self.password_screen, text="", bg = "white").pack()
+        self.password_lable2 = Label(self.password_screen, text="New Password * ", bg = "white")
+        self.password_lable2.pack()
+        self.password_entry2 = Entry(self.password_screen, textvariable=self.password2, show='*')
+        self.password_entry2.pack()
         tk.Label(self.password_screen, text="" , bg = "white").pack()
         tk.Button(self.password_screen, text="Register", width=10, height=1, bg = "cyan", command = self.register_pass).pack()
 
@@ -319,6 +344,11 @@ class GUI:
         self.email_screen = tk.Toplevel(self.login_screen)
         self.email_screen.geometry("300x300")
         self.email_screen.configure(bg = "white")
+        self.password_lable = Label(self.email_screen, text="Current Password * ", bg = "white")
+        self.password_lable.pack()
+        self.password_entry = Entry(self.email_screen, textvariable=self.password, show='*')
+        self.password_entry.pack()
+        tk.Label(self.email_screen, text="", bg = "white").pack()
         self.email_lable = Label(self.email_screen, text="Email Address * ", bg = "white")
         self.email_lable.pack()
         self.email_address_entry = Entry(self.email_screen, textvariable=self.email_address)
@@ -334,43 +364,59 @@ class GUI:
     def register_pass(self):
         self.password_info = self.password.get()
         self.password_entry.delete(0, END)
+        self.password_info2 = self.password2.get()
+        self.password_entry2.delete(0, END)
 
-        if(isBlank(self.password_info)):
+        if(isBlank(self.password_info) or isBlank(self.password_info2)):
             self.empty_filler()
-            self.info_regis.configure(text="Registration Failed", justify = "center", bg = "white", fg="green", font=("calibri", 11))
+            self.info_regis.configure(text="Failed", justify = "center", bg = "white", fg="green", font=("calibri", 11))
         else:
-            self.email_info = self.verify[2]
-            self.write_user_info_to_file()
+            db = DBInterface.DBInterface()
+            log = db.login(self.username_info2, self.password_info)
+            data2 = json.loads(log)
+            if(data2["status"] == True):
+                db.update_password(self.ID_info2, self.password_info, self.password_info2)
+                self.info_regis.configure(text="Success Changing Password", justify = "center", bg = "white", fg="green", font=("calibri", 11))
+            else:
+                self.info_regis.configure(text="Wrong Current Password", justify = "center", bg = "white", fg="green", font=("calibri", 11))
+
     
     def register_email(self):
+        self.password_info = self.password.get()
+        self.password_entry.delete(0, END)
         self.email_info = self.email_address.get()
         self.email_address_entry.delete(0, END)
 
-        if(isBlank(self.email_info)):
+        if(isBlank(self.email_info) or isBlank(self.password_info)):
             self.empty_filler()
-            self.info_regis.configure(text="Registration Failed", justify = "center", bg = "white", fg="green", font=("calibri", 11))
+            self.info_regis.configure(text="Failed", justify = "center", bg = "white", fg="green", font=("calibri", 11))
         else:
-            self.prev_email = self.verify[2]
-            self.password_info = self.verify[1]
-            pub_cmd.publish(client, "change " + self.prev_email + " " + self.email_info)
-            self.write_user_info_to_file()
+            db = DBInterface.DBInterface()
+            log = db.login(self.username_info2, self.password_info)
+            data2 = json.loads(log)
+            if(data2["status"] == True):
+                db.update_email(self.ID_info2, self.email_info2, self.email_info, self.password_info)
+                self.info_regis.configure(text="Success Changing Email", justify = "center", bg = "white", fg="green", font=("calibri", 11))
+            else:
+                self.info_regis.configure(text="Wrong Current Password", justify = "center", bg = "white", fg="green", font=("calibri", 11))
+
 
     def getting_user_info(self):
-        self.path = os.path.join(self.CURPATH, "Login_info", self.username_info)
-        self.file = open(self.path, "r")
-        self.verify = self.file.read().splitlines()
-        self.file.close()
+        self.username_info2 = self.user_info["username"]
+        self.email_info2 = self.user_info["email"] 
+        self.notification_info2 = self.user_info["notification"]
+        self.ID_info2 = self.user_info["id"]
         
     
-    def write_user_info_to_file(self):
-        self.path = os.path.join(self.CURPATH, "Login_info", self.username_info)
-        self.file = open(self.path, "w+")
-        self.file.write(self.username_info + "\n")
-        self.file.write(self.password_info + "\n")
-        self.file.write(self.email_info + "\n")
-        print (self.notification)
-        self.file.write(self.notification)
-        self.file.close()
+    # def write_user_info_to_file(self):
+    #     self.path = os.path.join(self.CURPATH, "Login_info", self.username_info)
+    #     self.file = open(self.path, "w+")
+    #     self.file.write(self.username_info + "\n")
+    #     self.file.write(self.password_info + "\n")
+    #     self.file.write(self.email_info + "\n")
+    #     print (self.notification)
+    #     self.file.write(self.notification)
+    #     self.file.close()
 
     def empty_filler(self):
         self.empty_filler_screen = Toplevel()
@@ -387,13 +433,13 @@ class GUI:
             return False
         return True
 
-# main_account_screen()
-# username = get_username()
-# if (verified() == True):
-#     client = pub_cmd.connect_mqtt()
-#     sub_client = sub_cmd.connect_mqtt()
-#     g = GUI(username)
+main_account_screen()
+information = get_user_info()
+if (verified() == True):
+    client = pub_cmd.connect_mqtt()
+    sub_client = sub_cmd.connect_mqtt()
+    g = GUI(information)
 
-client = pub_cmd.connect_mqtt()
-sub_client = sub_cmd.connect_mqtt()
-g = GUI("Leondi")
+# client = pub_cmd.connect_mqtt()
+# sub_client = sub_cmd.connect_mqtt()
+# g = GUI("Leondi")
