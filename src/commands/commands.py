@@ -33,7 +33,15 @@ def connect_mqtt() -> mqtt:
         if "lullaby" in str_msg:
             print(f"Received command: {str_msg}")
             play_sound("soundDB/" + str_msg)
-        
+
+        if "pause" in str_msg:
+            print(f"Received pause: {str_msg}")
+            pause_sound()
+
+        if "resume" in str_msg:
+            print(f"Recieved resume: {str_msg}")
+            resume_sound()
+ 
         if "insert" in str_msg:
             print(f"Received command: insert")
             info = str_msg[7:].split(" ")
