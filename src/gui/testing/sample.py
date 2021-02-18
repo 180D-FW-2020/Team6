@@ -5,7 +5,7 @@
 
 import AudioClient
 import tkinter as tk
-from PIL import Image, ImageTk
+from socket import AF_INET, socket, SHUT_RDWR, SOCK_STREAM
 from imutils.video import VideoStream
 from Login_system import *
 from sub_cmd import *
@@ -75,7 +75,7 @@ class GUI:
 
         # Creating buttons
         self.button_a = tk.Button(self.button_frame, text="Watch the baby", font="Helvetica 11 bold",
-                                  width=14, height=5, bg="aquamarine", fg="BLACK", command=self.video_stream)
+                                  width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_clicked_video_stream)
         self.button_b = tk.Button(self.button_frame, text="Play lullaby", font="Helvetica 11 bold",
                                   width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_lullaby)
         self.button_c = tk.Button(self.button_frame, text="Listen Your Baby", font="Helvetica 11 bold",
@@ -116,21 +116,8 @@ class GUI:
         self.lmain.configure(text=self.txt, justify="center",font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB")
         self.lmain.after(1000, self.main_display)
 		
-
-    # def listen_cmd(self):
-    #     while self.listen:
-    #         self.audio_conn.recv()
     
-    #Displaying Video Stream from own camera
-    def video_stream(self):
-        # self.video_window = tk.Toplevel(self.window)
-        # _, frame = self.cap.read()
-        # cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
-        # img = Image.fromarray(cv2image)
-        # imgtk = ImageTk.PhotoImage(image=img)
-        # self.lmain.imgtk = imgtk
-        # self.lmain.configure(image=imgtk)
-        # self.lmain.after(1, self.video_stream)
+    def handle_click_video_stream(self):
         self.path = os.path.join(self.CURPATH, "vid_gui_client_latest_user1.py")
         exec(open(self.path).read())
 
@@ -179,13 +166,7 @@ class GUI:
             self.audio_conn.write = False 
             self.mute = True
 
-
-        # self.listen = not self.listen
-        # print(self.listen)
-        # self.audio_conn.write = self.listen
-
     def handle_click_changing_login_info(self):
-        print(self.username_info)
         self.login_screen = tk.Toplevel(self.window)
         self.login_screen.geometry("300x300")
         self.login_screen.configure(bg="#4DA8DA")
@@ -197,8 +178,43 @@ class GUI:
 
 
     def handle_click_open_chat_window(self):
-        self.path = os.path.join(self.CURPATH, "chatcli.py")
-        exec(open(self.path).read())
+        self.chat_window = tk.Toplevel(self.window)
+        self.chat_window.title("Chatter")
+
+        self.messages_frame = tk.Frame(self.chat_window)
+        self.my_msg = tk.StringVar()  # For the messages to be sent.
+        self.scrollbar = tk.Scrollbar(self.messages_frame)  # To navigate through past messages.
+        
+        # Following will contain the messages.
+        self.msg_list = tk.Listbox(self.messages_frame, height=15, width=50, yscrollcommand=self.scrollbar.set)
+        self.scrollbar.pack(side= tk.RIGHT, fill= tk.Y)
+        self.msg_list.pack(side= tk.LEFT, fill= tk.BOTH)
+        self.msg_list.pack()
+        self.messages_frame.pack()
+
+
+        self.guide = tk.Label(self.chat_window, text = "Type your messages below")
+        self.guide.pack()
+        self.entry_field = tk.Entry(self.chat_window, textvariable = self.my_msg)
+        self.entry_field.bind("<Return>", self.send)
+        self.entry_field.pack()
+        self.send_button = tk.Button(self.chat_window, text="Send", command = self.send)
+        self.send_button.pack()
+
+        self.chat_window.protocol("WM_DELETE_WINDOW", self.on_closing)
+
+        #----Now comes the sockets part----
+        HOST = '3.140.200.49'#input('Enter host: ')
+        PORT = int (33000)
+
+        self.BUFSIZ = 1024
+        ADDR = (HOST, PORT)
+
+        self.client_socket = socket(AF_INET, SOCK_STREAM)
+        self.client_socket.connect(ADDR)
+        self.client_socket.send(self.username_info.encode("utf8"))
+        receive_thread = threading.Thread(target = self.receive)
+        receive_thread.start()
 
     def handle_click_notification(self):
         self.username_info = self.verify[0]
@@ -207,11 +223,12 @@ class GUI:
         if(self.notification == "On"):
             self.notification = "Off"
             self.button_f.config(text="Current Notification" + "\n\n" + self.notification)
+            pub_cmd.publish(client, "alert " + self.email_info + " 0")
             self.write_user_info_to_file()
-        else:
+        elif (self.notification == "Off"):
             self.notification = "On"
-            
             self.button_f.config(text="Current Notification" + "\n\n" + self.notification)
+            pub_cmd.publish(client, "alert " + self.email_info + " 1")
             self.write_user_info_to_file()
 
 
@@ -222,6 +239,7 @@ class GUI:
         sys.exit()
 
 
+    # Some funcions for play song button
     def inserting_option(self):
         self.option.insert(tk.END, "First Lullaby")
         self.option.insert(tk.END, "Second Lullaby")
@@ -229,7 +247,6 @@ class GUI:
         self.option.insert(tk.END, "Fourth Lullaby")
         self.option.insert(tk.END, "Fifth Lullaby")
 
-    # Some funcions for listen button
     def play_sound(self):
         scrollbar_command = self.option.get('active')
         if scrollbar_command == 'First Lullaby':
@@ -252,8 +269,34 @@ class GUI:
     def stop_sound(self):
         pub_cmd.publish(client, "stop")
 
-    # Some functions for changing login info
+    # Some Functions for Chat Client
+    def receive(self):
+        """Handles receiving of messages."""
+        while True:
+            try:
+                self.msg = self.client_socket.recv(self.BUFSIZ).decode("utf8")
+                self.msg_list.insert(tk.END, self.msg)
+            except OSError:  # Possibly client has left the chat.
+                break
+    
+    def send(self, event=None):  # event is passed by binders.
+        """Handles sending of messages."""
+        self.msg = self.my_msg.get()
+        self.my_msg.set("")  # Clears input field.
+        self.client_socket.send(bytes(self.msg, "utf8"))
+        if self.msg == "{quit}":
+            self.chat_window.destroy()
+            self.client_socket.shutdown(SHUT_RDWR)
+            self.client_socket.close()
 
+    
+    def on_closing(self, event=None):
+        """This function is to be called when the window is closed."""
+        self.my_msg.set("{quit}")
+        self.send()
+    
+
+    # Some functions for changing login info
     def changing_password(self):
         self.password = tk.StringVar()
         self.password_screen = tk.Toplevel(self.login_screen)
@@ -317,13 +360,17 @@ class GUI:
         self.file = open(self.path, "r")
         self.verify = self.file.read().splitlines()
         self.file.close()
+        
     
     def write_user_info_to_file(self):
-        self.file = open(self.path, "w")
+        self.path = os.path.join(self.CURPATH, "Login_info", self.username_info)
+        self.file = open(self.path, "w+")
         self.file.write(self.username_info + "\n")
         self.file.write(self.password_info + "\n")
         self.file.write(self.email_info + "\n")
-        self.file.write(self.notification + "")
+        print (self.notification)
+        self.file.write(self.notification)
+        self.file.close()
 
     def empty_filler(self):
         self.empty_filler_screen = Toplevel()
@@ -340,13 +387,13 @@ class GUI:
             return False
         return True
 
-main_account_screen()
-username = get_username()
-if (verified() == True):
-    client = pub_cmd.connect_mqtt()
-    sub_client = sub_cmd.connect_mqtt()
-    g = GUI(username)
+# main_account_screen()
+# username = get_username()
+# if (verified() == True):
+#     client = pub_cmd.connect_mqtt()
+#     sub_client = sub_cmd.connect_mqtt()
+#     g = GUI(username)
 
-# client = pub_cmd.connect_mqtt()
-# sub_client = sub_cmd.connect_mqtt()
-# g = GUI("Leondi")
+client = pub_cmd.connect_mqtt()
+sub_client = sub_cmd.connect_mqtt()
+g = GUI("Leondi")

@@ -3,6 +3,8 @@
 from tkinter import *
 import pub_cmd
 import os
+import psycopg2
+from psycopg2 import Error
 
 CURPATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -121,20 +123,36 @@ def register_user():
         empty_filler()
         info_regis.configure(text="Registration Failed", justify = "center", bg = "white", fg="green", font=("calibri", 11))
     else:
-        path = os.path.join(CURPATH, "Login_info", username_info)
-        if(os.path.isfile(path)):
+        conn, cursor = connect_database()
+        quary = "INSERT INTO users(username, email, password) VALUES (%s, %s, crypt(%s, gen_salt('bf')))"
+        try:
+            cursor.execute(quary, (username_info,email_info,password_info))
+            conn.commit()
+            info_regis.configure(text="Registration Success", justify = "center", bg = "white", fg="green", font=("calibri", 11))
+
+        except:
             username_exist()
             info_regis.configure(text="Registration Failed", justify = "center", bg = "white", fg="green", font=("calibri", 11))
-        else:
+
+        if(conn):
+            cursor.close()
+            conn.close()
+
+        
+        # path = os.path.join(CURPATH, "Login_info", username_info)
+        # if(os.path.isfile(path)):
+        #     username_exist()
+        #     info_regis.configure(text="Registration Failed", justify = "center", bg = "white", fg="green", font=("calibri", 11))
+        # else:
             
-            file = open(path, "w")
-            file.write(username_info + "\n")
-            file.write(password_info + "\n")
-            file.write(email_info + "\n")
-            file.write("On")
-            pub_cmd.publish(client, "insert " +  username_info +  " " + email_info)
-            file.close()
-            info_regis.configure(text="Registration Success", justify = "center", bg = "white", fg="green", font=("calibri", 11))
+        #     file = open(path, "w")
+        #     file.write(username_info + "\n")
+        #     file.write(password_info + "\n")
+        #     file.write(email_info + "\n")
+        #     file.write("On")
+        #     pub_cmd.publish(client, "insert " +  username_info +  " " + email_info + " " + password_info)
+        #     file.close()
+        #     info_regis.configure(text="Registration Success", justify = "center", bg = "white", fg="green", font=("calibri", 11))
 
            
 # Implementing event on login button 
@@ -147,23 +165,44 @@ def login_verify():
     password_login_entry.delete(0, END)
     
     # Defining the accessing and saving path file
-    path = os.path.join(CURPATH, "Login_info")
-    path1 = os.path.join(CURPATH, "Login_info", username1)
+    # path = os.path.join(CURPATH, "Login_info")
+    # path1 = os.path.join(CURPATH, "Login_info", username1)
 
-    list_of_files = os.listdir(path)
-    if username1 in list_of_files:   
-        file1 = open(path1, "r")
-        verify = file1.read().splitlines()
-        if password1 in verify:
-            global check
-            global username2
-            login_sucess()
-            check = True
-            username2 = username1
-        else:
-            password_not_recognised()
+    # list_of_files = os.listdir(path)
+    # if username1 in list_of_files:   
+    #     file1 = open(path1, "r")
+    #     verify = file1.read().splitlines()
+    #     if password1 in verify:
+    #         global check
+    #         global username2
+    #         login_sucess()
+    #         check = True
+    #         username2 = username1
+    #     else:
+    #         password_not_recognised()
+    # else:
+    #     user_not_found()
+
+    conn, cursor = connect_database()
+
+    query = "SELECT email FROM users WHERE username=%s AND password=crypt(%s, password)"
+
+    cursor.execute(query, (username1,password1))
+
+    if (cursor.rowcount):
+        global check
+        global username2
+        login_sucess()
+        check = True
+        username2 = username1
     else:
-        user_not_found()
+        user_and_password_not_recognised()
+    
+    if (conn):
+        cursor.close()
+        conn.close()
+
+
  
 
 def verified():
@@ -179,23 +218,23 @@ def login_sucess():
 
 # Designing popup for login invalid password
  
-def password_not_recognised():
+def user_and_password_not_recognised():
     global password_not_recog_screen
     password_not_recog_screen = Toplevel(login_screen)
     password_not_recog_screen.title("Error Password")
     password_not_recog_screen.geometry("150x100")
-    Label(password_not_recog_screen, text="Invalid Password ").pack()
+    Label(password_not_recog_screen, text="Username and Password do not match").pack()
     Button(password_not_recog_screen, text="OK", bg = "cyan", command=delete_password_not_recognised).pack()
  
-# Designing popup for user not found
+# # Designing popup for user not found
  
-def user_not_found():
-    global user_not_found_screen
-    user_not_found_screen = Toplevel(login_screen)
-    user_not_found_screen.title("Error Username")
-    user_not_found_screen.geometry("150x100")
-    Label(user_not_found_screen, text="User Not Found").pack()
-    Button(user_not_found_screen, text="OK", bg = "cyan", command=delete_user_not_found_screen).pack()
+# def user_not_found():
+#     global user_not_found_screen
+#     user_not_found_screen = Toplevel(login_screen)
+#     user_not_found_screen.title("Error Username")
+#     user_not_found_screen.geometry("150x100")
+#     Label(user_not_found_screen, text="User Not Found").pack()
+#     Button(user_not_found_screen, text="OK", bg = "cyan", command=delete_user_not_found_screen).pack()
 
 # Designing popup for username has been used
 def username_exist():
@@ -225,8 +264,8 @@ def delete_login_success():
 def delete_password_not_recognised():
     password_not_recog_screen.destroy()
   
-def delete_user_not_found_screen():
-    user_not_found_screen.destroy()
+# def delete_user_not_found_screen():
+#     user_not_found_screen.destroy()
  
 def delete_username_exist_screen():
     username_exist_screen.destroy()
@@ -239,5 +278,14 @@ def isBlank(my_string):
         return False
     return True
 
-client = pub_cmd.connect_mqtt()
+def connect_database():
+    conn = psycopg2.connect(user="nightlight_user",
+                                password="Va?5qR$hCecT6&Jv",
+                                host="nightlight-db.cwipdw1nbskn.us-east-2.rds.amazonaws.com",
+                                port="5432",
+                                database="rpi")
+    cursor = conn.cursor()
+    return conn, cursor
+
+# client = pub_cmd.connect_mqtt()
 # main_account_screen()
