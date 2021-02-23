@@ -41,7 +41,8 @@ motion_detect = False
 # gui_sock.listen(0)
 # connection = gui_sock.accept()[0].makefile('rb')
 gui_sock = socket.socket()
-gui_sock.connect(('3.140.200.49',6662)) # connect to AWS Server's public IP
+#gui_sock.connect(('3.140.200.49',6662)) # connect to Denny's AWS Server's public IP
+gui_sock.connect(('18.189.21.182',6662)) # connect to Denny's AWS Server's public IP
 print("Client User listening on port...")
 connection = gui_sock.makefile('rb')
 print("Client User 1 connected")
