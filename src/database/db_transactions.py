@@ -204,6 +204,45 @@ def switch_notification(cli_sock, data):
 
     cli_sock.close()
 
+def get_email(cli_sock, data):
+    conn, cursor = psql_conn()
+
+    if conn:
+        print(f"Processing get email request.")
+        option = data['option']
+
+        try:
+            if option == 2:
+                query = "SELECT email FROM users"
+            elif option == 1:
+                query = "SELECT email FROM users where notification=true"
+            else:
+                query = "SELECT email FROM users where notification=false"
+
+            cursor.execute(query)
+            rows = cursor.fetchall()
+
+            msg = {"status": True, "emails": []}
+            for row in rows:
+                msg["emails"].append(row[0])
+
+            msg = json.dumps(msg)
+            msg = msg.encode()
+            cli_sock.send(msg)
+
+        except Exception as error:
+            print(error)
+            cli_sock.send(serr)
+
+        finally:
+            conn.close()
+            cursor.close()
+
+    else:
+        cli_sock.send(serr)
+
+    cli_sock.close()
+
 def process(cli_sock):
     cli_sock.settimeout(10)
     raw = cli_sock.recv(BUFFER)
@@ -224,12 +263,9 @@ def process(cli_sock):
 
     elif func == "switch_notification":
         switch_notification(cli_sock, data)
-
-    """
-    if func:
-        func_thread = threading.Thread(target=func_ptr, args=(cli_sock,data))
-        func_thread.start()
-    """
+    
+    elif func == "get_email":
+        get_email(cli_sock, data)
 
 def client_connection():
     addr = '0.0.0.0'
