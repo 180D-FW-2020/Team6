@@ -29,7 +29,6 @@ try:
     with open(EMAILPATH, "w") as f:
         f.write(emails)
 
-
 except:
     print("failed to GET emails")
 
@@ -45,7 +44,8 @@ def connect_mqtt() -> mqtt:
         str_msg = message.payload.decode()
         if "lullaby" in str_msg:
             print(f"Received command: {str_msg}")
-            play_sound("soundDB/" + str_msg)
+            soundpath = os.path.join(SOUNDDBPATH, str_msg)
+            play_sound(soundpath)
 
         if "pause" in str_msg:
             print(f"Received pause: {str_msg}")
