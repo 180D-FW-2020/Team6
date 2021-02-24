@@ -4,7 +4,7 @@ import socket
 BUFFER = 2048
 
 class DBInterface():
-    def __init__(self, ip="3.19.57.159", port=3333):
+    def __init__(self, ip="18.189.21.182", port=3333):
         self.ip = ip
         self.port = port
     
