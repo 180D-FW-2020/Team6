@@ -30,7 +30,7 @@ try:
         f.write(emails)
 
 except:
-    print("failed to GET emails")
+    print("Unable to FETCH emails from database server.")
 
 def connect_mqtt() -> mqtt:
     def on_connect(client, userdata, flags, rc):
