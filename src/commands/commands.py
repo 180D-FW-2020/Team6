@@ -22,8 +22,6 @@ sys.path.append(DBPATH)
 
 # Database object
 from DBInterface import DBInterface #pylint: disable=import-error
-db = DBInterface()
-
 
 def connect_mqtt() -> mqtt:
     def on_connect(client, userdata, flags, rc):
@@ -83,17 +81,24 @@ def subscribe(client: mqtt):
 
 def get_email():
     try:
-        emails = json.loads(db.get_email())['emails']
+        db = DBInterface()
+        emails = json.loads(db.get_email(option=1))['emails']
         emails = (','.join(emails))
         print("Email list updated.")
 
         with open(EMAILPATH, "w") as f:
             f.write(emails)
+        f.close()
 
     except:
         print("Unable to FETCH emails from database server.")
 
 def main():
+    if not os.path.exists(EMAILPATH):
+        with open(EMAILPATH, "w") as f:
+            pass
+        f.close()
+
     get_email()
     client = connect_mqtt()
     client.loop_forever()
