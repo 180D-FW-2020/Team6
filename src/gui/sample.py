@@ -104,9 +104,6 @@ class GUI:
 
         self.window.protocol("WM_DELETE_WINDOW", self.quit_the_program)
 
-        # Video Streaming
-        self.cap = cv2.VideoCapture(0)
-
         self.window.mainloop()  # runs application
 
     # Event handlers
