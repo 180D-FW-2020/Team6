@@ -223,7 +223,7 @@ class GUI:
         self.chat_window.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         #----Now comes the sockets part----
-        HOST = '3.140.200.49'#input('Enter host: ')
+        HOST = '18.189.21.182'#input('Enter host: ')
         PORT = int (33000)
 
         self.BUFSIZ = 1024
@@ -231,7 +231,7 @@ class GUI:
 
         self.client_socket = socket(AF_INET, SOCK_STREAM)
         self.client_socket.connect(ADDR)
-        self.client_socket.send(self.username_info.encode("utf8"))
+        self.client_socket.send(self.username_info2.encode("utf8"))
         receive_thread = threading.Thread(target = self.receive)
         receive_thread.start()
 
