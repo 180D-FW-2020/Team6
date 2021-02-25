@@ -66,7 +66,7 @@ class GUI:
         self.main_display()
 
         # Showing The Video Frame
-        self.video_frame = tk.Frame(self.window)
+        self.video_frame = tk.Label(self.window, image = None)
         self.video_frame.configure(bg="#4DA8DA")
         self.video_frame.pack()
 
@@ -130,31 +130,30 @@ class GUI:
         self.lmain.configure(text=self.txt, justify="center",font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB")
         self.lmain.after(1000, self.main_display)
 	
-    def enable_button(self):
-        self.button_b.configure(state = tk.NORMAL)
-        self.button_d.configure(state = tk.NORMAL)
     
     def handle_click_video_stream(self):
       
         if (self.video_stream == False):
             self.video_stream = True
             self.window.geometry("1000x1550")
-            #initialize video client connections
-            #use try/except for if server isn't running?
-            self.gui_sock = socket()
-            #gui_sock.connect(('3.140.200.49',6662)) # connect to Denny's AWS Server's public IP
-            self.gui_sock.connect(('18.189.21.182',6662)) # connect to Robert's AWS Server's public IP
-            print("Client User listening on port...")
-            self.connection = self.gui_sock.makefile('rb')
-            print("Client User connected")
-            self.video_thread = threading.Thread(target=self.videoLoop,args=())
-            self.video_thread.start()
-            self.window.wm_title("Video Stream")
+            self.video_frame.config(image = self.loadimage)
+            # #initialize video client connections
+            # #use try/except for if server isn't running?
+            # self.gui_sock = socket()
+            # #gui_sock.connect(('3.140.200.49',6662)) # connect to Denny's AWS Server's public IP
+            # self.gui_sock.connect(('18.189.21.182',6662)) # connect to Robert's AWS Server's public IP
+            # print("Client User listening on port...")
+            # self.connection = self.gui_sock.makefile('rb')
+            # print("Client User connected")
+            # self.video_thread = threading.Thread(target=self.videoLoop,args=())
+            # self.video_thread.start()
+            # self.window.wm_title("Video Stream")
         else:
             self.video_stream = False
             self.window.geometry("1000x550")
-            self.connection.close()
-            self.gui_sock.close()
+            self.video_frame.config(image = '')
+            # self.connection.close()
+            # self.gui_sock.close()
             
         # self.path = os.path.join(self.CURPATH, "vid_gui_client_latest_user1.py")
         # exec(open(self.path).read())
@@ -252,7 +251,7 @@ class GUI:
                                 fg="BLACK", font="Helvetica 11 bold", command= self.stop_sound)
         self.stop.pack(fill=tk.BOTH)
 
-        self.new_window.protocol("WM_DELETE_WINDOW", self.enable_button)
+        self.new_window.protocol("WM_DELETE_WINDOW", self.quit_play_song_window)
 
     def handle_click_listen(self):
         
@@ -280,14 +279,15 @@ class GUI:
         self.login_screen.configure(bg="#4DA8DA")
         tk.Label(self.login_screen, text = "Please choose either one of these button", bg = "#4DA8DA", fg = "black").pack()
         tk.Label(self.login_screen, text = "", bg = "#4DA8DA").pack()
-        tk.Button(self.login_screen, text = "Changing Password", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.changing_password).pack()
+        self.pass_button = tk.Button(self.login_screen, text = "Changing Password", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.changing_password)
+        self.pass_button.pack()
         tk.Label(self.login_screen, text = "", bg = "#4DA8DA").pack()
-        tk.Button(self.login_screen, text = "Changing Email", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.changing_email).pack()
+        self.email_button = tk.Button(self.login_screen, text = "Changing Email", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.changing_email)
+        self.email_button.pack()
 
-        self.login_screen.protocol("WM_DELETE_WINDOW", self.enable_button)
+        self.login_screen.protocol("WM_DELETE_WINDOW", self.quit_login_window)
 
     def handle_click_open_chat_window(self):
-        self.enable_button()
         self.button_e.configure(state = tk.DISABLED)
         
         self.chat_window = tk.Toplevel(self.window)
@@ -312,7 +312,7 @@ class GUI:
         self.entry_field.pack()
         self.send_button = tk.Button(self.chat_window, text="Send", command = self.send)
         self.send_button.pack()
-
+        
         self.chat_window.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         #----Now comes the sockets part----
@@ -327,6 +327,8 @@ class GUI:
         self.client_socket.send(self.username_info2.encode("utf8"))
         receive_thread = threading.Thread(target = self.receive)
         receive_thread.start()
+
+
 
     def handle_click_notification(self):
         
@@ -371,7 +373,6 @@ class GUI:
         elif scrollbar_command == 'Fourth Lullaby':
             pub_cmd.publish(client, "lullaby4.mp3")
 
-
     def pause_sound(self):
         pub_cmd.publish(client, "pause")
 
@@ -380,6 +381,11 @@ class GUI:
     
     def stop_sound(self):
         pub_cmd.publish(client, "pause")
+    
+    def quit_play_song_window(self):
+        self.new_window.destroy()
+        self.button_b.configure(state = tk.NORMAL)
+
 
     # Some Functions for Chat Client
     def receive(self):
@@ -403,7 +409,7 @@ class GUI:
 
     
     def on_closing(self, event=None):
-        """This function is to be called when the window is closed."""
+        """This function is to be called when the chat window is closed."""
         self.button_e.configure(state = tk.NORMAL)
         self.my_msg.set("quit")
         self.send()
@@ -411,6 +417,7 @@ class GUI:
 
     # Some functions for changing login info
     def changing_password(self):
+        self.pass_button.configure(state = tk.DISABLED)
         self.password = tk.StringVar()
         self.password2 = tk.StringVar()
         self.password_screen = tk.Toplevel(self.login_screen)
@@ -432,8 +439,11 @@ class GUI:
         self.info_screen.pack()
         self.info_regis = tk.Label(self.info_screen)
         self.info_regis.pack()
+        self.password_screen.protocol("WM_DELETE_WINDOW", self.quit_password_window)
+
 
     def changing_email(self):
+        self.email_button.configure(state = tk.DISABLED)
         self.email_address = tk.StringVar()
         self.email_screen = tk.Toplevel(self.login_screen)
         self.email_screen.geometry("300x300")
@@ -454,6 +464,8 @@ class GUI:
         self.info_screen.pack()
         self.info_regis = tk.Label(self.info_screen)
         self.info_regis.pack()
+
+        self.email_screen.protocol("WM_DELETE_WINDOW", self.quit_email_window)
 
     def register_pass(self):
         self.password_info = self.password.get()
@@ -494,8 +506,20 @@ class GUI:
                 self.info_regis.configure(text="Success Changing Email", justify = "center", bg = "white", fg="green", font=("calibri", 11))
             else:
                 self.info_regis.configure(text="Wrong Current Password", justify = "center", bg = "white", fg="green", font=("calibri", 11))
+    
+    def quit_login_window(self):
+        self.login_screen.destroy()
+        self.button_d.configure(state = tk.NORMAL)
 
+    def quit_password_window(self):
+        self.password_screen.destroy()
+        self.pass_button.configure(state = tk.NORMAL)
+    
+    def quit_email_window(self):
+        self.email_screen.destroy()
+        self.email_button.configure(state = tk.NORMAL)
 
+    # Some Useful Functions
     def getting_user_info(self):
         self.username_info2 = self.user_info["username"]
         self.email_info2 = self.user_info["email"] 
