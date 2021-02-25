@@ -129,6 +129,7 @@ def register_user():
         data = json.loads(reg)
         
         if (data["status"] == True):
+            pub_cmd.publish(client, "update email")
             info_regis.configure(text="Registration Success", justify = "center", bg = "white", fg="green", font=("calibri", 11))
         else:
             user_info_exist(data["err"])
@@ -223,5 +224,4 @@ def isBlank(my_string):
     return True
 
 
-# client = pub_cmd.connect_mqtt()
-# main_account_screen()
+client = pub_cmd.connect_mqtt()

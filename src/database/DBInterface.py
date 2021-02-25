@@ -4,7 +4,7 @@ import socket
 BUFFER = 2048
 
 class DBInterface():
-    def __init__(self, ip="3.19.57.159", port=3333):
+    def __init__(self, ip="18.189.21.182", port=3333):
         self.ip = ip
         self.port = port
     
@@ -80,6 +80,13 @@ class DBInterface():
             req = f'{{"func":"switch_notification", "id":{iD}, "notification":true}}'
         else:
             req = f'{{"func":"switch_notification", "id":{iD}, "notification":false}}'
+        raw = self._send(req)
+
+        return raw
+    
+    def get_email(self, option=1):
+        # Login request
+        req = f'{{"func":"get_email", "option":{option}}}'
         raw = self._send(req)
 
         return raw
