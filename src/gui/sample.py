@@ -65,6 +65,11 @@ class GUI:
         # Setting the main display
         self.main_display()
 
+        # Showing The Video Frame
+        self.video_frame = tk.Frame(self.window)
+        self.video_frame.configure(bg="#4DA8DA")
+        self.video_frame.pack()
+
         # Showing the button in the display
         self.button_frame = tk.Frame(self.window)
         self.button_frame.configure(bg="#4DA8DA")
@@ -133,30 +138,26 @@ class GUI:
       
         if (self.video_stream == False):
             self.video_stream = True
-        else
+            self.window.geometry("1000x1550")
+            #initialize video client connections
+            #use try/except for if server isn't running?
+            self.gui_sock = socket()
+            #gui_sock.connect(('3.140.200.49',6662)) # connect to Denny's AWS Server's public IP
+            self.gui_sock.connect(('18.189.21.182',6662)) # connect to Robert's AWS Server's public IP
+            print("Client User listening on port...")
+            self.connection = self.gui_sock.makefile('rb')
+            print("Client User connected")
+            self.video_thread = threading.Thread(target=self.videoLoop,args=())
+            self.video_thread.start()
+            self.window.wm_title("Video Stream")
+        else:
             self.video_stream = False
+            self.window.geometry("1000x550")
+            self.connection.close()
+            self.gui_sock.close()
             
         # self.path = os.path.join(self.CURPATH, "vid_gui_client_latest_user1.py")
         # exec(open(self.path).read())
-        # self.chat_window.protocol("WM_DELETE_WINDOW", self.on_closing)
-
-
-    	#tkinter setup
-        self.enable_button()
-        self.button_a.configure(state = tk.DISABLED)
-        #initialize video client connections
-        #use try/except for if server isn't running?
-        self.gui_sock = socket()
-        #gui_sock.connect(('3.140.200.49',6662)) # connect to Denny's AWS Server's public IP
-        self.gui_sock.connect(('18.189.21.182',6662)) # connect to Robert's AWS Server's public IP
-        print("Client User listening on port...")
-        self.connection = self.gui_sock.makefile('rb')
-        print("Client User connected")
-        self.video_thread = threading.Thread(target=self.videoLoop,args=())
-        self.video_thread.start()
-        self.window.wm_title("Video Stream")
-        self.window.wm_protocol("WM_DELETE_WINDOW", self.quit_the_program)
-
 
 
     def videoLoop(self):
@@ -218,9 +219,6 @@ class GUI:
 
         except:
             print("Occurred Exception, closing socket")
-            self.connection.close()
-            self.gui_sock.close()
-        finally:
             self.connection.close()
             self.gui_sock.close()
 
@@ -349,6 +347,9 @@ class GUI:
         if(self.mute == False):
             self.audio_conn.stop()
             self.audio_conn.write = False
+        if(self.video_stream == True):
+            self.connection.close()
+            self.gui_sock.close()
         sys.exit()
 
 
