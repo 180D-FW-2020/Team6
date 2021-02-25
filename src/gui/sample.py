@@ -175,8 +175,8 @@ class GUI:
 
         elif self.mute == False:
             self.button_c.config(image = self.loadimage)
-            self.audio_conn.stop()
             self.audio_conn.write = False 
+            self.audio_conn.stop()
             self.mute = True
 
     def handle_click_changing_login_info(self):
