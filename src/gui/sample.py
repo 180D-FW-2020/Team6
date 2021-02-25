@@ -426,7 +426,7 @@ class GUI:
         self.password_entry2 = Entry(self.password_screen, textvariable=self.password2, show='*')
         self.password_entry2.pack()
         tk.Label(self.password_screen, text="" , bg = "white").pack()
-        tk.Button(self.password_screen, text="Register", width=10, height=1, bg = "cyan", command = self.register_pass).pack()
+        tk.Button(self.password_screen, text="Update", width=10, height=1, bg = "cyan", command = self.register_pass).pack()
 
         self.info_screen = tk.Frame(self.password_screen)
         self.info_screen.pack()
@@ -434,6 +434,7 @@ class GUI:
         self.info_regis.pack()
 
     def changing_email(self):
+        self.password = tk.StringVar()
         self.email_address = tk.StringVar()
         self.email_screen = tk.Toplevel(self.login_screen)
         self.email_screen.geometry("300x300")
@@ -448,7 +449,7 @@ class GUI:
         self.email_address_entry = Entry(self.email_screen, textvariable=self.email_address)
         self.email_address_entry.pack()
         tk.Label(self.email_screen, text="" , bg = "white").pack()
-        tk.Button(self.email_screen, text="Register", width=10, height=1, bg = "cyan", command = self.register_email).pack()
+        tk.Button(self.email_screen, text="Update", width=10, height=1, bg = "cyan", command = self.register_email).pack()
 
         self.info_screen = tk.Frame(self.email_screen)
         self.info_screen.pack()
