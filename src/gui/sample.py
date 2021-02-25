@@ -303,7 +303,7 @@ class GUI:
         self.msg = self.my_msg.get()
         self.my_msg.set("")  # Clears input field.
         self.client_socket.send(bytes(self.msg, "utf8"))
-        if self.msg == "{quit}":
+        if self.msg == "quit":
             self.chat_window.destroy()
             self.client_socket.shutdown(SHUT_RDWR)
             self.client_socket.close()
@@ -311,7 +311,7 @@ class GUI:
     
     def on_closing(self, event=None):
         """This function is to be called when the window is closed."""
-        self.my_msg.set("{quit}")
+        self.my_msg.set("quit")
         self.send()
     
 
