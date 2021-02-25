@@ -76,6 +76,7 @@ class GUI:
         else:
             self.notification = "Off"
 
+        self.video_stream = False
 
         # Creating buttons
         self.button_a = tk.Button(self.button_frame, text="Watch the baby", font="Helvetica 11 bold",
@@ -118,20 +119,20 @@ class GUI:
         self.lmain.after(1000, self.main_display)
 	
     def enable_button(self):
-        self.button_a.configure(state = tk.NORMAL)
         self.button_b.configure(state = tk.NORMAL)
         self.button_d.configure(state = tk.NORMAL)
-        self.button_e.configure(state = tk.NORMAL)
     
     def handle_click_video_stream(self):
-        self.enable_button()
-        self.button_a.configure(state = tk.DISABLED)
-        
+        if (self.video_stream == False):
+            self.video_stream = True
+        else
+            self.video_stream = False
+            
         # self.path = os.path.join(self.CURPATH, "vid_gui_client_latest_user1.py")
         # exec(open(self.path).read())
+        # self.chat_window.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     def handle_click_lullaby(self):
-        self.enable_button()
         self.button_b.configure(state = tk.DISABLED)
         
         self.new_window = tk.Toplevel(self.window)
@@ -161,6 +162,8 @@ class GUI:
                                 fg="BLACK", font="Helvetica 11 bold", command= self.stop_sound)
         self.stop.pack(fill=tk.BOTH)
 
+        self.new_window.protocol("WM_DELETE_WINDOW", self.enable_button)
+
     def handle_click_listen(self):
         
         if self.mute == True:
@@ -180,7 +183,6 @@ class GUI:
             self.mute = True
 
     def handle_click_changing_login_info(self):
-        self.enable_button()
         self.button_d.configure(state = tk.DISABLED)
         
         self.login_screen = tk.Toplevel(self.window)
@@ -192,6 +194,7 @@ class GUI:
         tk.Label(self.login_screen, text = "", bg = "#4DA8DA").pack()
         tk.Button(self.login_screen, text = "Changing Email", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.changing_email).pack()
 
+        self.login_screen.protocol("WM_DELETE_WINDOW", self.enable_button)
 
     def handle_click_open_chat_window(self):
         self.enable_button()
@@ -308,6 +311,7 @@ class GUI:
     
     def on_closing(self, event=None):
         """This function is to be called when the window is closed."""
+        self.button_e.configure(state = tk.NORMAL)
         self.my_msg.set("quit")
         self.send()
     
