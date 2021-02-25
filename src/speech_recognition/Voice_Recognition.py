@@ -21,20 +21,20 @@ class Voice_Commmand:
 
     def action(self):
         cmnd = self.command.lower()
-        if ((self.find_substring('stop', cmnd) and self.find_substring('listen', cmnd)) or 
-                    (self.find_substring('stop', cmnd) and self.find_substring('hear', cmnd))):
+        if (self.find_substring('first', cmnd) or self.find_substring('one', cmnd)):
             self.do_action(1)
-        elif (self.find_substring('listen', cmnd) or self.find_substring('hear', cmnd)):
+        elif (self.find_substring('second', cmnd) or self.find_substring('two', cmnd)):
             self.do_action(2)
-        elif (self.find_substring('stop', cmnd) and (self.find_substring('song', cmnd) or 
-                    self.find_substring('music', cmnd))):
+        elif (self.find_substring('third', cmnd) or self.find_substring('three', cmnd)):
             self.do_action(3)
-        elif (self.find_substring('second', cmnd)):
+        elif (self.find_substring('fourth', cmnd) or self.find_substring('four', cmnd)):
             self.do_action(4)
-        elif (self.find_substring('first', cmnd)):
+        elif (self.find_substring('pause', cmnd) or self.find_substring('stop', cmnd)):
             self.do_action(5)
+        elif (self.find_substring('resume', cmnd) or self.find_substring('continue', cmnd)):
+            self.do_action(6)    
         elif (self.find_substring('close', cmnd)):
-            self.do_action(6)
+            self.do_action(7)
         else:
             print('There is no such command here. \n Please say your command again.')
             self.command = self.convert_audio_to_txt()
@@ -42,24 +42,22 @@ class Voice_Commmand:
 
     def do_action(self, type_num):
         if(type_num == 1):
-            print('Action 1')
-        elif (type_num == 2):
-            print('Action 2')
-        elif (type_num == 3):
-            print('Action 3')
-            pub_cmd.publish(client, "stop")
-        elif (type_num == 4):
-            print('Action 4')
-            pub_cmd.publish(client, "lullaby2.mp3")
-        elif (type_num == 5):
-            print('Action 5')
             pub_cmd.publish(client, "lullaby1.mp3")
-        elif (type_num == 6):
+        elif(type_num == 2):
+            pub_cmd.publish(client, "lullaby2.mp3")
+        elif(type_num == 3):
+            pub_cmd.publish(client, "lullaby3.mp3")
+        elif(type_num == 4):
+            pub_cmd.publish(client, "lullaby4.mp3")            
+        elif(type_num == 5):
+            pub_cmd.publish(client, "pause")
+        elif(type_num == 6):
+            pub_cmd.publish(client, "resume")
+        elif (type_num == 7):
             sys.exit()
 
     def start_action(self):
-        print(
-            'How can I help you? \n***Say: "play second song" OR Say: "play first song"***')
+        print('How can I help you? \n***Say: "play second song" OR Say: "play first song"***')
         print('If you want to end the program, please say "close the Nightlight": ')
         self.command = self.convert_audio_to_txt()
 

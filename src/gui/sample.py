@@ -130,8 +130,8 @@ class GUI:
         self.enable_button()
         self.button_a.configure(state = tk.DISABLED)
         
-        self.path = os.path.join(self.CURPATH, "vid_gui_client_latest_user1.py")
-        exec(open(self.path).read())
+        # self.path = os.path.join(self.CURPATH, "vid_gui_client_latest_user1.py")
+        # exec(open(self.path).read())
 
     def handle_click_lullaby(self):
         self.enable_button()
@@ -244,10 +244,12 @@ class GUI:
         if(self.notification == "On"):
             self.notification = "Off"
             self.button_f.config(text="Current Notification" + "\n\n" + self.notification)
+            pub_cmd.publish(client, "update email")
             db.switch_notification(self.ID_info2, False)
         elif (self.notification == "Off"):
             self.notification = "On"
             self.button_f.config(text="Current Notification" + "\n\n" + self.notification)
+            pub_cmd.publish(client, "update email")
             db.switch_notification(self.ID_info2, True)
 
 
@@ -264,7 +266,6 @@ class GUI:
         self.option.insert(tk.END, "Second Lullaby")
         self.option.insert(tk.END, "Third Lullaby")
         self.option.insert(tk.END, "Fourth Lullaby")
-        self.option.insert(tk.END, "Fifth Lullaby")
 
     def play_sound(self):
         scrollbar_command = self.option.get('active')
@@ -276,8 +277,7 @@ class GUI:
             pub_cmd.publish(client, "lullaby3.mp3")
         elif scrollbar_command == 'Fourth Lullaby':
             pub_cmd.publish(client, "lullaby4.mp3")
-        elif scrollbar_command == 'Fifth Lullaby':
-            print(scrollbar_command)
+
 
     def pause_sound(self):
         pub_cmd.publish(client, "pause")
@@ -286,7 +286,7 @@ class GUI:
         pub_cmd.publish(client, "resume")
     
     def stop_sound(self):
-        pub_cmd.publish(client, "stop")
+        pub_cmd.publish(client, "pause")
 
     # Some Functions for Chat Client
     def receive(self):
@@ -396,6 +396,7 @@ class GUI:
             data2 = json.loads(log)
             if(data2["status"] == True):
                 db.update_email(self.ID_info2, self.email_info2, self.email_info, self.password_info)
+                pub_cmd.publish(client, "update email")
                 self.info_regis.configure(text="Success Changing Email", justify = "center", bg = "white", fg="green", font=("calibri", 11))
             else:
                 self.info_regis.configure(text="Wrong Current Password", justify = "center", bg = "white", fg="green", font=("calibri", 11))
@@ -407,17 +408,6 @@ class GUI:
         self.notification_info2 = self.user_info["notification"]
         self.ID_info2 = self.user_info["id"]
         
-    
-    # def write_user_info_to_file(self):
-    #     self.path = os.path.join(self.CURPATH, "Login_info", self.username_info)
-    #     self.file = open(self.path, "w+")
-    #     self.file.write(self.username_info + "\n")
-    #     self.file.write(self.password_info + "\n")
-    #     self.file.write(self.email_info + "\n")
-    #     print (self.notification)
-    #     self.file.write(self.notification)
-    #     self.file.close()
-
     def empty_filler(self):
         self.empty_filler_screen = Toplevel()
         self.empty_filler_screen.title("Error Registration")
