@@ -18,6 +18,13 @@ import sub_cmd
 import pub_cmd
 import DBInterface
 
+#for video
+import numpy as np
+import struct
+import time
+from PIL import Image
+from PIL import ImageTk
+
 
 class GUI:
     def __init__(self, information):
@@ -104,8 +111,6 @@ class GUI:
 
         self.window.protocol("WM_DELETE_WINDOW", self.quit_the_program)
 
-        # Video Streaming
-        self.cap = cv2.VideoCapture(0)
 
         self.window.mainloop()  # runs application
 
@@ -127,11 +132,59 @@ class GUI:
         self.button_e.configure(state = tk.NORMAL)
     
     def handle_click_video_stream(self):
+
+    	#tkinter setup
         self.enable_button()
         self.button_a.configure(state = tk.DISABLED)
         
-        self.path = os.path.join(self.CURPATH, "vid_gui_client_latest_user1.py")
-        exec(open(self.path).read())
+        #initialize video client connections
+        #use try/except for if server isn't running?
+        self.gui_sock = socket.socket()
+        #gui_sock.connect(('3.140.200.49',6662)) # connect to Denny's AWS Server's public IP
+        self.gui_sock.connect(('18.189.21.182',6662)) # connect to Robert's AWS Server's public IP
+        print("Client User listening on port...")
+        self.connection = gui_sock.makefile('rb')
+        print("Client User connected")
+        self.video_thread = threading.Thread(target=self.videoLoop,args=())
+        self.thread.start()
+        self.root.wm_title("Video Stream")
+        self.root.wm_protocol("WM_DELETE_WINDOW", self.onClose)
+
+
+
+    def videoLoop(self):
+    	try:
+    		while True:
+    			self.image_len = struct.unpack('<L', self.connection.read(struct.calcsize('<L')))[0]
+    			if not self.image_len:
+    				print("invalid data from stream ")
+    				break
+    			print(self.image_len)
+    			self.image_stream = io.BytesIO()
+    			self.image_stream.write(connection.read(image_len))
+    			self.image_stream.seek(0)
+
+    			self.file_bytes = np.asarray(bytearray(self.image_stream.read()),dtype=np.uint8)
+    			self.raw_image = cv2.imdecode(self.file_bytes,cv2.IMREAD_COLOR)
+    			rgb_image = cv2.cvtColor(raw_image, cv2.COLOR_BGR2RGB) #self vs no self?
+    			pil_image = Image.fromarray(rgb_frame)
+    			pil_image = ImageTk.PhotoImage(pil_image)
+    			
+    			if self.video_panel is None:
+    				self.video_panel = tk.Label(image=pil_image)
+    				self.video_panel.image = pil_image
+    				self.video_panel.pack(side="left",padx=10, pady=10)
+    			else:
+    				self.panel.configure(image=image)
+    				self.panel.image = image
+    	except:
+    		print("Occurred Exception, closing socket")
+    		self.connection.close()
+    		self.gui_sock.close()
+    	finally:
+    		self.connection.close()
+    		self.gui_sock.close()
+
 
     def handle_click_lullaby(self):
         self.enable_button()
