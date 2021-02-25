@@ -20,17 +20,10 @@ EMAILPATH = os.path.join(SRCPATH, 'notification', 'emails.txt')
 SOUNDDBPATH = os.path.join(SRCPATH, 'commands', 'soundDB')
 sys.path.append(DBPATH)
 
-# GET current email list on startup
+# Database object
 from DBInterface import DBInterface #pylint: disable=import-error
 db = DBInterface()
-try:
-    emails = json.loads(db.get_email())['emails']
-    emails = (','.join(emails))
-    with open(EMAILPATH, "w") as f:
-        f.write(emails)
 
-except:
-    print("failed to GET emails")
 
 def connect_mqtt() -> mqtt:
     def on_connect(client, userdata, flags, rc):
@@ -54,6 +47,10 @@ def connect_mqtt() -> mqtt:
         if "resume" in str_msg:
             print(f"Recieved resume: {str_msg}")
             resume_sound()
+        
+        if "update email" == str_msg:
+            print("Received update email list.")
+            get_email()
  
     client = mqtt.Client()
     client.on_connect = on_connect
@@ -84,7 +81,20 @@ def resume_sound():
 def subscribe(client: mqtt):
     client.subscribe(topic)
 
+def get_email():
+    try:
+        emails = json.loads(db.get_email())['emails']
+        emails = (','.join(emails))
+        print("Email list updated.")
+
+        with open(EMAILPATH, "w") as f:
+            f.write(emails)
+
+    except:
+        print("Unable to FETCH emails from database server.")
+
 def main():
+    get_email()
     client = connect_mqtt()
     client.loop_forever()
     
