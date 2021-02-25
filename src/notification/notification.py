@@ -6,38 +6,30 @@ from email.message import EmailMessage
 from datetime import datetime
 
 CURPATH = os.path.dirname(os.path.abspath(__file__))
-DBPATH = os.path.join(CURPATH, "sql", "RPi.db")
+EMAILPATH = os.path.join(CURPATH, 'emails.txt')
 
-def notify(subject, content):
-    print("Pushing notification")
-    # sqlite3
-    db = sqlite3.connect(DBPATH)
-    cursor = db.cursor()
-    query = "SELECT * FROM email_info"
-    receiver_query = "SELECT email FROM user WHERE alert=1"
+_email = "nightlight.notifier@gmail.com"
+_pass =  "qjhlwonnufdgvdss"
 
-    # RPi email
-    _email, _pass = cursor.execute(query).fetchall()[0]
-
-    receviers = [_to[0] for _to in cursor.execute(receiver_query)]
-    to = ", ".join(receviers)
+def notify(subject="Nightlight Notifier", content="Content"):
     
-    if not to:
-        # No email signed up for notification 
-        # or all user turned off notification.
+    if not os.path.exists(EMAILPATH):
         return
+    
+    f = open(EMAILPATH) 
+    to = f.read()
 
-    else:
-        msg = EmailMessage()
-        msg.set_content(content)
-        msg["subject"] = subject
-        msg["from"] = _email
-        msg["to"] = to
+    msg = EmailMessage()
+    msg.set_content(content)
+    msg["subject"] = subject
+    msg["from"] = _email
+    msg["to"] = to
 
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.starttls()
-        server.login(_email, _pass)
-        server.send_message(msg)
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.starttls()
+    server.login(_email, _pass)
+    server.send_message(msg)
         
-    db.close()
     server.quit()
+
+notify()
