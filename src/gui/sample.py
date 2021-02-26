@@ -16,6 +16,8 @@ import threading
 import os
 import sub_cmd
 import pub_cmd
+from datetime import datetime
+import time
 
 # Database interface
 SRCPATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -111,11 +113,13 @@ class GUI:
                                     width=17, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_notification)
         self.button_g = tk.Button(self.button_frame, text="Quit", font="Helvetica 11 bold",
                                   width=14, height=5, bg="aquamarine", fg="BLACK", command=self.quit_the_program)
-
+        self.button_h = tk.Button(self.button_frame, text="Recordings", font="Helvetica 11 bold",
+                                  width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_recordings)
 
         self.button_a.pack(side=tk.LEFT, fill=tk.BOTH)
         self.button_b.pack(side=tk.LEFT, fill=tk.BOTH)
         self.button_c.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.button_h.pack(side=tk.LEFT, fill=tk.BOTH)
         self.button_d.pack(side=tk.LEFT, fill=tk.BOTH)
         self.button_e.pack(side=tk.LEFT, fill=tk.BOTH)
         self.button_f.pack(side=tk.LEFT, fill=tk.BOTH)
@@ -257,6 +261,34 @@ class GUI:
         self.stop.pack(fill=tk.BOTH)
 
         self.new_window.protocol("WM_DELETE_WINDOW", self.quit_play_song_window)
+    
+    def handle_click_recordings(self):
+        self.button_b.configure(state = tk.DISABLED)
+        
+        self.new_window = tk.Toplevel(self.window)
+        self.new_window.configure(bg="#4DA8DA")
+
+        # Making a scroll bar display
+        self.scroll_bar = tk.Scrollbar(self.new_window)
+        self.option = tk.Listbox(self.new_window, bd=0, bg="#007CC7", fg="#EEFBFB",
+                                 font="Helvetica 11 bold", yscrollcommand=self.scroll_bar.set)
+        self.list_recordings()
+        self.option.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.scroll_bar.config(command=self.option.yview)
+
+        self.select = tk.Button(self.new_window, text="Play", bd=0, bg="#4DA8DA",
+                                fg="BLACK", font="Helvetica 11 bold", command=self.play_recording)
+        self.select.pack(fill=tk.BOTH)
+        
+        self.pause = tk.Button(self.new_window, text="Pause", bd=0, bg="#4DA8DA",
+                                fg="BLACK", font="Helvetica 11 bold", command= self.pause_sound)
+        self.pause.pack(fill=tk.BOTH)
+
+        self.resume = tk.Button(self.new_window, text="Resume", bd=0, bg="#4DA8DA",
+                                fg="BLACK", font="Helvetica 11 bold", command= self.resume_sound)
+        self.resume.pack(fill=tk.BOTH)
+
+        self.new_window.protocol("WM_DELETE_WINDOW", self.quit_play_song_window)
 
     def handle_click_listen(self):
         
@@ -367,6 +399,12 @@ class GUI:
         self.option.insert(tk.END, "Third Lullaby")
         self.option.insert(tk.END, "Fourth Lullaby")
 
+    def list_recordings(self):
+        for i in range(10):
+            now = datetime.now()
+            date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+            self.option.insert(tk.END, date_time)
+
     def play_sound(self):
         scrollbar_command = self.option.get('active')
         if scrollbar_command == 'First Lullaby':
@@ -377,6 +415,9 @@ class GUI:
             pub_cmd.publish(client, "lullaby3.mp3")
         elif scrollbar_command == 'Fourth Lullaby':
             pub_cmd.publish(client, "lullaby4.mp3")
+    
+    def play_recording(self):
+        print("playing...")
 
     def pause_sound(self):
         pub_cmd.publish(client, "pause")
