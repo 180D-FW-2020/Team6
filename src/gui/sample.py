@@ -16,6 +16,11 @@ import threading
 import os
 import sub_cmd
 import pub_cmd
+
+# Database interface
+SRCPATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DBPATH = os.path.join(SRCPATH, "database")
+sys.path.append(DBPATH)
 import DBInterface
 
 #for video
