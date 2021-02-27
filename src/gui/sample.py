@@ -17,7 +17,10 @@ import os
 import sub_cmd
 import pub_cmd
 
-
+# Database interface
+SRCPATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DBPATH = os.path.join(SRCPATH, "database")
+sys.path.append(DBPATH)
 import DBInterface
 
 #for video
@@ -407,7 +410,6 @@ class GUI:
             self.chat_window.destroy()
             self.client_socket.shutdown(SHUT_RDWR)
             self.client_socket.close()
-
     
     def on_closing(self, event=None):
         """This function is to be called when the chat window is closed."""
@@ -434,7 +436,7 @@ class GUI:
         self.password_entry2 = Entry(self.password_screen, textvariable=self.password2, show='*')
         self.password_entry2.pack()
         tk.Label(self.password_screen, text="" , bg = "white").pack()
-        tk.Button(self.password_screen, text="Register", width=10, height=1, bg = "cyan", command = self.register_pass).pack()
+        tk.Button(self.password_screen, text="Update", width=10, height=1, bg = "cyan", command = self.register_pass).pack()
 
         self.info_screen = tk.Frame(self.password_screen)
         self.info_screen.pack()
@@ -459,7 +461,7 @@ class GUI:
         self.email_address_entry = Entry(self.email_screen, textvariable=self.email_address)
         self.email_address_entry.pack()
         tk.Label(self.email_screen, text="" , bg = "white").pack()
-        tk.Button(self.email_screen, text="Register", width=10, height=1, bg = "cyan", command = self.register_email).pack()
+        tk.Button(self.email_screen, text="Update", width=10, height=1, bg = "cyan", command = self.register_email).pack()
 
         self.info_screen = tk.Frame(self.email_screen)
         self.info_screen.pack()
