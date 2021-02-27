@@ -51,13 +51,6 @@ conn.start()
 # Controls
 RECORD = True
 
-# sqlite3
-DBPATH = os.path.join(PARPATH, "sql", "RPi.db")
-db = sqlite3.connect(DBPATH)
-cursor = db.cursor()
-query = "INSERT INTO recording VALUES(?, ?)"
-
-
 def save_wav(frames, fname):
     global p
     print("Saving...")
@@ -132,16 +125,10 @@ def record():
         now_str = now.strftime("%Y-%m-%d %H:%M:%S")
         fname = now_str + ".wav"
         savepath = os.path.join(SAVEPATH, fname)
-        #save_wav(frames, savepath)
-
         ref = os.path.join(BASERELPATH, now_str)
 
-        try:
-            cursor.execute(query, (now_str, ref))
-            db.commit()
-        except:
-            pass
-
+        save_wav(frames, savepath)
+        
     print("... Done recording")
 
 def listen():
