@@ -145,28 +145,24 @@ class GUI:
         if (self.video_stream == False):
             self.video_stream = True
             self.window.geometry("1000x1550")
-            self.video_frame.config(image = self.loadimage)
-            # #initialize video client connections
-            # #use try/except for if server isn't running?
-            # self.gui_sock = socket()
-            # #gui_sock.connect(('3.140.200.49',6662)) # connect to Denny's AWS Server's public IP
-            # self.gui_sock.connect(('18.189.21.182',6662)) # connect to Robert's AWS Server's public IP
-            # print("Client User listening on port...")
-            # self.connection = self.gui_sock.makefile('rb')
-            # print("Client User connected")
-            # self.video_thread = threading.Thread(target=self.videoLoop,args=())
-            # self.video_thread.start()
-            # self.window.wm_title("Video Stream")
+            # self.video_frame.config(image = self.loadimage)
+            #initialize video client connections
+            #use try/except for if server isn't running?
+            self.gui_sock = socket()
+            #gui_sock.connect(('3.140.200.49',6662)) # connect to Denny's AWS Server's public IP
+            self.gui_sock.connect(('18.189.21.182',6662)) # connect to Robert's AWS Server's public IP
+            print("Client User listening on port...")
+            self.connection = self.gui_sock.makefile('rb')
+            print("Client User connected")
+            self.video_thread = threading.Thread(target=self.videoLoop,args=())
+            self.video_thread.start()
+            self.window.wm_title("Video Stream")
         else:
             self.video_stream = False
             self.window.geometry("1000x550")
             self.video_frame.config(image = '')
-            # self.connection.close()
-            # self.gui_sock.close()
-            
-        # self.path = os.path.join(self.CURPATH, "vid_gui_client_latest_user1.py")
-        # exec(open(self.path).read())
-
+            self.connection.close()
+            self.gui_sock.close()
 
     def videoLoop(self):
     	# try:
@@ -216,14 +212,17 @@ class GUI:
                 self.rgb_image = cv2.cvtColor(self.raw_image, cv2.COLOR_BGR2RGB) #self vs no self?
                 self.pil_image = Image.fromarray(self.rgb_image)
                 self.pil_image = ImageTk.PhotoImage(self.pil_image)
-                
-                if self.video_panel is None:
-                    self.video_panel = tk.Label(image=self.pil_image)
-                    self.video_panel.image = self.pil_image
-                    self.video_panel.pack(padx=10, pady=10)
-                else:
-                    self.video_panel.configure(image=self.pil_image)
-                    self.video_panel.image = self.pil_image
+
+                self.video_frame.config(image=self.pil_image)
+                self.video_frame.image = self.pil_image
+                self.video_frame.pack(padx=10, pady=10)
+                # if self.video_panel is None:
+                #     self.video_panel = tk.Label(image=self.pil_image)
+                #     self.video_panel.image = self.pil_image
+                #     self.video_panel.pack(padx=10, pady=10)
+                # else:
+                #     self.video_panel.configure(image=self.pil_image)
+                #     self.video_panel.image = self.pil_image
 
         except:
             print("Occurred Exception, closing socket")
@@ -304,8 +303,8 @@ class GUI:
 
         elif self.mute == False:
             self.button_c.config(image = self.loadimage)
-            self.audio_conn.write = False 
             self.audio_conn.stop()
+            self.audio_conn.write = False 
             self.mute = True
 
     def handle_click_changing_login_info(self):
@@ -452,7 +451,6 @@ class GUI:
             self.chat_window.destroy()
             self.client_socket.shutdown(SHUT_RDWR)
             self.client_socket.close()
-
     
     def on_closing(self, event=None):
         """This function is to be called when the chat window is closed."""
@@ -490,7 +488,6 @@ class GUI:
 
     def changing_email(self):
         self.email_button.configure(state = tk.DISABLED)
-        self.password = tk.StringVar()
         self.email_address = tk.StringVar()
         self.email_screen = tk.Toplevel(self.login_screen)
         self.email_screen.geometry("300x300")
