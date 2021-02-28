@@ -53,14 +53,12 @@ RECORD = True
 
 def save_wav(frames, fname):
     global p
-    print("Saving...")
     wf = wave.open(fname, 'wb')
     wf.setnchannels(CHANNELS)
     wf.setsampwidth(p.get_sample_size(FORMAT))
     wf.setframerate(RATE)
     wf.writeframes(b''.join(frames))
     wf.close()
-    print("...Saved")
 
 def rms(frame):
     count = len(frame) / SWIDTH
@@ -91,7 +89,7 @@ def stop_mic():
 
 def record():
     global stream, RECORD
-    print("Recording audio ...")
+    print("┬── Recording for Neural Net ...", end="\r")
 
     frames = []
 
@@ -104,12 +102,13 @@ def record():
             frames.append(data)
         except:
             continue
-
+    
+    print("┬── Recording for Neural Net ... Done")
     savepath = os.path.join(SAVEPATH, "nn.wav")
     save_wav(frames, savepath)
     mfcc = preprocess.audio_mfcc(savepath, 128)
     AC.predict(mfcc)
-            
+
     # Record for about MAX_REC_SECONDS.
     num_chunk = int(SEC * MAX_REC_SECONDS)
     for _ in range(num_chunk):
@@ -128,11 +127,13 @@ def record():
         ref = os.path.join(BASERELPATH, now_str)
 
         save_wav(frames, savepath)
+    
+    print("└── Recording for Storage ... Done")
         
-    print("... Done recording")
 
 def listen():
     global stream
+    print("\n** Noise Dectection Mode **")
     while True:
         try:
             data = stream.read(CHUNK)
@@ -142,8 +143,9 @@ def listen():
             continue
         
         if _rms > RMS_THRESH:
+            print("!!! Noise Detected !!!\n\n ** Recording Mode **")
             record()
-            print("Back to listen")
+            print("\n** Noise Dectection Mode **")
 
 def main():
     try:
