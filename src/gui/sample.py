@@ -41,7 +41,6 @@ import time
 from PIL import Image
 from PIL import ImageTk
 
-
 class GUI:
     def __init__(self, information):
 
@@ -106,6 +105,10 @@ class GUI:
             self.notification = "Off"
 
         self.video_stream = False
+
+
+        # presigned url cache timer
+        self.url_time_to_live = 160
 
         # Creating buttons
         self.button_a = tk.Button(self.button_frame, text="Watch the baby", font="Helvetica 11 bold",
@@ -399,10 +402,16 @@ class GUI:
         self.option.insert(tk.END, "Third Lullaby")
         self.option.insert(tk.END, "Fourth Lullaby")
 
+    def url_timer(self, name):
+        time.sleep(self.url_time_to_live)
+        self.recordings[name]["isAlive"] = False
+
     def list_recordings(self):
+        self.recordings = {}
         names = s3i.get_all()["names"]
         for name in names:
             name = os.path.splitext(name)[0]
+            self.recordings[name] = {"url": None, "isAlive": False}
             self.option.insert(tk.END, name)
 
     def play_sound(self):
@@ -417,9 +426,20 @@ class GUI:
             pub_cmd.publish(client, "lullaby4.mp3")
     
     def open_recording(self):
-        name = self.option.get('active') + ".wav"
-        res = s3i.get_one(name)
-        webbrowser.open(res["url"])
+        name = self.option.get('active')
+        if name not in self.recordings:
+            return
+        
+        url_info = self.recordings[name]
+        if url_info["isAlive"]:
+            url = url_info["url"]
+        else:
+            res = s3i.get_one(name + ".wav")
+            url = res["url"]
+            self.recordings[name]["isAlive"] = True
+            self.recordings[name]["url"] = url
+
+        webbrowser.open(url)
 
     def pause_sound(self):
         pub_cmd.publish(client, "pause")
