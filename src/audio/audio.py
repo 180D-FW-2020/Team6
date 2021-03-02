@@ -4,10 +4,9 @@ import MicClient
 import os
 import preprocess
 import pyaudio
-import signal
-import sqlite3
 import struct
 import sys
+import threading
 import wave
 from datetime import datetime
 from pathlib import Path
@@ -44,6 +43,12 @@ print(NNPATH)
 AC = AudioClassifier.AudioClassifier(NNPATH)
 print("... Done")
 
+# s3 interface
+S3PATH = os.path.join(PARPATH, "s3")
+sys.path.append(S3PATH)
+import s3Client
+s3i = s3Client.S3Interface()
+
 # TCP connection.
 conn = MicClient.MicClient()
 conn.start()
@@ -51,8 +56,9 @@ conn.start()
 # Controls
 RECORD = True
 
-def upload(fname):
-    
+def upload(name, pathname):
+    res = s3i.post_one(name=name, pathname=pathname)
+    os.remove(pathname)
 
 def save_wav(frames, fname):
     global p
@@ -127,9 +133,11 @@ def record():
         now_str = now.strftime("%Y-%m-%d %H:%M:%S")
         fname = now_str + ".wav"
         savepath = os.path.join(SAVEPATH, fname)
-        ref = os.path.join(BASERELPATH, now_str)
 
         save_wav(frames, savepath)
+
+        thread = threading.Thread(target=upload, args=(fname,savepath))
+        thread.start()
     
     print("└── Recording for Storage ... Done")
         

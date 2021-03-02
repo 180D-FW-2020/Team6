@@ -402,6 +402,7 @@ class GUI:
     def list_recordings(self):
         names = s3i.get_all()["names"]
         for name in names:
+            name = os.path.splitext(name)[0]
             self.option.insert(tk.END, name)
 
     def play_sound(self):
@@ -416,9 +417,8 @@ class GUI:
             pub_cmd.publish(client, "lullaby4.mp3")
     
     def open_recording(self):
-        name = self.option.get('active')
+        name = self.option.get('active') + ".wav"
         res = s3i.get_one(name)
-        print(res)
         webbrowser.open(res["url"])
 
     def pause_sound(self):
