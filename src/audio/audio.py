@@ -51,6 +51,9 @@ conn.start()
 # Controls
 RECORD = True
 
+def upload(fname):
+    
+
 def save_wav(frames, fname):
     global p
     wf = wave.open(fname, 'wb')
