@@ -12,7 +12,6 @@ _email = "nightlight.notifier@gmail.com"
 _pass =  "qjhlwonnufdgvdss"
 
 def notify(subject="Nightlight Notifier", content="Content"):
-    print("Pushing notification...")
     if not os.path.exists(EMAILPATH):
         return
     
@@ -36,4 +35,3 @@ def notify(subject="Nightlight Notifier", content="Content"):
             pass
     
     server.quit()
-    print("...Notification pushed")
