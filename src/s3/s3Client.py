@@ -53,7 +53,7 @@ class S3Interface():
 
         return json.loads(raw)
     
-    def post_one(self, name):
+    def post_one(self, name, pathname):
         # POST one request.
         req = f'{{"func":"post_one", "name":"{name}"}}'
         raw = self._send(req)
@@ -61,10 +61,9 @@ class S3Interface():
         
         if "res" in res:
             response = res["res"]
-            print(response)
 
             try:
-                with open(name, 'rb') as f:
+                with open(pathname, 'rb') as f:
                     files = {'file': (name, f)}
                     http_response = requests.post(response['url'], 
                                                   data=response['fields'], 

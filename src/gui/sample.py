@@ -418,7 +418,6 @@ class GUI:
     def open_recording(self):
         name = self.option.get('active')
         res = s3i.get_one(name)
-        print(res)
         webbrowser.open(res["url"])
 
     def pause_sound(self):
