@@ -108,7 +108,7 @@ class GUI:
 
 
         # presigned url cache timer
-        self.url_time_to_live = 160
+        self.url_time_to_live = 170
 
         # Creating buttons
         self.button_a = tk.Button(self.button_frame, text="Watch the baby", font="Helvetica 11 bold",
@@ -402,9 +402,13 @@ class GUI:
         self.option.insert(tk.END, "Third Lullaby")
         self.option.insert(tk.END, "Fourth Lullaby")
 
-    def url_timer(self, name):
+    def url_cache_timer(self, name):
         time.sleep(self.url_time_to_live)
-        self.recordings[name]["isAlive"] = False
+        try:
+            self.recordings[name]["isAlive"] = False
+        except:
+            # self.recordings is wiped
+            pass
 
     def list_recordings(self):
         self.recordings = {}
@@ -438,6 +442,11 @@ class GUI:
             url = res["url"]
             self.recordings[name]["isAlive"] = True
             self.recordings[name]["url"] = url
+
+            # Start cache timer
+            url_timer = threading.Thread(target=self.url_cache_timer, args=(name,))
+            url_timer.setDaemon(True)
+            url_timer.start()
 
         webbrowser.open(url)
 
