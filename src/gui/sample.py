@@ -14,6 +14,7 @@ import cv2
 import sys
 import threading
 import os
+import requests
 import sub_cmd
 import pub_cmd
 import webbrowser
@@ -106,6 +107,21 @@ class GUI:
 
         self.video_stream = False
 
+
+        # Prepare recordings directory and attributes
+        # Recordings 
+        self.recording_path = os.path.join(SRCPATH, "recordings")
+        if not os.path.exists(self.recording_path):
+            try:
+                os.mkdir(self.recording_path)
+            except OSError:
+                print("Failed to create directory as src/")
+        
+        self.recordings_ls = []
+        try:
+            self.recordings_ls = os.listdir(self.recording_path)
+        except:
+            pass
 
         # presigned url cache timer
         self.url_time_to_live = 170
@@ -273,7 +289,7 @@ class GUI:
 
         self.new_window.protocol("WM_DELETE_WINDOW", self.quit_play_song_window)
     
-    def handle_click_recordings(self):
+    def handle_download(self):
         self.button_b.configure(state = tk.DISABLED)
         
         self.new_window = tk.Toplevel(self.window)
@@ -283,15 +299,48 @@ class GUI:
         self.scroll_bar = tk.Scrollbar(self.new_window)
         self.option = tk.Listbox(self.new_window, bd=0, bg="#007CC7", fg="#EEFBFB",
                                  font="Helvetica 11 bold", yscrollcommand=self.scroll_bar.set)
-        self.list_recordings()
+        self.s3_ls_recordings()
         self.option.pack(side=tk.LEFT, fill=tk.BOTH)
         self.scroll_bar.config(command=self.option.yview)
 
-        self.select = tk.Button(self.new_window, text="open", bd=0, bg="#4DA8DA",
-                                fg="BLACK", font="Helvetica 11 bold", command=self.open_recording)
+        self.select = tk.Button(self.new_window, text="Download", bd=0, bg="#4DA8DA",
+                                fg="BLACK", font="Helvetica 11 bold", command=self.get_recordings)
         self.select.pack(fill=tk.BOTH)
 
         self.new_window.protocol("WM_DELETE_WINDOW", self.quit_play_song_window)
+
+    def play_recordings(self):
+        self.button_b.configure(state = tk.DISABLED)
+        
+        self.new_window = tk.Toplevel(self.window)
+        self.new_window.configure(bg="#4DA8DA")
+
+        # Making a scroll bar display
+        self.scroll_bar = tk.Scrollbar(self.new_window)
+        self.option = tk.Listbox(self.new_window, bd=0, bg="#007CC7", fg="#EEFBFB",
+                                 font="Helvetica 11 bold", yscrollcommand=self.scroll_bar.set)
+        self.ls_recordings()
+        self.option.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.scroll_bar.config(command=self.option.yview)
+
+        self.select = tk.Button(self.new_window, text="Play", bd=0, bg="#4DA8DA",
+                                fg="BLACK", font="Helvetica 11 bold", command=self.get_recordings)
+        self.select.pack(fill=tk.BOTH)
+
+        self.pause = tk.Button(self.new_window, text="Pause", bd=0, bg="#4DA8DA",
+                                fg="BLACK", font="Helvetica 11 bold", command= self.pause_sound)
+        self.pause.pack(fill=tk.BOTH)
+
+        self.resume = tk.Button(self.new_window, text="Resume", bd=0, bg="#4DA8DA",
+                                fg="BLACK", font="Helvetica 11 bold", command= self.resume_sound)
+        self.resume.pack(fill=tk.BOTH)
+
+        self.resume = tk.Button(self.new_window, text="Delete", bd=0, bg="#4DA8DA",
+                                fg="BLACK", font="Helvetica 11 bold", command= self.resume_sound)
+        self.resume.pack(fill=tk.BOTH)
+
+        self.new_window.protocol("WM_DELETE_WINDOW", self.quit_play_song_window)
+
 
     def handle_click_listen(self):
         
@@ -326,6 +375,22 @@ class GUI:
         self.email_button.pack()
 
         self.login_screen.protocol("WM_DELETE_WINDOW", self.quit_login_window)
+    
+    def handle_click_recordings(self):
+        self.button_d.configure(state = tk.DISABLED)
+        
+        self.login_screen = tk.Toplevel(self.window)
+        self.login_screen.geometry("300x300")
+        self.login_screen.configure(bg="#4DA8DA")
+        tk.Label(self.login_screen, text = "", bg = "#4DA8DA").pack()
+        self.pass_button = tk.Button(self.login_screen, text = "Download from cloud", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.handle_download)
+        self.pass_button.pack()
+        tk.Label(self.login_screen, text = "", bg = "#4DA8DA").pack()
+        self.email_button = tk.Button(self.login_screen, text = "Play recordings", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.play_recordings)
+        self.email_button.pack()
+
+        self.login_screen.protocol("WM_DELETE_WINDOW", self.quit_login_window)
+
 
     def handle_click_open_chat_window(self):
         self.button_e.configure(state = tk.DISABLED)
@@ -410,12 +475,20 @@ class GUI:
             # self.recordings is wiped
             pass
 
-    def list_recordings(self):
+    def s3_ls_recordings(self):
         self.recordings = {}
         names = s3i.get_all()["names"]
         for name in names:
+            if name in self.recordings_ls:
+                continue
+
             name = os.path.splitext(name)[0]
             self.recordings[name] = {"url": None, "isAlive": False}
+            self.option.insert(tk.END, name)
+    
+    def ls_recordings(self):
+        for name in self.recordings_ls:
+            name = os.path.splitext(name)[0]
             self.option.insert(tk.END, name)
 
     def play_sound(self):
@@ -429,26 +502,49 @@ class GUI:
         elif scrollbar_command == 'Fourth Lullaby':
             pub_cmd.publish(client, "lullaby4.mp3")
     
-    def open_recording(self):
+    def get_recordings(self):
         name = self.option.get('active')
+        name_ext = name +".wav"
+
         if name not in self.recordings:
             return
         
         url_info = self.recordings[name]
         if url_info["isAlive"]:
             url = url_info["url"]
+
         else:
-            res = s3i.get_one(name + ".wav")
-            url = res["url"]
-            self.recordings[name]["isAlive"] = True
-            self.recordings[name]["url"] = url
+            res = s3i.get_one(name_ext)
+            if res["status"]:
+                url = res["url"]
+                self.recordings[name]["isAlive"] = True
+                self.recordings[name]["url"] = url
 
-            # Start cache timer
-            url_timer = threading.Thread(target=self.url_cache_timer, args=(name,))
-            url_timer.setDaemon(True)
-            url_timer.start()
+                # Start cache timer
+                url_timer = threading.Thread(target=self.url_cache_timer, args=(name,))
+                url_timer.setDaemon(True)
+                url_timer.start()
 
-        webbrowser.open(url)
+                download = threading.Thread(target=self._download, args=(url, name_ext))
+                download.start()
+
+            else:
+                print("Error in fetching data")
+                return
+
+    def _download(self, url, name_ext):
+        get_res = requests.get(url=url)
+
+        fname = os.path.join(self.recording_path, name_ext)
+        try:
+            with open(fname, "wb") as f:
+                f.write(get_res.content)
+
+        except OSError:
+            print("Failed to write in file.")
+
+        else:
+            self.recordings_ls.append(name_ext)
 
     def pause_sound(self):
         pub_cmd.publish(client, "pause")
