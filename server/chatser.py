@@ -33,7 +33,7 @@ def handle_client(client):  # Takes client socket as argument.
             del clients[client]
             broadcast(bytes("%s has left the chat." % name, "utf8"))
             break
-
+"""fix"""
 
 def broadcast(msg, prefix=""):  # prefix is for name identification.
     """Broadcasts a message to all the clients."""
