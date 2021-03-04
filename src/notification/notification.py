@@ -12,24 +12,26 @@ _email = "nightlight.notifier@gmail.com"
 _pass =  "qjhlwonnufdgvdss"
 
 def notify(subject="Nightlight Notifier", content="Content"):
-    
     if not os.path.exists(EMAILPATH):
         return
     
     f = open(EMAILPATH) 
-    to = f.read()
+    emails = f.readline().split(',')
 
-    msg = EmailMessage()
-    msg.set_content(content)
-    msg["subject"] = subject
-    msg["from"] = _email
-    msg["to"] = to
+    for to in emails:
+        msg = EmailMessage()
+        msg.set_content(content)
+        msg["subject"] = subject
+        msg["from"] = _email
+        msg["to"] = to + ','
 
-    server = smtplib.SMTP("smtp.gmail.com", 587)
-    server.starttls()
-    server.login(_email, _pass)
-    server.send_message(msg)
-        
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(_email, _pass)
+
+        try:
+            server.send_message(msg)
+        except:
+            pass
+    
     server.quit()
-
-notify()
