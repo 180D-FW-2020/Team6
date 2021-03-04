@@ -296,10 +296,10 @@ class GUI:
         self.record_screen.geometry("300x300")
         self.record_screen.configure(bg="#4DA8DA")
         tk.Label(self.record_screen, text = "", bg = "#4DA8DA").pack()
-        self.download_button = tk.Button(self.login_screen, text = "Download from cloud", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.handle_download)
+        self.download_button = tk.Button(self.record_screen, text = "Download from cloud", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.handle_download)
         self.download_button.pack()
         tk.Label(self.record_screen, text = "", bg = "#4DA8DA").pack()
-        self.record_button = tk.Button(self.login_screen, text = "Play recordings", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.play_recordings)
+        self.record_button = tk.Button(self.record_screen, text = "Play recordings", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.play_recordings)
         self.record_button.pack()
 
         self.record_screen.protocol("WM_DELETE_WINDOW", self.quit_record_window)
