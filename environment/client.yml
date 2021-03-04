@@ -12,3 +12,6 @@ dependencies:
     - Pillow==8.0  
     - imutils==0.5.4
     - paho-mqtt==1.5.1
+    - audioplayer==0.6
+    - requests==2.25.1
+    - pyobjc==7.1
