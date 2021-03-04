@@ -197,37 +197,6 @@ class GUI:
             self.gui_sock.close()
 
     def videoLoop(self):
-    	# try:
-    	# 	while True:
-    	# 		self.image_len = struct.unpack('<L', self.connection.read(struct.calcsize('<L')))[0]
-    	# 		if not self.image_len:
-    	# 			print("invalid data from stream ")
-    	# 			break
-    	# 		print(self.image_len)
-    	# 		self.image_stream = io.BytesIO()
-    	# 		self.image_stream.write(connection.read(image_len))
-    	# 		self.image_stream.seek(0)
-
-    	# 		self.file_bytes = np.asarray(bytearray(self.image_stream.read()),dtype=np.uint8)
-    	# 		self.raw_image = cv2.imdecode(self.file_bytes,cv2.IMREAD_COLOR)
-    	# 		rgb_image = cv2.cvtColor(raw_image, cv2.COLOR_BGR2RGB) #self vs no self?
-    	# 		pil_image = Image.fromarray(rgb_frame)
-    	# 		pil_image = ImageTk.PhotoImage(pil_image)
-    			
-    	# 		if self.video_panel is None:
-    	# 			self.video_panel = tk.Label(image=pil_image)
-    	# 			self.video_panel.image = pil_image
-    	# 			self.video_panel.pack(side="left",padx=10, pady=10)
-    	# 		else:
-    	# 			self.panel.configure(image=image)
-    	# 			self.panel.image = image
-    	# except:
-    	# 	print("Occurred Exception, closing socket")
-    	# 	self.connection.close()
-    	# 	self.gui_sock.close()
-    	# finally:
-    	# 	self.connection.close()
-    	# 	self.gui_sock.close()
         try:
             while True:
                 self.image_len = struct.unpack('<L', self.connection.read(struct.calcsize('<L')))[0]

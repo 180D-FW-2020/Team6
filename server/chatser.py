@@ -23,7 +23,6 @@ def handle_client(client):  # Takes client socket as argument.
     msg = "%s has joined the chat!" % name
     broadcast(bytes(msg, "utf8"))
     clients[client] = name
-"""updated"""
     while True:
         msg = client.recv(BUFSIZ)
         if msg != bytes("quit", "utf8"):
@@ -34,7 +33,7 @@ def handle_client(client):  # Takes client socket as argument.
             del clients[client]
             broadcast(bytes("%s has left the chat." % name, "utf8"))
             break
-
+"""fix"""
 
 def broadcast(msg, prefix=""):  # prefix is for name identification.
     """Broadcasts a message to all the clients."""

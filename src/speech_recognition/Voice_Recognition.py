@@ -69,7 +69,6 @@ class Voice_Commmand:
             audio = self.r.listen(source)
             try:
                 self.text = self.r.recognize_google(audio, show_all=True)
-                print (self.text)
                 return (self.text)
             except:
                 print('I did not get that. Please say again.')
