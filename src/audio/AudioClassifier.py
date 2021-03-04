@@ -11,7 +11,9 @@ import threading
 from tensorflow import keras
 from pathlib import Path
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+SRCPATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+NOTIFPATH = os.path.join(SRCPATH, 'notification')
+sys.path.append(NOTIFPATH)
 import notification #pylint: disable=import-error
 
 class AudioClassifier:
@@ -77,7 +79,7 @@ class AudioClassifier:
         labels : str
             The predicted label of X
         """
-        print("Predicting ...")
+        print("├── Classifying Noise ...", end="\r")
         X = np.array([np.float32(X)])
         X = X.reshape(X.shape[0], self.r, self.c, self.ch) # pylint: disable=unsubscriptable-object, too-many-function-args 
 
@@ -85,9 +87,14 @@ class AudioClassifier:
         clas = np.argmax(label, axis=-1)
         clas = self.le_mappings[clas[0]]
         prob = np.amax(label / np.sum(label) * 100, axis=-1)[0]
-
+        print("├── Classifying Noise ... Done")
+        
+        print("├── Pushing Notification ...", end="\r")
         msg = f"Noise came from {clas} with %{prob:.2f} probability"
         self.push_notification(msg)
+        print("├── Pushing Notification ... Done")
+
+        print("├── Recording for Storage ...", end="\r")
     
     def push_notification(self, msg):
         subject = "Noise Detected"

@@ -4,6 +4,11 @@ from tkinter import *
 import pub_cmd
 import os
 import json
+
+# Database interface
+SRCPATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DBPATH = os.path.join(SRCPATH, "database")
+sys.path.append(DBPATH)
 import DBInterface
 
 CURPATH = os.path.dirname(os.path.abspath(__file__))

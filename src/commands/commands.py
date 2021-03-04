@@ -84,9 +84,9 @@ def get_email():
         db = DBInterface()
         emails = json.loads(db.get_email(option=1))['emails']
         emails = (','.join(emails))
-        print("Email list updated.")
 
         with open(EMAILPATH, "w") as f:
+            print("Email list updated.")
             f.write(emails)
         f.close()
 

@@ -4,10 +4,9 @@ import MicClient
 import os
 import preprocess
 import pyaudio
-import signal
-import sqlite3
 import struct
 import sys
+import threading
 import wave
 from datetime import datetime
 from pathlib import Path
@@ -44,6 +43,12 @@ print(NNPATH)
 AC = AudioClassifier.AudioClassifier(NNPATH)
 print("... Done")
 
+# s3 interface
+S3PATH = os.path.join(PARPATH, "s3")
+sys.path.append(S3PATH)
+import s3Client
+s3i = s3Client.S3Interface()
+
 # TCP connection.
 conn = MicClient.MicClient()
 conn.start()
@@ -51,23 +56,18 @@ conn.start()
 # Controls
 RECORD = True
 
-# sqlite3
-DBPATH = os.path.join(PARPATH, "sql", "RPi.db")
-db = sqlite3.connect(DBPATH)
-cursor = db.cursor()
-query = "INSERT INTO recording VALUES(?, ?)"
-
+def upload(name, pathname):
+    res = s3i.post_one(name=name, pathname=pathname)
+    os.remove(pathname)
 
 def save_wav(frames, fname):
     global p
-    print("Saving...")
     wf = wave.open(fname, 'wb')
     wf.setnchannels(CHANNELS)
     wf.setsampwidth(p.get_sample_size(FORMAT))
     wf.setframerate(RATE)
     wf.writeframes(b''.join(frames))
     wf.close()
-    print("...Saved")
 
 def rms(frame):
     count = len(frame) / SWIDTH
@@ -98,7 +98,7 @@ def stop_mic():
 
 def record():
     global stream, RECORD
-    print("Recording audio ...")
+    print("┬── Recording for Neural Net ...", end="\r")
 
     frames = []
 
@@ -111,12 +111,13 @@ def record():
             frames.append(data)
         except:
             continue
-
+    
+    print("┬── Recording for Neural Net ... Done")
     savepath = os.path.join(SAVEPATH, "nn.wav")
     save_wav(frames, savepath)
     mfcc = preprocess.audio_mfcc(savepath, 128)
     AC.predict(mfcc)
-            
+
     # Record for about MAX_REC_SECONDS.
     num_chunk = int(SEC * MAX_REC_SECONDS)
     for _ in range(num_chunk):
@@ -132,20 +133,18 @@ def record():
         now_str = now.strftime("%Y-%m-%d %H:%M:%S")
         fname = now_str + ".wav"
         savepath = os.path.join(SAVEPATH, fname)
-        #save_wav(frames, savepath)
 
-        ref = os.path.join(BASERELPATH, now_str)
+        save_wav(frames, savepath)
 
-        try:
-            cursor.execute(query, (now_str, ref))
-            db.commit()
-        except:
-            pass
-
-    print("... Done recording")
+        thread = threading.Thread(target=upload, args=(fname,savepath))
+        thread.start()
+    
+    print("└── Recording for Storage ... Done")
+        
 
 def listen():
     global stream
+    print("\n** Noise Dectection Mode **")
     while True:
         try:
             data = stream.read(CHUNK)
@@ -155,8 +154,9 @@ def listen():
             continue
         
         if _rms > RMS_THRESH:
+            print("!!! Noise Detected !!!\n\n ** Recording Mode **")
             record()
-            print("Back to listen")
+            print("\n** Noise Dectection Mode **")
 
 def main():
     try:
