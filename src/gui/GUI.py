@@ -307,11 +307,11 @@ class GUI:
     def handle_download(self):
         self.download_button.configure(state = tk.DISABLED)
         
-        self.new_window3 = tk.Toplevel(self.window)
+        self.new_window3 = tk.Toplevel(self.record_screen)
         self.new_window3.configure(bg="#4DA8DA")
 
         # Making a scroll bar display
-        self.scroll_bar = tk.Scrollbar(self.new_window)
+        self.scroll_bar = tk.Scrollbar(self.new_window3)
         self.option = tk.Listbox(self.new_window3, bd=0, bg="#007CC7", fg="#EEFBFB",
                                  font="Helvetica 11 bold", yscrollcommand=self.scroll_bar.set)
         self.s3_ls_recordings()
@@ -327,7 +327,7 @@ class GUI:
     def play_recordings(self):
         self.record_button.configure(state = tk.DISABLED)
         
-        self.new_window2 = tk.Toplevel(self.window)
+        self.new_window2 = tk.Toplevel(self.record_screen)
         self.new_window2.configure(bg="#4DA8DA")
 
         # Making a scroll bar display
