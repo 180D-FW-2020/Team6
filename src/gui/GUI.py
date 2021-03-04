@@ -17,8 +17,9 @@ import os
 import requests
 import sub_cmd
 import pub_cmd
-import webbrowser
+import json
 from datetime import datetime
+from audioplayer import AudioPlayer
 import time
 
 # src path
@@ -125,6 +126,9 @@ class GUI:
 
         # presigned url cache timer
         self.url_time_to_live = 170
+
+        # Audio Player
+        self.ap = None
 
         # Creating buttons
         self.button_a = tk.Button(self.button_frame, text="Watch the baby", font="Helvetica 11 bold",
@@ -312,7 +316,7 @@ class GUI:
 
         # Making a scroll bar display
         self.scroll_bar = tk.Scrollbar(self.new_window3)
-        self.option = tk.Listbox(self.new_window3, bd=0, bg="#007CC7", fg="#EEFBFB",
+        self.option = tk.Listbox(self.new_window3, selectmode=MULTIPLE, bd=0, bg="#007CC7", fg="#EEFBFB",
                                  font="Helvetica 11 bold", yscrollcommand=self.scroll_bar.set)
         self.s3_ls_recordings()
         self.option.pack(side=tk.LEFT, fill=tk.BOTH)
@@ -339,20 +343,20 @@ class GUI:
         self.scroll_bar.config(command=self.option.yview)
 
         self.select = tk.Button(self.new_window2, text="Play", bd=0, bg="#4DA8DA",
-                                fg="BLACK", font="Helvetica 11 bold", command=self.get_recordings)
+                                fg="BLACK", font="Helvetica 11 bold", command=self.play_sound_local)
         self.select.pack(fill=tk.BOTH)
 
         self.pause = tk.Button(self.new_window2, text="Pause", bd=0, bg="#4DA8DA",
-                                fg="BLACK", font="Helvetica 11 bold", command= self.pause_sound)
+                                fg="BLACK", font="Helvetica 11 bold", command= self.pause_sound_local)
         self.pause.pack(fill=tk.BOTH)
 
         self.resume = tk.Button(self.new_window2, text="Resume", bd=0, bg="#4DA8DA",
-                                fg="BLACK", font="Helvetica 11 bold", command= self.resume_sound)
+                                fg="BLACK", font="Helvetica 11 bold", command= self.resume_sound_local)
         self.resume.pack(fill=tk.BOTH)
 
-        self.resume = tk.Button(self.new_window2, text="Delete", bd=0, bg="#4DA8DA",
-                                fg="BLACK", font="Helvetica 11 bold", command= self.resume_sound)
-        self.resume.pack(fill=tk.BOTH)
+        self.delete = tk.Button(self.new_window2, text="Delete", bd=0, bg="#4DA8DA",
+                                fg="BLACK", font="Helvetica 11 bold", command= self.delete_recording)
+        self.delete.pack(fill=tk.BOTH)
 
         self.new_window2.protocol("WM_DELETE_WINDOW", self.quit_play_song_window2)
 
@@ -467,35 +471,67 @@ class GUI:
         elif scrollbar_command == 'Fourth Lullaby':
             pub_cmd.publish(client, "lullaby4.mp3")
     
-    def get_recordings(self):
+    def play_sound_local(self):
+        audio_path = self.option.get('active')
+        audio_path = os.path.join(self.recording_path, audio_path) + ".wav"
+        self.ap = AudioPlayer(audio_path)
+        self.ap.play(block=False)
+    
+    def pause_sound_local(self):
+        self.ap.pause()
+
+    def resume_sound_local(self):
+        self.ap.resume()
+    
+    def delete_recording(self):
         name = self.option.get('active')
-        name_ext = name +".wav"
-
-        if name not in self.recordings:
-            return
+        audio_path = os.path.join(self.recording_path, name) + ".wav"
         
-        url_info = self.recordings[name]
-        if url_info["isAlive"]:
-            url = url_info["url"]
-
+        if self.ap is not None:
+            self.ap.stop()
+            self.ap.close()
+        
+        try:
+            os.remove(audio_path)
+        except OSError:
+            print("Failed to delete recordings")
         else:
-            res = s3i.get_one(name_ext)
-            if res["status"]:
-                url = res["url"]
-                self.recordings[name]["isAlive"] = True
-                self.recordings[name]["url"] = url
+            self.recordings_ls.remove(name + ".wav")
+            self.option.delete(self.option.curselection())
+    
+    def get_recordings(self):
+        selected_options = self.option.curselection()
+        for opt in selected_options[::-1]:
+            name = self.option.get(opt)
+            name_ext = name +".wav"
 
-                # Start cache timer
-                url_timer = threading.Thread(target=self.url_cache_timer, args=(name,))
-                url_timer.setDaemon(True)
-                url_timer.start()
-
-                download = threading.Thread(target=self._download, args=(url, name_ext))
-                download.start()
+            if name not in self.recordings:
+                return
+            
+            url_info = self.recordings[name]
+            if url_info["isAlive"]:
+                url = url_info["url"]
 
             else:
-                print("Error in fetching data")
-                return
+                res = s3i.get_one(name_ext)
+                if res["status"]:
+                    url = res["url"]
+                    self.recordings[name]["isAlive"] = True
+                    self.recordings[name]["url"] = url
+
+                    # Start cache timer
+                    url_timer = threading.Thread(target=self.url_cache_timer, args=(name,))
+                    url_timer.setDaemon(True)
+                    url_timer.start()
+
+                    download = threading.Thread(target=self._download, args=(url, name_ext))
+                    download.start()
+
+                    self.option.delete(opt)
+
+                else:
+                    print("Error in fetching data")
+                    return
 
     def _download(self, url, name_ext):
         get_res = requests.get(url=url)
