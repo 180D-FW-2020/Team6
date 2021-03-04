@@ -325,7 +325,7 @@ class GUI:
         self.new_window3.protocol("WM_DELETE_WINDOW", self.quit_play_song_window3)
 
     def play_recordings(self):
-        self.button_b.configure(state = tk.DISABLED)
+        self.record_button.configure(state = tk.DISABLED)
         
         self.new_window2 = tk.Toplevel(self.window)
         self.new_window2.configure(bg="#4DA8DA")
@@ -517,11 +517,11 @@ class GUI:
     
     def quit_play_song_window3(self):
         self.new_window3.destroy()
-        self.record_button.configure(state = tk.NORMAL)
+        self.download_button.configure(state = tk.NORMAL)
     
     def quit_play_song_window2(self):
         self.new_window2.destroy()
-        self.download_button.configure(state = tk.NORMAL)
+        self.record_button.configure(state = tk.NORMAL)
     
 
 
