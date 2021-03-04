@@ -133,6 +133,8 @@ class GUI:
                                   width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_lullaby)
         self.button_c = tk.Button(self.button_frame, text="Listen To Audio", font="Helvetica 11 bold",
                                   bg="aquamarine", fg="black", image=self.loadimage, compound="bottom", command=self.handle_click_listen)
+        self.button_h = tk.Button(self.button_frame, text="Recordings", font="Helvetica 11 bold",
+                                  width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_recordings)
         self.button_d = tk.Button(self.button_frame, text="Changing Login Info", font="Helvetica 11 bold",
                                   width=18, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_changing_login_info)
         self.button_e = tk.Button(self.button_frame, text="Open Chat Window", font="Helvetica 11 bold",
@@ -141,8 +143,7 @@ class GUI:
                                     width=17, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_notification)
         self.button_g = tk.Button(self.button_frame, text="Quit", font="Helvetica 11 bold",
                                   width=14, height=5, bg="aquamarine", fg="BLACK", command=self.quit_the_program)
-        self.button_h = tk.Button(self.button_frame, text="Recordings", font="Helvetica 11 bold",
-                                  width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_recordings)
+        
 
         self.button_a.pack(side=tk.LEFT, fill=tk.BOTH)
         self.button_b.pack(side=tk.LEFT, fill=tk.BOTH)
@@ -172,8 +173,11 @@ class GUI:
       
         if (self.video_stream == False):
             self.video_stream = True
-            self.window.geometry("1000x1550")
-            # self.video_frame.config(image = self.loadimage)
+            #getting screen width and height of display 
+            width= self.window.winfo_screenwidth()  
+            height= self.window.winfo_screenheight() 
+            #setting tkinter window size 
+            self.window.geometry("%dx%d" % (width, height))
             #initialize video client connections
             #use try/except for if server isn't running?
             self.gui_sock = socket()
@@ -213,14 +217,6 @@ class GUI:
                 self.video_frame.config(image=self.pil_image)
                 self.video_frame.image = self.pil_image
                 self.video_frame.pack(padx=10, pady=10)
-                # if self.video_panel is None:
-                #     self.video_panel = tk.Label(image=self.pil_image)
-                #     self.video_panel.image = self.pil_image
-                #     self.video_panel.pack(padx=10, pady=10)
-                # else:
-                #     self.video_panel.configure(image=self.pil_image)
-                #     self.video_panel.image = self.pil_image
-
         except:
             print("Occurred Exception, closing socket")
             self.connection.close()
@@ -258,58 +254,6 @@ class GUI:
 
         self.new_window.protocol("WM_DELETE_WINDOW", self.quit_play_song_window)
     
-    def handle_download(self):
-        self.button_b.configure(state = tk.DISABLED)
-        
-        self.new_window = tk.Toplevel(self.window)
-        self.new_window.configure(bg="#4DA8DA")
-
-        # Making a scroll bar display
-        self.scroll_bar = tk.Scrollbar(self.new_window)
-        self.option = tk.Listbox(self.new_window, bd=0, bg="#007CC7", fg="#EEFBFB",
-                                 font="Helvetica 11 bold", yscrollcommand=self.scroll_bar.set)
-        self.s3_ls_recordings()
-        self.option.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.scroll_bar.config(command=self.option.yview)
-
-        self.select = tk.Button(self.new_window, text="Download", bd=0, bg="#4DA8DA",
-                                fg="BLACK", font="Helvetica 11 bold", command=self.get_recordings)
-        self.select.pack(fill=tk.BOTH)
-
-        self.new_window.protocol("WM_DELETE_WINDOW", self.quit_play_song_window)
-
-    def play_recordings(self):
-        self.button_b.configure(state = tk.DISABLED)
-        
-        self.new_window = tk.Toplevel(self.window)
-        self.new_window.configure(bg="#4DA8DA")
-
-        # Making a scroll bar display
-        self.scroll_bar = tk.Scrollbar(self.new_window)
-        self.option = tk.Listbox(self.new_window, bd=0, bg="#007CC7", fg="#EEFBFB",
-                                 font="Helvetica 11 bold", yscrollcommand=self.scroll_bar.set)
-        self.ls_recordings()
-        self.option.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.scroll_bar.config(command=self.option.yview)
-
-        self.select = tk.Button(self.new_window, text="Play", bd=0, bg="#4DA8DA",
-                                fg="BLACK", font="Helvetica 11 bold", command=self.get_recordings)
-        self.select.pack(fill=tk.BOTH)
-
-        self.pause = tk.Button(self.new_window, text="Pause", bd=0, bg="#4DA8DA",
-                                fg="BLACK", font="Helvetica 11 bold", command= self.pause_sound)
-        self.pause.pack(fill=tk.BOTH)
-
-        self.resume = tk.Button(self.new_window, text="Resume", bd=0, bg="#4DA8DA",
-                                fg="BLACK", font="Helvetica 11 bold", command= self.resume_sound)
-        self.resume.pack(fill=tk.BOTH)
-
-        self.resume = tk.Button(self.new_window, text="Delete", bd=0, bg="#4DA8DA",
-                                fg="BLACK", font="Helvetica 11 bold", command= self.resume_sound)
-        self.resume.pack(fill=tk.BOTH)
-
-        self.new_window.protocol("WM_DELETE_WINDOW", self.quit_play_song_window)
-
 
     def handle_click_listen(self):
         
@@ -346,19 +290,71 @@ class GUI:
         self.login_screen.protocol("WM_DELETE_WINDOW", self.quit_login_window)
     
     def handle_click_recordings(self):
-        self.button_d.configure(state = tk.DISABLED)
+        self.button_h.configure(state = tk.DISABLED)
         
-        self.login_screen = tk.Toplevel(self.window)
-        self.login_screen.geometry("300x300")
-        self.login_screen.configure(bg="#4DA8DA")
-        tk.Label(self.login_screen, text = "", bg = "#4DA8DA").pack()
-        self.pass_button = tk.Button(self.login_screen, text = "Download from cloud", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.handle_download)
-        self.pass_button.pack()
-        tk.Label(self.login_screen, text = "", bg = "#4DA8DA").pack()
-        self.email_button = tk.Button(self.login_screen, text = "Play recordings", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.play_recordings)
-        self.email_button.pack()
+        self.record_screen = tk.Toplevel(self.window)
+        self.record_screen.geometry("300x300")
+        self.record_screen.configure(bg="#4DA8DA")
+        tk.Label(self.record_screen, text = "", bg = "#4DA8DA").pack()
+        self.download_button = tk.Button(self.login_screen, text = "Download from cloud", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.handle_download)
+        self.download_button.pack()
+        tk.Label(self.record_screen, text = "", bg = "#4DA8DA").pack()
+        self.record_button = tk.Button(self.login_screen, text = "Play recordings", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.play_recordings)
+        self.record_button.pack()
 
-        self.login_screen.protocol("WM_DELETE_WINDOW", self.quit_login_window)
+        self.record_screen.protocol("WM_DELETE_WINDOW", self.quit_record_window)
+
+    def handle_download(self):
+        self.download_button.configure(state = tk.DISABLED)
+        
+        self.new_window3 = tk.Toplevel(self.window)
+        self.new_window3.configure(bg="#4DA8DA")
+
+        # Making a scroll bar display
+        self.scroll_bar = tk.Scrollbar(self.new_window)
+        self.option = tk.Listbox(self.new_window3, bd=0, bg="#007CC7", fg="#EEFBFB",
+                                 font="Helvetica 11 bold", yscrollcommand=self.scroll_bar.set)
+        self.s3_ls_recordings()
+        self.option.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.scroll_bar.config(command=self.option.yview)
+
+        self.select = tk.Button(self.new_window3, text="Download", bd=0, bg="#4DA8DA",
+                                fg="BLACK", font="Helvetica 11 bold", command=self.get_recordings)
+        self.select.pack(fill=tk.BOTH)
+
+        self.new_window3.protocol("WM_DELETE_WINDOW", self.quit_play_song_window3)
+
+    def play_recordings(self):
+        self.button_b.configure(state = tk.DISABLED)
+        
+        self.new_window2 = tk.Toplevel(self.window)
+        self.new_window2.configure(bg="#4DA8DA")
+
+        # Making a scroll bar display
+        self.scroll_bar = tk.Scrollbar(self.new_window2)
+        self.option = tk.Listbox(self.new_window2, bd=0, bg="#007CC7", fg="#EEFBFB",
+                                 font="Helvetica 11 bold", yscrollcommand=self.scroll_bar.set)
+        self.ls_recordings()
+        self.option.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.scroll_bar.config(command=self.option.yview)
+
+        self.select = tk.Button(self.new_window2, text="Play", bd=0, bg="#4DA8DA",
+                                fg="BLACK", font="Helvetica 11 bold", command=self.get_recordings)
+        self.select.pack(fill=tk.BOTH)
+
+        self.pause = tk.Button(self.new_window2, text="Pause", bd=0, bg="#4DA8DA",
+                                fg="BLACK", font="Helvetica 11 bold", command= self.pause_sound)
+        self.pause.pack(fill=tk.BOTH)
+
+        self.resume = tk.Button(self.new_window2, text="Resume", bd=0, bg="#4DA8DA",
+                                fg="BLACK", font="Helvetica 11 bold", command= self.resume_sound)
+        self.resume.pack(fill=tk.BOTH)
+
+        self.resume = tk.Button(self.new_window2, text="Delete", bd=0, bg="#4DA8DA",
+                                fg="BLACK", font="Helvetica 11 bold", command= self.resume_sound)
+        self.resume.pack(fill=tk.BOTH)
+
+        self.new_window2.protocol("WM_DELETE_WINDOW", self.quit_play_song_window2)
 
 
     def handle_click_open_chat_window(self):
@@ -514,6 +510,20 @@ class GUI:
 
         else:
             self.recordings_ls.append(name_ext)
+
+    def quit_record_window(self):
+        self.record_screen.destroy()
+        self.button_h.configure(state = tk.NORMAL)
+    
+    def quit_play_song_window3(self):
+        self.new_window3.destroy()
+        self.record_button.configure(state = tk.NORMAL)
+    
+    def quit_play_song_window2(self):
+        self.new_window2.destroy()
+        self.download_button.configure(state = tk.NORMAL)
+    
+
 
     def pause_sound(self):
         pub_cmd.publish(client, "pause")
