@@ -56,41 +56,47 @@ class GUI:
         # Making a GUI window
         self.window = tk.Tk()
         self.video_panel = None #video
-        self.window.geometry("1000x550")
-        self.window.configure(bg="#4DA8DA")
+        self.window.geometry("1050x700")
+        #self.window.configure(bg="#4DA8DA")
+        self.window.configure(bg="white")
         
         # Title of GUI
 
-        tk.Label(self.window, text="Night Light Baby Monitor",
-                                 font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB").pack()
+        # tk.Label(self.window, text="Night Light Baby Monitor",
+        #                          font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB").pack()
 
-        # Accessing the file in this path
-        self.path = os.path.join(self.CURPATH, "Information", "night_light_logo.PNG")
-
-        logo = PhotoImage(file = self.path)
-        
-        tk.Label(self.window, image = logo).pack()
-
+        tk.Label(self.window, text="Welcome, user_, how can we help you?",
+                                 font="Calibri 20 bold", bg="deep sky blue", fg="white", height = 2).pack(fill = BOTH)
+        #App holds The video and the IMU status bar
         self.app = tk.Frame(self.window)
-        self.app.pack()
+        #self.app.configure(bg="#4DA8DA")
+        self.app.configure(bg="white")
+        self.app.pack(side = LEFT)
 
-        # Showing the action in the main display
+        # Showing the buttons in the display in a frame (All buttons are in a frame)
+        self.button_frame = tk.Frame(self.window)
+        self.button_frame.configure(bg="white")
+        #self.button_frame.configure(bg="#4DA8DA")
+        self.button_frame.pack(side = LEFT)
+        
+        # Showing the action in the main display //Holds How can I help you and the IMU info
         self.lmain = tk.Label(self.app)
-        self.lmain.pack()
+        self.lmain.pack(side = BOTTOM)
 
 
         # Setting the main display
         self.main_display()
 
-        # Showing The Video Frame
-        self.video_frame = tk.Label(self.window, image = None)
-        self.video_frame.configure(bg="#4DA8DA")
-        self.video_frame.pack()
+        # Accessing the file in this path (Logo Switches with video frame)
+        self.path = os.path.join(self.CURPATH, "Information", "nightlight_app_logo_white.png")
+        self.logo = PhotoImage(file = self.path)
 
-        # Showing the button in the display
-        self.button_frame = tk.Frame(self.window)
-        self.button_frame.configure(bg="#4DA8DA")
-        self.button_frame.pack()
+        # Showing The Video Frame
+        self.video_frame = tk.Label(self.app, image = self.logo)
+        #self.video_frame.configure(bg="#4DA8DA")
+        self.video_frame.configure(bg="white")
+        self.video_frame.pack( side = LEFT)
+
 
         self.mute = True
         # Inserting a rounded button for MIC
@@ -130,33 +136,43 @@ class GUI:
         # Audio Player
         self.ap = None
 
-        # Creating buttons
-        self.button_a = tk.Button(self.button_frame, text="Watch the baby", font="Helvetica 11 bold",
-                                  width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_video_stream)
-        self.button_b = tk.Button(self.button_frame, text="Play lullaby", font="Helvetica 11 bold",
-                                  width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_lullaby)
-        self.button_c = tk.Button(self.button_frame, text="Listen To Audio", font="Helvetica 11 bold",
-                                  bg="aquamarine", fg="black", image=self.loadimage, compound="bottom", command=self.handle_click_listen)
-        self.button_h = tk.Button(self.button_frame, text="Recordings", font="Helvetica 11 bold",
-                                  width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_recordings)
-        self.button_d = tk.Button(self.button_frame, text="Changing Login Info", font="Helvetica 11 bold",
-                                  width=18, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_changing_login_info)
-        self.button_e = tk.Button(self.button_frame, text="Open Chat Window", font="Helvetica 11 bold",
-                                  width=16, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_open_chat_window)
-        self.button_f = tk.Button(self.button_frame, text="Current Notification" + "\n\n" + self.notification, font="Helvetica 11 bold", 
-                                    width=17, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_notification)
-        self.button_g = tk.Button(self.button_frame, text="Quit", font="Helvetica 11 bold",
-                                  width=14, height=5, bg="aquamarine", fg="BLACK", command=self.quit_the_program)
-        
-
-        self.button_a.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.button_b.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.button_c.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.button_h.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.button_d.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.button_e.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.button_f.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.button_g.pack(side=tk.LEFT, fill=tk.BOTH)
+        # Creating buttons 
+        for i in range(4):
+            for j in range(2):
+                self.frame = tk.Frame(master=self.button_frame, relief=tk.RAISED, borderwidth=1)
+                self.frame.grid(row=i, column=j)
+                if i == 0 and j == 0:
+                    self.button_a = tk.Button(self.frame, text="Watch the baby", font="Helvetica 11 bold",
+                                  width=16, height=5, bg="deep sky blue", fg="BLACK", command=self.handle_click_video_stream)
+                    self.button_a.pack() #Video
+                if i == 0 and j == 1:
+                    self.button_b = tk.Button(self.frame, text="Play lullaby", font="Helvetica 11 bold",
+                                  width=16, height=5, bg="deep sky blue", fg="BLACK", command=self.handle_click_lullaby)
+                    self.button_b.pack() #Lullaby
+                if i == 1 and j == 0:
+                    self.button_c = tk.Button(self.frame, text="Listen To Audio", font="Helvetica 11 bold",
+                                  width=146, height = 95, bg="deep sky blue", fg="black", image=self.loadimage, compound="bottom", command=self.handle_click_listen)
+                    self.button_c.pack() #Audio
+                if i == 1 and j == 1:
+                    self.button_h = tk.Button(self.frame, text="Recordings", font="Helvetica 11 bold",
+                                  width=16, height=5, bg="deep sky blue", fg="BLACK", command=self.handle_click_recordings)
+                    self.button_h.pack() #Recordings
+                if i == 2 and j == 0:
+                    self.button_d = tk.Button(self.frame, text="Changing Login Info", font="Helvetica 11 bold",
+                                  width=16, height=5, bg="deep sky blue", fg="BLACK", command=self.handle_click_changing_login_info)
+                    self.button_d.pack() #Settings
+                if i == 2 and j == 1:
+                    self.button_e = tk.Button(self.frame, text="Open Chat Window", font="Helvetica 11 bold",
+                                  width=16, height=5, bg="deep sky blue", fg="BLACK", command=self.handle_click_open_chat_window)
+                    self.button_e.pack() #Chat
+                if i == 3 and j == 0:
+                    self.button_f = tk.Button(self.frame, text="Current Notification" + "\n\n" + self.notification, font="Helvetica 11 bold", 
+                                    width=16, height=5, bg="deep sky blue", fg="BLACK", command=self.handle_click_notification)
+                    self.button_f.pack() #Notification
+                if i == 3 and j == 1:
+                    self.button_g = tk.Button(self.frame, text="Quit", font="Helvetica 11 bold",
+                                  width=16, height=5, bg="deep sky blue", fg="BLACK", command=self.quit_the_program)
+                    self.button_g.pack() #Quit
 
         self.window.protocol("WM_DELETE_WINDOW", self.quit_the_program)
         self.window.mainloop()  # runs application
@@ -168,8 +184,9 @@ class GUI:
             self.txt = open("notification.txt", "r")
             self.txt = self.txt.readline()
         except:
-            self.txt = "How can I help you?"
-        self.lmain.configure(text=self.txt, justify="center",font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB")
+            self.txt = "-Baby Pose Sensor Unavailable-"
+        # self.lmain.configure(text=self.txt,font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB")
+        self.lmain.configure(text=self.txt,font="Helvetica 10 bold", bg="white", fg="deep sky blue")
         self.lmain.after(1000, self.main_display)
 	
     
@@ -178,8 +195,10 @@ class GUI:
         if (self.video_stream == False):
             self.video_stream = True
             #getting screen width and height of display 
-            width= self.window.winfo_screenwidth()  
-            height= self.window.winfo_screenheight() 
+            width = 1050
+            height = 700
+            # width= self.window.winfo_screenwidth()  
+            # height= self.window.winfo_screenheight() 
             #setting tkinter window size 
             self.window.geometry("%dx%d" % (width, height))
             #initialize video client connections
@@ -195,8 +214,9 @@ class GUI:
             self.window.wm_title("Video Stream")
         else:
             self.video_stream = False
-            self.window.geometry("1000x550")
-            self.video_frame.config(image = '')
+            self.window.geometry("1050x700")
+            self.video_frame.config(image = self.logo)
+
             self.connection.close()
             self.gui_sock.close()
 
@@ -220,7 +240,7 @@ class GUI:
 
                 self.video_frame.config(image=self.pil_image)
                 self.video_frame.image = self.pil_image
-                self.video_frame.pack(padx=10, pady=10)
+                self.video_frame.pack(padx=1, pady=1)
         except:
             print("Occurred Exception, closing socket")
             self.connection.close()
