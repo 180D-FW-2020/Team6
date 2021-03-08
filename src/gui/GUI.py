@@ -257,25 +257,25 @@ class GUI:
 
         # Making a scroll bar display
         self.scroll_bar = tk.Scrollbar(self.new_window)
-        self.option = tk.Listbox(self.new_window, bd=0, bg="steelblue", fg="black",
+        self.option = tk.Listbox(self.new_window, relief=tk.SUNKEN, borderwidth=3, bg="deep sky blue", fg="black",
                                  font="Helvetica 11 bold", yscrollcommand=self.scroll_bar.set)
         self.inserting_option()
         self.option.pack(side=tk.LEFT, fill=tk.BOTH)
         self.scroll_bar.config(command=self.option.yview)
 
-        self.select = tk.Button(self.new_window, text="Play Song", bd=0, bg="cyan",
+        self.select = tk.Button(self.new_window, text="Play Song", relief=tk.RAISED, borderwidth=3, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command=self.play_sound)
         self.select.pack(fill=tk.BOTH)
         
-        self.pause = tk.Button(self.new_window, text="Pause Song", bd=0, bg="cyan",
+        self.pause = tk.Button(self.new_window, text="Pause Song", relief=tk.RAISED, borderwidth=3, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command= self.pause_sound)
         self.pause.pack(fill=tk.BOTH)
 
-        self.resume = tk.Button(self.new_window, text="Resume Song", bd=0, bg="cyan",
+        self.resume = tk.Button(self.new_window, text="Resume Song", relief=tk.RAISED, borderwidth=3, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command= self.resume_sound)
         self.resume.pack(fill=tk.BOTH)
 
-        self.stop = tk.Button(self.new_window, text="Stop Song", bd=0, bg="cyan",
+        self.stop = tk.Button(self.new_window, text="Stop Song", relief=tk.RAISED, borderwidth=3, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command= self.stop_sound)
         self.stop.pack(fill=tk.BOTH)
 
@@ -308,10 +308,10 @@ class GUI:
         self.login_screen.configure(bg="white")
         tk.Label(self.login_screen, text = "Please choose either one of these button", bg = "white", fg = "black").pack()
         tk.Label(self.login_screen, text = "", bg = "white").pack()
-        self.pass_button = tk.Button(self.login_screen, text = "Changing Password", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.changing_password)
+        self.pass_button = tk.Button(self.login_screen, text = "Changing Password", bg = "cyan", fg= "black", relief=tk.RAISED, borderwidth=3, font = "Helvetica 11 bold", command = self.changing_password)
         self.pass_button.pack()
         tk.Label(self.login_screen, text = "", bg = "white").pack()
-        self.email_button = tk.Button(self.login_screen, text = "Changing Email", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.changing_email)
+        self.email_button = tk.Button(self.login_screen, text = "Changing Email", bg = "cyan", fg= "black", relief=tk.RAISED, borderwidth=3, font = "Helvetica 11 bold", command = self.changing_email)
         self.email_button.pack()
 
         self.login_screen.protocol("WM_DELETE_WINDOW", self.quit_login_window)
@@ -323,10 +323,10 @@ class GUI:
         self.record_screen.geometry("300x300")
         self.record_screen.configure(bg="white")
         tk.Label(self.record_screen, text = "", bg = "white").pack()
-        self.download_button = tk.Button(self.record_screen, text = "Download from cloud", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.handle_download)
+        self.download_button = tk.Button(self.record_screen, text = "Download from cloud", bg = "cyan", fg= "black", relief=tk.RAISED, borderwidth=3, font = "Helvetica 11 bold", command = self.handle_download)
         self.download_button.pack()
         tk.Label(self.record_screen, text = "", bg = "white").pack()
-        self.record_button = tk.Button(self.record_screen, text = "Play recordings", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.play_recordings)
+        self.record_button = tk.Button(self.record_screen, text = "Play recordings", bg = "cyan", fg= "black", relief=tk.RAISED, borderwidth=3, font = "Helvetica 11 bold", command = self.play_recordings)
         self.record_button.pack()
 
         self.record_screen.protocol("WM_DELETE_WINDOW", self.quit_record_window)
@@ -339,14 +339,14 @@ class GUI:
 
         # Making a scroll bar display
         self.scroll_bar = tk.Scrollbar(self.new_window3)
-        self.option = tk.Listbox(self.new_window3, selectmode=MULTIPLE, bd=0, bg="#007CC7", fg="#EEFBFB",
+        self.option = tk.Listbox(self.new_window3, selectmode=MULTIPLE, bd=0, bg="deep sky blue", fg="black", relief=tk.SUNKEN, borderwidth=3,
                                  font="Helvetica 11 bold", yscrollcommand=self.scroll_bar.set)
         self.s3_ls_recordings()
         self.option.pack(side=tk.LEFT, fill=tk.BOTH)
         self.scroll_bar.config(command=self.option.yview)
 
         self.select = tk.Button(self.new_window3, text="Download", bd=0, bg="cyan",
-                                fg="BLACK", font="Helvetica 11 bold", command=self.get_recordings)
+                                fg="BLACK", relief=tk.RAISED, borderwidth=3, font="Helvetica 11 bold", command=self.get_recordings)
         self.select.pack(fill=tk.BOTH)
 
         self.new_window3.protocol("WM_DELETE_WINDOW", self.quit_play_song_window3)
@@ -359,25 +359,25 @@ class GUI:
 
         # Making a scroll bar display
         self.scroll_bar = tk.Scrollbar(self.new_window2)
-        self.option = tk.Listbox(self.new_window2, bd=0, bg="steelblue", fg="black",
+        self.option = tk.Listbox(self.new_window2, bd=0, bg="deep sky blue", fg="black", relief=tk.SUNKEN, borderwidth=3,
                                  font="Helvetica 11 bold", yscrollcommand=self.scroll_bar.set)
         self.ls_recordings()
         self.option.pack(side=tk.LEFT, fill=tk.BOTH)
         self.scroll_bar.config(command=self.option.yview)
 
-        self.select = tk.Button(self.new_window2, text="Play", bd=0, bg="#4DA8DA",
+        self.select = tk.Button(self.new_window2, text="Play", relief=tk.RAISED, borderwidth=3, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command=self.play_sound_local)
         self.select.pack(fill=tk.BOTH)
 
-        self.pause = tk.Button(self.new_window2, text="Pause", bd=0, bg="#4DA8DA",
+        self.pause = tk.Button(self.new_window2, text="Pause", relief=tk.RAISED, borderwidth=3, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command= self.pause_sound_local)
         self.pause.pack(fill=tk.BOTH)
 
-        self.resume = tk.Button(self.new_window2, text="Resume", bd=0, bg="#4DA8DA",
+        self.resume = tk.Button(self.new_window2, text="Resume", relief=tk.RAISED, borderwidth=3, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command= self.resume_sound_local)
         self.resume.pack(fill=tk.BOTH)
 
-        self.delete = tk.Button(self.new_window2, text="Delete", bd=0, bg="#4DA8DA",
+        self.delete = tk.Button(self.new_window2, text="Delete", relief=tk.RAISED, borderwidth=3, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command= self.delete_recording)
         self.delete.pack(fill=tk.BOTH)
 
@@ -407,7 +407,7 @@ class GUI:
         self.entry_field = tk.Entry(self.chat_window, textvariable = self.my_msg)
         self.entry_field.bind("<Return>", self.send)
         self.entry_field.pack()
-        self.send_button = tk.Button(self.chat_window, text="Send", command = self.send)
+        self.send_button = tk.Button(self.chat_window, text="Send", bg = "cyan", fg = "black", relief=tk.RAISED, borderwidth=3, command = self.send)
         self.send_button.pack()
         
         self.chat_window.protocol("WM_DELETE_WINDOW", self.on_closing)
@@ -643,7 +643,7 @@ class GUI:
         self.password_entry2 = Entry(self.password_screen, textvariable=self.password2, show='*')
         self.password_entry2.pack()
         tk.Label(self.password_screen, text="" , bg = "white").pack()
-        tk.Button(self.password_screen, text="Update", width=10, height=1, bg = "cyan", command = self.register_pass).pack()
+        tk.Button(self.password_screen, text="Update", width=10, height=1, bg = "cyan", relief=tk.RAISED, borderwidth=3, command = self.register_pass).pack()
 
         self.info_screen = tk.Frame(self.password_screen)
         self.info_screen.pack()
@@ -668,7 +668,7 @@ class GUI:
         self.email_address_entry = Entry(self.email_screen, textvariable=self.email_address)
         self.email_address_entry.pack()
         tk.Label(self.email_screen, text="" , bg = "white").pack()
-        tk.Button(self.email_screen, text="Update", width=10, height=1, bg = "cyan", command = self.register_email).pack()
+        tk.Button(self.email_screen, text="Update", width=10, height=1, bg = "cyan", relief=tk.RAISED, borderwidth=3, command = self.register_email).pack()
 
         self.info_screen = tk.Frame(self.email_screen)
         self.info_screen.pack()
@@ -741,7 +741,7 @@ class GUI:
         self.empty_filler_screen.title("Error Registration")
         self.empty_filler_screen.geometry("200x100")
         Label(self.empty_filler_screen, text="You have not filled the filler box").pack()
-        Button(self.empty_filler_screen, text="OK", bg = "cyan", command= self.delete_empty_filler_screen).pack()
+        Button(self.empty_filler_screen, text="OK", bg = "cyan", relief=tk.RAISED, borderwidth=3, command= self.delete_empty_filler_screen).pack()
 
     def delete_empty_filler_screen(self):
         self.empty_filler_screen.destroy()
