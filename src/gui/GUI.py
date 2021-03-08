@@ -55,41 +55,40 @@ class GUI:
         # Making a GUI window
         self.window = tk.Tk()
         self.video_panel = None #video
-        self.window.geometry("1000x550")
-        self.window.configure(bg="#4DA8DA")
+        self.window.attributes("-fullscreen", True)
+        self.window.configure(bg="white")
         
         # Title of GUI
 
-        tk.Label(self.window, text="Night Light Baby Monitor",
-                                 font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB").pack()
-
+        tk.Label(self.window, text="User: " + self.user_info["username"],
+                                 font="Helvetica 20 bold", bg="steelblue", fg="black").pack()
+        tk.Label(self.window, text= "").pack()
         # Accessing the file in this path
         self.path = os.path.join(self.CURPATH, "Information", "night_light_logo.PNG")
 
-        logo = PhotoImage(file = self.path)
+        self.logo = PhotoImage(file = self.path)
         
-        tk.Label(self.window, image = logo).pack()
+        
 
         self.app = tk.Frame(self.window)
-        self.app.pack()
+        self.app.pack(side = tk.LEFT)
 
+        # Showing The Video Frame
+        self.video_frame = tk.Label(self.app, image = self.logo, bg = "white").pack(fill = tk.BOTH)
+        tk.Label(self.app, text = "", bg = "white").pack()
+        tk.Label(self.app, text = "", bg = "white").pack()
+        
         # Showing the action in the main display
         self.lmain = tk.Label(self.app)
         self.lmain.pack()
-
-
+        
         # Setting the main display
         self.main_display()
 
-        # Showing The Video Frame
-        self.video_frame = tk.Label(self.window, image = None)
-        self.video_frame.configure(bg="#4DA8DA")
-        self.video_frame.pack()
-
         # Showing the button in the display
         self.button_frame = tk.Frame(self.window)
-        self.button_frame.configure(bg="#4DA8DA")
-        self.button_frame.pack()
+        self.button_frame.configure(bg="white")
+        self.button_frame.pack(side = tk.RIGHT)
 
         self.mute = True
         # Inserting a rounded button for MIC
@@ -106,7 +105,7 @@ class GUI:
             self.notification = "Off"
 
         self.video_stream = False
-
+        self.video_notification = "Off"
 
         # Prepare recordings directory and attributes
         # Recordings 
@@ -127,34 +126,34 @@ class GUI:
         self.url_time_to_live = 170
 
         # Creating buttons
-        self.button_a = tk.Button(self.button_frame, text="Watch the baby", font="Helvetica 11 bold",
-                                  width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_video_stream)
+        self.button_a = tk.Button(self.button_frame, text="Watch the baby" + "\n\n" + self.video_notification, font="Helvetica 11 bold",
+                                  width=14, height=5, bg="cyan", fg="BLACK", command=self.handle_click_video_stream)
         self.button_b = tk.Button(self.button_frame, text="Play lullaby", font="Helvetica 11 bold",
-                                  width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_lullaby)
+                                  width=14, height=5, bg="cyan", fg="BLACK", command=self.handle_click_lullaby)
         self.button_c = tk.Button(self.button_frame, text="Listen To Audio", font="Helvetica 11 bold",
-                                  bg="aquamarine", fg="black", image=self.loadimage, compound="bottom", command=self.handle_click_listen)
+                                  bg="cyan", fg="black", image=self.loadimage, compound="bottom", command=self.handle_click_listen)
         self.button_h = tk.Button(self.button_frame, text="Recordings", font="Helvetica 11 bold",
-                                  width=14, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_recordings)
+                                  width=14, height=5, bg="cyan", fg="BLACK", command=self.handle_click_recordings)
         self.button_d = tk.Button(self.button_frame, text="Changing Login Info", font="Helvetica 11 bold",
-                                  width=18, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_changing_login_info)
+                                  width=18, height=5, bg="cyan", fg="BLACK", command=self.handle_click_changing_login_info)
         self.button_e = tk.Button(self.button_frame, text="Open Chat Window", font="Helvetica 11 bold",
-                                  width=16, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_open_chat_window)
+                                  width=16, height=5, bg="cyan", fg="BLACK", command=self.handle_click_open_chat_window)
         self.button_f = tk.Button(self.button_frame, text="Current Notification" + "\n\n" + self.notification, font="Helvetica 11 bold", 
-                                    width=17, height=5, bg="aquamarine", fg="BLACK", command=self.handle_click_notification)
+                                    width=17, height=5, bg="cyan", fg="BLACK", command=self.handle_click_notification)
         self.button_g = tk.Button(self.button_frame, text="Quit", font="Helvetica 11 bold",
-                                  width=14, height=5, bg="aquamarine", fg="BLACK", command=self.quit_the_program)
+                                  width=14, height=5, bg="cyan", fg="BLACK", command=self.quit_the_program)
         
 
-        self.button_a.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.button_b.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.button_c.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.button_h.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.button_d.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.button_e.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.button_f.pack(side=tk.LEFT, fill=tk.BOTH)
-        self.button_g.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.button_a.pack(side=tk.TOP, fill=tk.BOTH)
+        self.button_b.pack(side=tk.TOP, fill=tk.BOTH)
+        self.button_c.pack(side=tk.TOP, fill=tk.BOTH)
+        self.button_h.pack(side=tk.TOP, fill=tk.BOTH)
+        self.button_d.pack(side=tk.TOP, fill=tk.BOTH)
+        self.button_e.pack(side=tk.TOP, fill=tk.BOTH)
+        self.button_f.pack(side=tk.TOP, fill=tk.BOTH)
+        self.button_g.pack(side=tk.TOP, fill=tk.BOTH)
 
-        self.window.protocol("WM_DELETE_WINDOW", self.quit_the_program)
+        # self.window.protocol("WM_DELETE_WINDOW", self.quit_the_program)
         self.window.mainloop()  # runs application
 
     # Event handlers
@@ -165,7 +164,7 @@ class GUI:
             self.txt = self.txt.readline()
         except:
             self.txt = "How can I help you?"
-        self.lmain.configure(text=self.txt, justify="center",font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB")
+        self.lmain.configure(text=self.txt, justify="center",font="Helvetica 20 bold", bg="white", fg="black")
         self.lmain.after(1000, self.main_display)
 	
     
@@ -173,11 +172,9 @@ class GUI:
       
         if (self.video_stream == False):
             self.video_stream = True
-            #getting screen width and height of display 
-            width= self.window.winfo_screenwidth()  
-            height= self.window.winfo_screenheight() 
-            #setting tkinter window size 
-            self.window.geometry("%dx%d" % (width, height))
+            self.video_notification = "On"
+            self.button_a.config(text="Watch the baby" + "\n\n" + self.video_notification)
+
             #initialize video client connections
             #use try/except for if server isn't running?
             self.gui_sock = socket()
@@ -191,8 +188,9 @@ class GUI:
             self.window.wm_title("Video Stream")
         else:
             self.video_stream = False
-            self.window.geometry("1000x550")
-            self.video_frame.config(image = '')
+            self.video_notification = "Off"
+            self.button_a.config(text="Watch the baby" + "\n\n" + self.video_notification)
+            self.video_frame.config(image = self.logo, bg = "white")
             self.connection.close()
             self.gui_sock.close()
 
@@ -226,29 +224,29 @@ class GUI:
         self.button_b.configure(state = tk.DISABLED)
         
         self.new_window = tk.Toplevel(self.window)
-        self.new_window.configure(bg="#4DA8DA")
+        self.new_window.configure(bg="white")
 
         # Making a scroll bar display
         self.scroll_bar = tk.Scrollbar(self.new_window)
-        self.option = tk.Listbox(self.new_window, bd=0, bg="#007CC7", fg="#EEFBFB",
+        self.option = tk.Listbox(self.new_window, bd=0, bg="steelblue", fg="black",
                                  font="Helvetica 11 bold", yscrollcommand=self.scroll_bar.set)
         self.inserting_option()
         self.option.pack(side=tk.LEFT, fill=tk.BOTH)
         self.scroll_bar.config(command=self.option.yview)
 
-        self.select = tk.Button(self.new_window, text="Play Song", bd=0, bg="#4DA8DA",
+        self.select = tk.Button(self.new_window, text="Play Song", bd=0, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command=self.play_sound)
         self.select.pack(fill=tk.BOTH)
         
-        self.pause = tk.Button(self.new_window, text="Pause Song", bd=0, bg="#4DA8DA",
+        self.pause = tk.Button(self.new_window, text="Pause Song", bd=0, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command= self.pause_sound)
         self.pause.pack(fill=tk.BOTH)
 
-        self.resume = tk.Button(self.new_window, text="Resume Song", bd=0, bg="#4DA8DA",
+        self.resume = tk.Button(self.new_window, text="Resume Song", bd=0, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command= self.resume_sound)
         self.resume.pack(fill=tk.BOTH)
 
-        self.stop = tk.Button(self.new_window, text="Stop Song", bd=0, bg="#4DA8DA",
+        self.stop = tk.Button(self.new_window, text="Stop Song", bd=0, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command= self.stop_sound)
         self.stop.pack(fill=tk.BOTH)
 
@@ -278,12 +276,12 @@ class GUI:
         
         self.login_screen = tk.Toplevel(self.window)
         self.login_screen.geometry("300x300")
-        self.login_screen.configure(bg="#4DA8DA")
-        tk.Label(self.login_screen, text = "Please choose either one of these button", bg = "#4DA8DA", fg = "black").pack()
-        tk.Label(self.login_screen, text = "", bg = "#4DA8DA").pack()
+        self.login_screen.configure(bg="white")
+        tk.Label(self.login_screen, text = "Please choose either one of these button", bg = "white", fg = "black").pack()
+        tk.Label(self.login_screen, text = "", bg = "white").pack()
         self.pass_button = tk.Button(self.login_screen, text = "Changing Password", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.changing_password)
         self.pass_button.pack()
-        tk.Label(self.login_screen, text = "", bg = "#4DA8DA").pack()
+        tk.Label(self.login_screen, text = "", bg = "white").pack()
         self.email_button = tk.Button(self.login_screen, text = "Changing Email", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.changing_email)
         self.email_button.pack()
 
@@ -294,11 +292,11 @@ class GUI:
         
         self.record_screen = tk.Toplevel(self.window)
         self.record_screen.geometry("300x300")
-        self.record_screen.configure(bg="#4DA8DA")
-        tk.Label(self.record_screen, text = "", bg = "#4DA8DA").pack()
+        self.record_screen.configure(bg="white")
+        tk.Label(self.record_screen, text = "", bg = "white").pack()
         self.download_button = tk.Button(self.record_screen, text = "Download from cloud", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.handle_download)
         self.download_button.pack()
-        tk.Label(self.record_screen, text = "", bg = "#4DA8DA").pack()
+        tk.Label(self.record_screen, text = "", bg = "white").pack()
         self.record_button = tk.Button(self.record_screen, text = "Play recordings", bg = "white", fg= "black", font = "Helvetica 11 bold", command = self.play_recordings)
         self.record_button.pack()
 
@@ -308,17 +306,17 @@ class GUI:
         self.download_button.configure(state = tk.DISABLED)
         
         self.new_window3 = tk.Toplevel(self.record_screen)
-        self.new_window3.configure(bg="#4DA8DA")
+        self.new_window3.configure(bg="white")
 
         # Making a scroll bar display
         self.scroll_bar = tk.Scrollbar(self.new_window3)
-        self.option = tk.Listbox(self.new_window3, bd=0, bg="#007CC7", fg="#EEFBFB",
+        self.option = tk.Listbox(self.new_window3, bd=0, bg="steelblue", fg="black",
                                  font="Helvetica 11 bold", yscrollcommand=self.scroll_bar.set)
         self.s3_ls_recordings()
         self.option.pack(side=tk.LEFT, fill=tk.BOTH)
         self.scroll_bar.config(command=self.option.yview)
 
-        self.select = tk.Button(self.new_window3, text="Download", bd=0, bg="#4DA8DA",
+        self.select = tk.Button(self.new_window3, text="Download", bd=0, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command=self.get_recordings)
         self.select.pack(fill=tk.BOTH)
 
@@ -328,29 +326,29 @@ class GUI:
         self.record_button.configure(state = tk.DISABLED)
         
         self.new_window2 = tk.Toplevel(self.record_screen)
-        self.new_window2.configure(bg="#4DA8DA")
+        self.new_window2.configure(bg="white")
 
         # Making a scroll bar display
         self.scroll_bar = tk.Scrollbar(self.new_window2)
-        self.option = tk.Listbox(self.new_window2, bd=0, bg="#007CC7", fg="#EEFBFB",
+        self.option = tk.Listbox(self.new_window2, bd=0, bg="steelblue", fg="black",
                                  font="Helvetica 11 bold", yscrollcommand=self.scroll_bar.set)
         self.ls_recordings()
         self.option.pack(side=tk.LEFT, fill=tk.BOTH)
         self.scroll_bar.config(command=self.option.yview)
 
-        self.select = tk.Button(self.new_window2, text="Play", bd=0, bg="#4DA8DA",
+        self.select = tk.Button(self.new_window2, text="Play", bd=0, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command=self.get_recordings)
         self.select.pack(fill=tk.BOTH)
 
-        self.pause = tk.Button(self.new_window2, text="Pause", bd=0, bg="#4DA8DA",
+        self.pause = tk.Button(self.new_window2, text="Pause", bd=0, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command= self.pause_sound)
         self.pause.pack(fill=tk.BOTH)
 
-        self.resume = tk.Button(self.new_window2, text="Resume", bd=0, bg="#4DA8DA",
+        self.resume = tk.Button(self.new_window2, text="Resume", bd=0, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command= self.resume_sound)
         self.resume.pack(fill=tk.BOTH)
 
-        self.resume = tk.Button(self.new_window2, text="Delete", bd=0, bg="#4DA8DA",
+        self.resume = tk.Button(self.new_window2, text="Delete", bd=0, bg="cyan",
                                 fg="BLACK", font="Helvetica 11 bold", command= self.resume_sound)
         self.resume.pack(fill=tk.BOTH)
 
