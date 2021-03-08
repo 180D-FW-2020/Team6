@@ -19,7 +19,7 @@ import sub_cmd
 import pub_cmd
 import json
 from datetime import datetime
-# from audioplayer import AudioPlayer
+from audioplayer import AudioPlayer
 import time
 
 # src path
