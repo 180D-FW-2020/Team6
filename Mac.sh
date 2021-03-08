@@ -1,5 +1,5 @@
 #!/bin/bash
-TPATH=$(find . -type f -name "sample.py")
+TPATH=$(find . -type f -name "GUI.py")
 python3 $TPATH
 
 
