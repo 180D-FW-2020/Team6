@@ -19,7 +19,7 @@ import sub_cmd
 import pub_cmd
 import json
 from datetime import datetime
-from audioplayer import AudioPlayer
+# from audioplayer import AudioPlayer
 import time
 
 # src path
@@ -361,7 +361,7 @@ class GUI:
 
         # Making a scroll bar display
         self.scroll_bar = tk.Scrollbar(self.new_window2)
-        self.option = tk.Listbox(self.new_window2, bd=0, bg="deep sky blue", fg="black", relief=tk.SUNKEN, borderwidth=3,
+        self.option = tk.Listbox(self.new_window2, bd=0, bg="deep sky blue", fg="white", relief=tk.SUNKEN, borderwidth=3,
                                  font="Helvetica 11 bold", yscrollcommand=self.scroll_bar.set)
         self.ls_recordings()
         self.option.pack(side=tk.LEFT, fill=tk.BOTH)

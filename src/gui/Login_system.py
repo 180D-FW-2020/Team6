@@ -28,9 +28,9 @@ def main_account_screen():
     
     Label(image = logo, bg = "white").pack()
     Label(text="", bg = "white").pack()
-    Button(text="Login to Your Account", bg="#4DA8DA", height="2", width="30", command = login).pack()
+    Button(text="Login to Your Account", bg = "cyan", height="2", width="30", relief=RAISED, borderwidth=3, command = login).pack()
     Label(text="", bg = "white").pack()
-    Button(text="Add Another Account", bg="#4DA8DA", height="2", width="30", command=register).pack()
+    Button(text="Add Another Account", bg = "cyan", height="2", width="30", relief=RAISED, borderwidth=3, command=register).pack()
  
     main_screen.mainloop()
 
@@ -69,7 +69,7 @@ def register():
     password_entry = Entry(register_screen, textvariable=password, show='*')
     password_entry.pack()
     Label(register_screen, text="" , bg = "white").pack()
-    Button(register_screen, text="Register", width=10, height=1, bg="#4DA8DA", command = register_user).pack()
+    Button(register_screen, text="Register", width=10, height=1, bg = "cyan", relief=RAISED, borderwidth=3, command = register_user).pack()
 
     global info_regis
     info_screen = Frame(register_screen)
@@ -108,7 +108,7 @@ def login():
     password_login_entry = Entry(login_screen, textvariable=password_verify, show= '*')
     password_login_entry.pack()
     Label(login_screen, text="", bg = "white").pack()
-    Button(login_screen, text="Login", bg="#4DA8DA", width=10, height=1, command = login_verify).pack()
+    Button(login_screen, text="Login", bg = "cyan", width=10, height=1, relief=RAISED, borderwidth=3, command = login_verify).pack()
 
 
  
@@ -183,7 +183,7 @@ def user_and_password_not_recognised():
     password_not_recog_screen.title("Error Password")
     password_not_recog_screen.geometry("150x100")
     Label(password_not_recog_screen, text="Username and Password do not match").pack()
-    Button(password_not_recog_screen, text="OK", bg="#4DA8DA", command=delete_password_not_recognised).pack()
+    Button(password_not_recog_screen, text="OK", bg = "cyan", relief=RAISED, borderwidth=3, command=delete_password_not_recognised).pack()
  
 
 # Designing popup for username has been used
@@ -193,7 +193,7 @@ def user_info_exist(information):
     username_exist_screen.title("Error Registaration")
     username_exist_screen.geometry("200x100")
     Label(username_exist_screen, text= information).pack()
-    Button(username_exist_screen, text="OK", bg="#4DA8DA", command=delete_username_exist_screen).pack()
+    Button(username_exist_screen, text="OK", bg = "cyan", relief=RAISED, borderwidth=3, command=delete_username_exist_screen).pack()
 
 # Designing popup for the filler of registration are not filled
 def empty_filler():
@@ -202,7 +202,7 @@ def empty_filler():
     empty_filler_screen.title("Error Registration")
     empty_filler_screen.geometry("200x100")
     Label(empty_filler_screen, text="You have not filled the filler box").pack()
-    Button(empty_filler_screen, text="OK", bg="#4DA8DA", command=delete_empty_filler_screen).pack()
+    Button(empty_filler_screen, text="OK", bg = "cyan", relief=RAISED, borderwidth=3, command=delete_empty_filler_screen).pack()
 
 
 # Deleting popups
