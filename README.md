@@ -6,17 +6,20 @@
 [NightLight User Manual v.1 (2/10/21)](https://docs.google.com/document/d/1xTz96g2qR92mgjZfghrevOjGbCRnPGg_qQ0c41JhAck/edit?usp=sharing)
 
 ## Project Description:
-All throughout time, the act of monitoring infants and toddlers has been a mandatory role for many parents irrespective of culture. Thus in the modern world, baby monitors were developed to aid parent supervision as they perform their daily tasks and while adjusting to parenthood. However, as these devices are costly where features are directly correlated to product cost. We introduce a device that helps parents have the ability to voice command, track/classify their infants with a low cost solution and the potential to compete with industry standard technologies. 
+Careful monitoring of your baby is a universal duty for every great parent. But for a lot of people, 
+adjusting to parenthood can be challenging when juggling work, pets, family, hobbies, and much more. 
+Introducing NightLight, a solution that helps parents securely monitor their infants with a low cost device that has can compete with industry standard technologies.
 
-The NightLight infant monitor can track and record targets on it a video and audio stream during any time of the day or night. It will tell the user directly any suspicious or significant event occurring in its stream via email or text alerts. The device can also detect the sounds from the crib through ambient noises and determine the origin of the sound whether from the baby or something else . In addition, IMU attachments allow additional alerts from the target with classified gestures to understand the behavior of the child’s needs. All of these features are integrated into a product at a low cost with real time and secure performance. With a stable and non-dominated market, the NightLight infant monitor has lots of room to establish a strong consumer base.
+The NightLight Baby Monitor implements many features:
+1. Motion detection with its infrared video stream that operates in all light conditions.
+2. Sound classification with an audio stream capable of filtering and recording audio to determine your baby's cries.
+3. Instant notifications through email of any suspicious activities from the babyside.
+4. Pose recognition from an IMU that updates whenever your baby is standing upright or laying face-up or face-down.
+5. Intuitive GUI with encrypted login system and array of commands including playing lullabies and downloading recordings.
+5. Voice recognition for hands-free, "Siri-like" commands.
 
-## Objectives/Fulfillments: 
-- Real time pose tracking daytime nighttime by OpenCv
-- Functional feedback after event detected in vision by camera or gesture by IMU
-- Real time execution of commands
-- Robust one to many server-multiclient functionality
-- "Alexa-like", hands free voice commands
-- Intuitive, infomational, and secure UI with encrypted login system
+All of these are integrated into a device with real time and secure performance at a low cost. With its competitive abilities, 
+the NightLight baby monitor has lots of room to excel in the stable market of infant products.
 
 ## System Description:
 Note: Subject to change as project is implemented
