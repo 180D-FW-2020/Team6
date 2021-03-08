@@ -65,7 +65,7 @@ class GUI:
         # tk.Label(self.window, text="Night Light Baby Monitor",
         #                          font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB").pack()
 
-        tk.Label(self.window, text="Welcome, user!, how can we help you?",
+        tk.Label(self.window, text="Welcome, user_, how can we help you?",
                                  font="Calibri 20 bold", bg="deep sky blue", fg="white", height = 2).pack(fill = BOTH)
         #App holds The video and the IMU status bar
         self.app = tk.Frame(self.window)
@@ -143,35 +143,35 @@ class GUI:
                 self.frame.grid(row=i, column=j)
                 if i == 0 and j == 0:
                     self.button_a = tk.Button(self.frame, text="Watch the baby", font="Helvetica 11 bold",
-                                  width=16, height=5, bg="#4DA8DA", fg="BLACK", command=self.handle_click_video_stream)
+                                  width=16, height=5, bg="deep sky blue", fg="BLACK", command=self.handle_click_video_stream)
                     self.button_a.pack() #Video
                 if i == 0 and j == 1:
                     self.button_b = tk.Button(self.frame, text="Play lullaby", font="Helvetica 11 bold",
-                                  width=16, height=5, bg="#4DA8DA", fg="BLACK", command=self.handle_click_lullaby)
+                                  width=16, height=5, bg="deep sky blue", fg="BLACK", command=self.handle_click_lullaby)
                     self.button_b.pack() #Lullaby
                 if i == 1 and j == 0:
                     self.button_c = tk.Button(self.frame, text="Listen To Audio", font="Helvetica 11 bold",
-                                  width=146, height = 95, bg="#4DA8DA", fg="black", image=self.loadimage, compound="bottom", command=self.handle_click_listen)
+                                  width=146, height = 95, bg="deep sky blue", fg="black", image=self.loadimage, compound="bottom", command=self.handle_click_listen)
                     self.button_c.pack() #Audio
                 if i == 1 and j == 1:
                     self.button_h = tk.Button(self.frame, text="Recordings", font="Helvetica 11 bold",
-                                  width=16, height=5, bg="#4DA8DA", fg="BLACK", command=self.handle_click_recordings)
+                                  width=16, height=5, bg="deep sky blue", fg="BLACK", command=self.handle_click_recordings)
                     self.button_h.pack() #Recordings
                 if i == 2 and j == 0:
                     self.button_d = tk.Button(self.frame, text="Changing Login Info", font="Helvetica 11 bold",
-                                  width=16, height=5, bg="#4DA8DA", fg="BLACK", command=self.handle_click_changing_login_info)
+                                  width=16, height=5, bg="deep sky blue", fg="BLACK", command=self.handle_click_changing_login_info)
                     self.button_d.pack() #Settings
                 if i == 2 and j == 1:
                     self.button_e = tk.Button(self.frame, text="Open Chat Window", font="Helvetica 11 bold",
-                                  width=16, height=5, bg="#4DA8DA", fg="BLACK", command=self.handle_click_open_chat_window)
+                                  width=16, height=5, bg="deep sky blue", fg="BLACK", command=self.handle_click_open_chat_window)
                     self.button_e.pack() #Chat
                 if i == 3 and j == 0:
                     self.button_f = tk.Button(self.frame, text="Current Notification" + "\n\n" + self.notification, font="Helvetica 11 bold", 
-                                    width=16, height=5, bg="#4DA8DA", fg="BLACK", command=self.handle_click_notification)
+                                    width=16, height=5, bg="deep sky blue", fg="BLACK", command=self.handle_click_notification)
                     self.button_f.pack() #Notification
                 if i == 3 and j == 1:
                     self.button_g = tk.Button(self.frame, text="Quit", font="Helvetica 11 bold",
-                                  width=16, height=5, bg="#4DA8DA", fg="BLACK", command=self.quit_the_program)
+                                  width=16, height=5, bg="deep sky blue", fg="BLACK", command=self.quit_the_program)
                     self.button_g.pack() #Quit
 
         self.window.protocol("WM_DELETE_WINDOW", self.quit_the_program)
