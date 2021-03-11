@@ -473,7 +473,7 @@ class GUI:
         self.recordings = {}
         names = s3i.get_all()["names"]
         for name in names:
-            if name in self.recordings_ls:
+            if name.replace(":", "%") in self.recordings_ls:
                 continue
 
             name = os.path.splitext(name)[0]
@@ -513,6 +513,7 @@ class GUI:
     
     def delete_recording(self):
         name = self.option.get('active')
+        name = name.replace(":", "%")
         audio_path = os.path.join(self.recording_path, name) + ".wav"
         
         if self.ap is not None:
