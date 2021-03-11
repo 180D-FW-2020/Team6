@@ -8,7 +8,6 @@ import tkinter as tk
 from tkinter import ttk
 from socket import AF_INET, socket, SHUT_RDWR, SOCK_STREAM
 from imutils.video import VideoStream
-from tkmacosx import Button as button
 from Login_system import *
 from sub_cmd import *
 import io
