@@ -482,8 +482,9 @@ class GUI:
     
     def ls_recordings(self):
         for name in self.recordings_ls:
-            name = os.path.splitext(name)[0]
-            self.option.insert(tk.END, name)
+            name_disp = name.replace("%", ":")
+            name_disp = os.path.splitext(name_disp)[0]
+            self.option.insert(tk.END, name_disp)
 
     def play_sound(self):
         scrollbar_command = self.option.get('active')
@@ -499,6 +500,7 @@ class GUI:
     def play_sound_local(self):
         audio_path = self.option.get('active')
         audio_path = os.path.join(self.recording_path, audio_path) + ".wav"
+        audio_path = audio_path.replace(":", "%")
         self.ap = AudioPlayer(audio_path)
         self.ap.play(block=False)
     
@@ -559,9 +561,9 @@ class GUI:
                     return
 
     def _download(self, url, name_ext):
-        get_res = requests.get(url=url)
-
-        fname = os.path.join(self.recording_path, "-.wave")
+        get_res = requests.get(url=url) 
+        name_ext = name_ext.replace(":", "%")
+        fname = os.path.join(self.recording_path, name_ext)
         try:
             with open(fname, "wb") as f:
                 f.write(get_res.content)
