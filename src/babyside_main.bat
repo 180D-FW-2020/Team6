@@ -3,7 +3,8 @@ ECHO starting command.py
 
 ECHO starting voice_command
 START python speech_recognition\Voice_Recognition.py
-CALL python commands\commands.py
+START python commands\commands.py
+ECHO starting audio
+START python audio\audio.py
 
-ECHO some issues with commands and the database
 Pause
