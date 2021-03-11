@@ -189,7 +189,8 @@ class GUI:
     def main_display(self):
         # Setting the main display
         try:
-            self.txt = open("notification.txt", "r")
+            self.path = os.path.join(self.CURPATH, "notification.txt")
+            self.txt = open(self.path, "r")
             self.txt = self.txt.readline()
         except:
             self.txt = "-Baby Pose Sensor Unavailable-"
@@ -473,7 +474,7 @@ class GUI:
         self.recordings = {}
         names = s3i.get_all()["names"]
         for name in names:
-            if name.replace(":", "%") in self.recordings_ls:
+            if name in self.recordings_ls:
                 continue
 
             name = os.path.splitext(name)[0]
@@ -501,7 +502,6 @@ class GUI:
         audio_path = self.option.get('active')
         audio_path = audio_path.replace(":", "%")
         audio_path = os.path.join(self.recording_path, audio_path) + ".wav"
-        
         self.ap = AudioPlayer(audio_path)
         self.ap.play(block=False)
     
@@ -513,7 +513,6 @@ class GUI:
     
     def delete_recording(self):
         name = self.option.get('active')
-        name = name.replace(":", "%")
         audio_path = os.path.join(self.recording_path, name) + ".wav"
         
         if self.ap is not None:
