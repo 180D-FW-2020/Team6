@@ -561,16 +561,16 @@ class GUI:
                     return
 
     def _download(self, url, name_ext):
-        get_res = requests.get(url=url)
-        
+        get_res = requests.get(url=url) 
         name_ext = name_ext.replace(":", "%")
         fname = os.path.join(self.recording_path, name_ext)
         try:
             with open(fname, "wb") as f:
                 f.write(get_res.content)
 
-        except OSError:
-            print("Failed to write in file.")
+        except Exception as i:
+            print(i)
+            # print("Failed to write in file.")
 
         else:
             self.recordings_ls.append(name_ext)

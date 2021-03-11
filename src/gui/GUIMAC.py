@@ -96,19 +96,19 @@ class GUI:
 
         self.mute = True
         # Inserting the icon for each buttons
-        self.path = os.path.join(self.CURPATH, "Information", "no_sound.png")
+        self.path = os.path.join(self.CURPATH, "Information", "no_sound_dsb.png")
         self.loadimage = tk.PhotoImage(file = self.path)
-        self.path = os.path.join(self.CURPATH, "Information", "sound.png")
+        self.path = os.path.join(self.CURPATH, "Information", "sound_dsb.png")
         self.loadimage2 = tk.PhotoImage(file = self.path)
-        self.path = os.path.join(self.CURPATH, "Information", "tv.png")
+        self.path = os.path.join(self.CURPATH, "Information", "tv_dsb.png")
         self.loadimage3 = tk.PhotoImage(file = self.path)
-        self.path = os.path.join(self.CURPATH, "Information", "music.png")
+        self.path = os.path.join(self.CURPATH, "Information", "music_dsb.png")
         self.loadimage4 = tk.PhotoImage(file = self.path)
-        self.path = os.path.join(self.CURPATH, "Information", "user.png")
+        self.path = os.path.join(self.CURPATH, "Information", "user_dsb.png")
         self.loadimage5 = tk.PhotoImage(file = self.path)
-        self.path = os.path.join(self.CURPATH, "Information", "chat.png")
+        self.path = os.path.join(self.CURPATH, "Information", "chat_dsb.png")
         self.loadimage6 = tk.PhotoImage(file = self.path)
-        self.path = os.path.join(self.CURPATH, "Information", "quit.png")
+        self.path = os.path.join(self.CURPATH, "Information", "quit_dsb.png")
         self.loadimage7 = tk.PhotoImage(file = self.path)
         
         
@@ -204,7 +204,7 @@ class GUI:
         except:
             self.txt = "-Baby Pose Sensor Unavailable-"
         # self.lmain.configure(text=self.txt,font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB")
-        self.lmain.configure(text=self.txt,font="Helvetica 30 bold", bg="white", fg="deep sky blue")
+        self.lmain.configure(text=self.txt,font="Helvetica 30 bold", bg="white", fg="green")
         self.lmain.after(1000, self.main_display)
 	
     

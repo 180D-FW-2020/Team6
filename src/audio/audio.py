@@ -21,7 +21,7 @@ stream = None
 
 # Recording constants.
 SEC = RATE / CHUNK
-MAX_REC_SECONDS = 60
+MAX_REC_SECONDS = 20
 
 # RMS constants.
 SWIDTH = 2
@@ -54,7 +54,8 @@ conn = MicClient.MicClient()
 conn.start()
 
 # Controls
-RECORD = False
+#RECORD = False
+RECORD = True
 
 def upload(name, pathname):
     try:
