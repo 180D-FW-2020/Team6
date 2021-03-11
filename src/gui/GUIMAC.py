@@ -110,6 +110,10 @@ class GUI:
         self.loadimage6 = tk.PhotoImage(file = self.path)
         self.path = os.path.join(self.CURPATH, "Information", "quit_mac.png")
         self.loadimage7 = tk.PhotoImage(file = self.path)
+        self.path = os.path.join(self.CURPATH, "Information", "recordings_mac.png")
+        self.loadimage8 = tk.PhotoImage(file = self.path)
+        self.path = os.path.join(self.CURPATH, "Information", "notif_off_mac.png")
+        self.loadimage9 = tk.PhotoImage(file = self.path)
         
         
 
@@ -167,7 +171,7 @@ class GUI:
                     self.button_c.place(x=5, y=10, width=140, height=30)
                     self.button_c.pack() #Audio
                 if i == 1 and j == 1:
-                    self.button_h = tk.Button(self.frame,font="Helvetica 11 bold", highlightbackground="deep sky blue", fg="BLACK", highlightthickness=20,command=self.handle_click_recordings)
+                    self.button_h = tk.Button(self.frame,image=self.loadimage8, command=self.handle_click_recordings)
                     self.button_h.place(x=5, y=10, width=140, height=30)
                     self.button_h.pack() #Recordings
                 if i == 2 and j == 0:
@@ -179,8 +183,7 @@ class GUI:
                     self.button_e.place(x=5, y=10, width=140, height=30)
                     self.button_e.pack() #Chat
                 if i == 3 and j == 0:
-                    self.button_f = tk.Button(self.frame, font="Helvetica 11 bold",
-                                     highlightbackground="deep sky blue", fg="BLACK", highlightthickness=20, command=self.handle_click_notification)
+                    self.button_f = tk.Button(self.frame, image = self.loadimage9, command=self.handle_click_notification)
                     self.button_f.place(x=5, y=10, width=140, height=30)
                     self.button_f.pack() #Notification
                 if i == 3 and j == 1:
