@@ -152,43 +152,39 @@ class GUI:
                 self.frame.grid(row=i, column=j)
                 if i == 0 and j == 0:
 
-                    self.button_a = tk.Button(self.frame, text="Watch the baby" + "\n\n\n\n" + self.video_notification, font="Helvetica 11 bold",
-                                   highlightbackground="deep sky blue", fg="BLACK", highlightthickness=20,image = self.loadimage3, compound = "center", command=self.handle_click_video_stream)
-                    self.button_a.place(x=5, y=10, width=140, height=30)
+                    self.button_a = tk.Button(self.frame,image = self.loadimage3, command=self.handle_click_video_stream)
+                    self.button_a.place(width=146, height=95)
                     self.button_a.pack() #Video
                     #tk.Button.place(x=5, y=10, width=140, height=30)
                 if i == 0 and j == 1:
-                    self.button_b = tk.Button(self.frame, text="Play lullaby", font="Helvetica 11 bold",
-                                   highlightbackground="deep sky blue", fg="BLACK", highlightthickness=20, image = self.loadimage4, compound = "bottom", command=self.handle_click_lullaby)
+                    self.button_b = tk.Button(self.frame, image = self.loadimage4, command=self.handle_click_lullaby)
+                 #   self.button_b = tk.Button(self.frame,
+                 #                  highlightbackground="deep sky blue", highlightthickness=20, image = self.loadimage4, command=self.handle_click_lullaby)
                     self.button_b.place(x=5, y=10, width=140, height=30)
                     self.button_b.pack() #Lullaby
                 if i == 1 and j == 0:
-                    self.button_c = tk.Button(self.frame, text="Listen To Audio", font="Helvetica 11 bold",
-                                   highlightbackground="deep sky blue", fg="black", highlightthickness=30,image=self.loadimage, compound="bottom", command=self.handle_click_listen)
+                    self.button_c = tk.Button(self.frame,image=self.loadimage, command=self.handle_click_listen)
                     self.button_c.place(x=5, y=10, width=140, height=30)
                     self.button_c.pack() #Audio
                 if i == 1 and j == 1:
-                    self.button_h = tk.Button(self.frame, text="Recordings", font="Helvetica 11 bold", highlightbackground="deep sky blue", fg="BLACK", highlightthickness=30,command=self.handle_click_recordings)
+                    self.button_h = tk.Button(self.frame,font="Helvetica 11 bold", highlightbackground="deep sky blue", fg="BLACK", highlightthickness=20,command=self.handle_click_recordings)
                     self.button_h.place(x=5, y=10, width=140, height=30)
                     self.button_h.pack() #Recordings
                 if i == 2 and j == 0:
-                    self.button_d = tk.Button(self.frame, text="Changing Login Info", font="Helvetica 11 bold",
-                                   highlightbackground="deep sky blue", fg="BLACK", highlightthickness=20, image = self.loadimage5, compound = "bottom", command=self.handle_click_changing_login_info)
+                    self.button_d = tk.Button(self.frame, image = self.loadimage5, command=self.handle_click_changing_login_info)
                     self.button_d.place(x=5, y=10, width=140, height=30)
                     self.button_d.pack() #Settings
                 if i == 2 and j == 1:
-                    self.button_e = tk.Button(self.frame, text="Open Chat Window", font="Helvetica 11 bold",
-                                   highlightbackground="deep sky blue", fg="BLACK", highlightthickness=20,image = self.loadimage6, compound = "bottom", command=self.handle_click_open_chat_window)
+                    self.button_e = tk.Button(self.frame,image = self.loadimage6, command=self.handle_click_open_chat_window)
                     self.button_e.place(x=5, y=10, width=140, height=30)
                     self.button_e.pack() #Chat
                 if i == 3 and j == 0:
-                    self.button_f = tk.Button(self.frame, text="Current Notification" + "\n\n" + self.notification, font="Helvetica 11 bold", 
+                    self.button_f = tk.Button(self.frame, font="Helvetica 11 bold",
                                      highlightbackground="deep sky blue", fg="BLACK", highlightthickness=20, command=self.handle_click_notification)
                     self.button_f.place(x=5, y=10, width=140, height=30)
                     self.button_f.pack() #Notification
                 if i == 3 and j == 1:
-                    self.button_g = tk.Button(self.frame, text="Quit", font="Helvetica 11 bold",
-                                   highlightbackground="deep sky blue", fg="BLACK", highlightthickness=20, image = self.loadimage7, compound = "bottom", command=self.quit_the_program)
+                    self.button_g = tk.Button(self.frame, image = self.loadimage7, command=self.quit_the_program)
                     self.button_g.place(x=5, y=10, width=140, height=30)
                     self.button_g.pack() #Quit
 
