@@ -54,6 +54,7 @@ conn = MicClient.MicClient()
 conn.start()
 
 # Controls
+#RECORD = False
 RECORD = True
 
 def upload(name, pathname):
