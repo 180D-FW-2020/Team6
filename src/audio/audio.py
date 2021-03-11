@@ -54,7 +54,7 @@ conn = MicClient.MicClient()
 conn.start()
 
 # Controls
-RECORD = True
+RECORD = False
 
 def upload(name, pathname):
     res = s3i.post_one(name=name, pathname=pathname)
