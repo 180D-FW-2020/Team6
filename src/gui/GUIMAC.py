@@ -57,7 +57,7 @@ class GUI:
         # Making a GUI window
         self.window = tk.Tk()
         self.video_panel = None #video
-        self.window.geometry("1050x700")
+        self.window.geometry("1150x730")
         #self.window.configure(bg="#4DA8DA")
         self.window.configure(bg="white")
         
@@ -148,7 +148,7 @@ class GUI:
         self.ap = None
 
         # Creating buttons
-        root = Tk()
+        #root = Tk()
         for i in range(4):
             for j in range(2):
                 self.frame = tk.Frame(master=self.button_frame, relief=tk.RAISED, borderwidth=1)
