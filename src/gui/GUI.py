@@ -499,8 +499,9 @@ class GUI:
     
     def play_sound_local(self):
         audio_path = self.option.get('active')
-        audio_path = os.path.join(self.recording_path, audio_path) + ".wav"
         audio_path = audio_path.replace(":", "%")
+        audio_path = os.path.join(self.recording_path, audio_path) + ".wav"
+        
         self.ap = AudioPlayer(audio_path)
         self.ap.play(block=False)
     
