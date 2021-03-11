@@ -204,7 +204,7 @@ class GUI:
         except:
             self.txt = "-Baby Pose Sensor Unavailable-"
         # self.lmain.configure(text=self.txt,font="Helvetica 20 bold", bg="#4DA8DA", fg="#EEFBFB")
-        self.lmain.configure(text=self.txt,font="Helvetica 30 bold", bg="white", fg="deep sky blue")
+        self.lmain.configure(text=self.txt,font="Helvetica 30 bold", bg="white", fg="green")
         self.lmain.after(1000, self.main_display)
 	
     
