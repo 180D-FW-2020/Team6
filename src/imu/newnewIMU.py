@@ -26,6 +26,7 @@ import datetime
 import os
 import paho.mqtt.client as mqtt
 import random
+import notification
 broker = 'broker.emqx.io'
 port = 1883
 topic = "/python/mqtt/"
@@ -106,6 +107,7 @@ KFangleY = 0.0
 
 #Gesture Detection Variables
 #upwards lift
+notification_count = 1
 upwards_cycle_count = 0
 threshold_accel_z = 8360 #mm/(ss)
 upwards_cycle_cap = 9 #cycles
@@ -462,8 +464,12 @@ while True:
             va1 = val1 + ACCz/1000
         else:
             upwards_cycle_count = 0
+            notification_count = notification_count + 1
             publisher.publish(client, "Sudden Flip Detected!!")
             #print("Upwards Lift Detected: " +str(ACCz/1000))
+        if notification_count % 8 ==0:
+            notification_count = 1
+            notification.notify("NightLight Detect: Danger", "Sudden Flip Detected!")
     else:
         upwards_cycle_count = 0
 
