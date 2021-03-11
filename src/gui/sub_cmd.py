@@ -3,6 +3,7 @@
 
 import random
 from paho.mqtt import client as mqtt
+import os
 
 # The address of the subscriber to get the message from the publisher
 broker = 'broker.emqx.io'
@@ -12,6 +13,7 @@ topic = "/python/mqtt/"
 client_id = f'python-mqtt-{random.randint(0, 100)}'
 text = None
 
+CURPATH = os.path.dirname(os.path.abspath(__file__))
 
 def connect_mqtt() -> mqtt:
     global text
@@ -23,7 +25,8 @@ def connect_mqtt() -> mqtt:
         print(f"Disconnected with return code: {rc}") 
     
     def on_message(client, userdata, message, text=text):
-        f = open("notification.txt", "w+")
+        path = os.path.join(CURPATH,"notification.txt")
+        f = open(path, "w+")
         new_message = message.payload.decode()
         if(text != new_message and new_message != None):
             text = new_message
