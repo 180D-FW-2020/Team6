@@ -57,12 +57,18 @@ conn.start()
 RECORD = False
 
 def upload(name, pathname):
-    res = s3i.post_one(name=name, pathname=pathname)
+    try:
+        res = s3i.post_one(name=name, pathname=pathname)
+    except:
+        res = s3i.post_one(name=name, pathname="temp.py")
     os.remove(pathname)
 
 def save_wav(frames, fname):
     global p
-    wf = wave.open(fname, 'wb')
+    try:
+        wf = wave.open(fname, 'wb')
+    except:
+        wf = wave.open("temp.py")
     wf.setnchannels(CHANNELS)
     wf.setsampwidth(p.get_sample_size(FORMAT))
     wf.setframerate(RATE)
