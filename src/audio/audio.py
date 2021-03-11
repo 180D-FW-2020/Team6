@@ -21,11 +21,7 @@ stream = None
 
 # Recording constants.
 SEC = RATE / CHUNK
-<<<<<<< HEAD
-MAX_REC_SECONDS = 5
-=======
 MAX_REC_SECONDS = 20
->>>>>>> e259bcb7d9e098a0a61643ceb34ef232b15de27f
 
 # RMS constants.
 SWIDTH = 2
@@ -62,14 +58,6 @@ conn.start()
 RECORD = True
 
 def upload(name, pathname):
-<<<<<<< HEAD
-    res = s3i.post_one(name=name, pathname="test.wav")
-    os.remove("test.wav")
-
-def save_wav(frames, fname):
-    global p
-    wf = wave.open("test.wav", 'wb')
-=======
     try:
         res = s3i.post_one(name=name, pathname=pathname)
     except:
@@ -82,7 +70,6 @@ def save_wav(frames, fname):
         wf = wave.open(fname, 'wb')
     except:
         wf = wave.open("temp.py")
->>>>>>> e259bcb7d9e098a0a61643ceb34ef232b15de27f
     wf.setnchannels(CHANNELS)
     wf.setsampwidth(p.get_sample_size(FORMAT))
     wf.setframerate(RATE)
