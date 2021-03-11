@@ -96,19 +96,19 @@ class GUI:
 
         self.mute = True
         # Inserting the icon for each buttons
-        self.path = os.path.join(self.CURPATH, "Information", "no_sound_dsb.png")
+        self.path = os.path.join(self.CURPATH, "Information", "listen_off_mac.png")
         self.loadimage = tk.PhotoImage(file = self.path)
-        self.path = os.path.join(self.CURPATH, "Information", "sound_dsb.png")
+        self.path = os.path.join(self.CURPATH, "Information", "listen_on_mac.png")
         self.loadimage2 = tk.PhotoImage(file = self.path)
-        self.path = os.path.join(self.CURPATH, "Information", "tv_dsb.png")
+        self.path = os.path.join(self.CURPATH, "Information", "watch_on_mac.png")
         self.loadimage3 = tk.PhotoImage(file = self.path)
-        self.path = os.path.join(self.CURPATH, "Information", "music_dsb.png")
+        self.path = os.path.join(self.CURPATH, "Information", "lullaby_mac.png")
         self.loadimage4 = tk.PhotoImage(file = self.path)
-        self.path = os.path.join(self.CURPATH, "Information", "user_dsb.png")
+        self.path = os.path.join(self.CURPATH, "Information", "login_mac.png")
         self.loadimage5 = tk.PhotoImage(file = self.path)
-        self.path = os.path.join(self.CURPATH, "Information", "chat_dsb.png")
+        self.path = os.path.join(self.CURPATH, "Information", "chat_mac.png")
         self.loadimage6 = tk.PhotoImage(file = self.path)
-        self.path = os.path.join(self.CURPATH, "Information", "quit_dsb.png")
+        self.path = os.path.join(self.CURPATH, "Information", "quit_mac.png")
         self.loadimage7 = tk.PhotoImage(file = self.path)
         
         
