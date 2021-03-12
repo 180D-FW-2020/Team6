@@ -197,7 +197,7 @@ class GUI:
     def main_display(self):
         # Setting the main display
         try:
-	    self.path = os.path.join(self.CURPATH, "notification.txt",)
+            self.path = os.path.join(self.CURPATH, "notification.txt",)
             self.txt = open(self.path, "r")
             self.txt = self.txt.readline()
         except:
