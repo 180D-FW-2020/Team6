@@ -19,7 +19,7 @@ import sub_cmd
 import pub_cmd
 import json
 from datetime import datetime
-from audioplayer import AudioPlayer
+# from audioplayer import AudioPlayer
 import time
 
 # src path
@@ -474,7 +474,7 @@ class GUI:
         self.recordings = {}
         names = s3i.get_all()["names"]
         for name in names:
-            if name in self.recordings_ls:
+            if name.replace("%", ":") in self.recordings_ls:
                 continue
 
             name = os.path.splitext(name)[0]
