@@ -197,7 +197,8 @@ class GUI:
     def main_display(self):
         # Setting the main display
         try:
-            self.txt = open("notification.txt", "r")
+	    self.path = os.path.join(self.CURPATH, "notification.txt",)
+            self.txt = open(self.path, "r")
             self.txt = self.txt.readline()
         except:
             self.txt = "-Baby Pose Sensor Unavailable-"
